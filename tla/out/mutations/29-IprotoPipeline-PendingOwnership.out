@@ -1,0 +1,96 @@
+TLC2 Version 2026.10.24.013619 (rev: 2ef2af8)
+Warning: Please run the Java VM, which executes TLC with a throughput optimized garbage collector, by passing the "-XX:+UseParallelGC" property.
+(Use the -nowarning option to disable this warning.)
+Running breadth-first search Model-Checking with fp 50 and seed 3236525189945272647 with 1 worker on 16 cores with 1960MB heap and 64MB offheap memory [pid: 1] (Linux 6.10.14-linuxkit aarch64, Eclipse Adoptium 21.0.12.1 64bit, MSBDiskFPSet, DiskStateQueue).
+Parsing file /model/IprotoPipeline.tla
+Parsing file /tmp/tlc-15271946295446088457/Integers.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/Integers.tla)
+Parsing file /tmp/tlc-15271946295446088457/FiniteSets.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/FiniteSets.tla)
+Parsing file /tmp/tlc-15271946295446088457/TLC.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/TLC.tla)
+Parsing file /tmp/tlc-15271946295446088457/_TLCTrace.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/_TLCTrace.tla)
+Parsing file /tmp/tlc-15271946295446088457/Naturals.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/Naturals.tla)
+Parsing file /tmp/tlc-15271946295446088457/Sequences.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/Sequences.tla)
+Parsing file /tmp/tlc-15271946295446088457/TLCExt.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/TLCExt.tla)
+Semantic processing of module Naturals
+Semantic processing of module Integers
+Semantic processing of module Sequences
+Semantic processing of module FiniteSets
+Semantic processing of module TLC
+Semantic processing of module TLCExt
+Semantic processing of module _TLCTrace
+Semantic processing of module IprotoPipeline
+Linting of module TLCExt
+Linting of module _TLCTrace
+Linting of module IprotoPipeline
+Starting... (2026-10-25 17:24:53)
+Computing initial states...
+Computed 2 initial states...
+Finished computing initial states: 4 states generated, with 3 of them distinct at 2026-10-25 17:24:53.
+Error: Invariant PendingOwnership is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ phase = (r1 :> "new" @@ r2 :> "new")
+/\ failures = {}
+/\ matched = {}
+/\ attempts = (r1 :> 0 @@ r2 :> 0)
+/\ retryCause = (r1 :> "none" @@ r2 :> "none")
+/\ executed = {}
+/\ rejections = {}
+/\ issued = {}
+/\ pending = {}
+/\ retries = (r1 :> 0 @@ r2 :> 0)
+/\ opened = {<<c1, 1>>, <<c2, 1>>}
+/\ frame = noframe
+/\ generation = 1
+/\ cost = (r1 :> 1 @@ r2 :> 1)
+/\ sent = {}
+/\ nextSync = (<<c1, 1>> :> 1 @@ <<c1, 2>> :> 1 @@ <<c2, 1>> :> 1 @@ <<c2, 2>> :> 1)
+/\ answered = {}
+/\ invalidations = {}
+/\ retired = {}
+
+State 2: <Admit(r1,1,<<c1, 1>>) line 47, col 5 to line 57, col 66 of module IprotoPipeline>
+/\ phase = (r1 :> "pending" @@ r2 :> "new")
+/\ failures = {}
+/\ matched = {}
+/\ attempts = (r1 :> 1 @@ r2 :> 0)
+/\ retryCause = (r1 :> "none" @@ r2 :> "none")
+/\ executed = {}
+/\ rejections = {}
+/\ issued = {<<<<c1, 1>>, 1, r1, 1>>}
+/\ pending = {<<<<c1, 1>>, 1, r1, 1>>}
+/\ retries = (r1 :> 0 @@ r2 :> 0)
+/\ opened = {<<c1, 1>>, <<c2, 1>>}
+/\ frame = noframe
+/\ generation = 1
+/\ cost = (r1 :> 1 @@ r2 :> 1)
+/\ sent = {}
+/\ nextSync = (<<c1, 1>> :> 2 @@ <<c1, 2>> :> 1 @@ <<c2, 1>> :> 1 @@ <<c2, 2>> :> 1)
+/\ answered = {}
+/\ invalidations = {}
+/\ retired = {}
+
+State 3: <Abandon(r1) line 152, col 5 to line 157, col 96 of module IprotoPipeline>
+/\ phase = (r1 :> "abandoned" @@ r2 :> "new")
+/\ failures = {}
+/\ matched = {}
+/\ attempts = (r1 :> 1 @@ r2 :> 0)
+/\ retryCause = (r1 :> "none" @@ r2 :> "none")
+/\ executed = {}
+/\ rejections = {}
+/\ issued = {<<<<c1, 1>>, 1, r1, 1>>}
+/\ pending = {}
+/\ retries = (r1 :> 0 @@ r2 :> 0)
+/\ opened = {<<c1, 1>>, <<c2, 1>>}
+/\ frame = noframe
+/\ generation = 1
+/\ cost = (r1 :> 1 @@ r2 :> 1)
+/\ sent = {}
+/\ nextSync = (<<c1, 1>> :> 2 @@ <<c1, 2>> :> 1 @@ <<c2, 1>> :> 1 @@ <<c2, 2>> :> 1)
+/\ answered = {}
+/\ invalidations = {}
+/\ retired = {}
+
+31 states generated, 16 distinct states found, 11 states left on queue.
+The depth of the complete state graph search is 3.
+Finished in 00s at (2026-10-25 17:24:53)
+Trace exploration spec path: ./IprotoPipeline_TTrace_1792949093.tla

@@ -82,7 +82,7 @@ def fast_metadata(cpu_layout='standard'):
             raise AssertionError("expected one leader per shard")
     environment=json.loads(run(['docker','inspect','cairn-ha-gateway-1','--format','{{json .Config.Env}}'],True))
     settings={entry.split('=',1)[0]:entry.split('=',1)[1] for entry in environment
-              if entry.split('=',1)[0] in ['CAIRN_VOTE_COMMIT','CAIRN_RECOVERY','TOKIO_WORKER_THREADS','CAIRN_LOG_ERRORS','CAIRN_PROFILE_RPC','CAIRN_STORAGE_CONNECTIONS']}
+              if entry.split('=',1)[0] in ['CAIRN_VOTE_COMMIT','CAIRN_RECOVERY','TOKIO_WORKER_THREADS','CAIRN_LOG_ERRORS','CAIRN_PROFILE_RPC','CAIRN_STORAGE_CONNECTIONS','CAIRN_STORAGE_PIPELINE']}
     return {"nodes":nodes,"gateway_settings":settings,"cpu_layout":cpu_layout,"wal_mode":"fsync","replica_count":3,"quorum":2,
             "reads":"linearizable","transaction_isolation":"strict two-phase locking"}
 
@@ -154,9 +154,11 @@ def main():
     parser.add_argument('--yugabyte-isolation',choices=['repeatable-read','serializable','read-committed'],default='repeatable-read')
     parser.add_argument('--cairn-connections',type=int,choices=range(1,65),default=8)
     parser.add_argument('--cairn-cpu-layout',choices=['standard','storage'],default='standard')
+    parser.add_argument('--cairn-pipeline',action='store_true')
     options = parser.parse_args()
     os.environ['YB_ISOLATION']=options.yugabyte_isolation
     os.environ['CAIRN_STORAGE_CONNECTIONS']=str(options.cairn_connections)
+    os.environ['CAIRN_STORAGE_PIPELINE']='1' if options.cairn_pipeline else '0'
     if options.cairn_cpu_layout=='storage':
         HA.extend(['-f','bench/resources-storage.yaml'])
     if options.cairn_commit!='legacy' or options.cairn_connections!=8:

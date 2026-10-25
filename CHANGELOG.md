@@ -13,7 +13,9 @@
   lock release, outcome and global cleanup.
 - Bounded point-read batches, checked typed increment pushdown and a configurable
   storage connection pool.
-- Eight bounded TLA+ models, eighteen negative checks, fourteen executable Verus
+- Optional bounded IPROTO pipelining with coalesced writes, exact SYNC ownership,
+  cancellation/deadline retirement and conditional generation fencing.
+- Nine bounded TLA+ models, thirty negative checks, fourteen executable Verus
   functions and the matching storage-side native core.
 - PostgreSQL differential, concurrency, native protocol and failure-recovery suites.
 - Matched-resource YugabyteDB/TiDB harness with explicit isolation, source/image
