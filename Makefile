@@ -19,6 +19,7 @@ ha-test:
 	docker compose -f compose.replication.yaml --profile reference up -d --wait reference
 	docker compose -f compose.replication.yaml --profile test run --no-deps --rm tests python /tests/encoding.py
 	docker compose -f compose.replication.yaml --profile test run --no-deps --rm tests python /tests/scalar_text.py
+	docker compose -f compose.replication.yaml --profile test run --no-deps --rm tests python /tests/extended_cycles.py
 	docker compose -f compose.replication.yaml --profile test run --no-deps --rm tests python /tests/transactions.py
 	docker compose -f compose.replication.yaml --profile test run --no-deps --rm tests python /tests/transaction_protocol_retries.py
 	docker compose -f compose.replication.yaml --profile test run --no-deps --rm tests python /tests/transaction_protocol.py

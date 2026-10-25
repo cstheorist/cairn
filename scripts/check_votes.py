@@ -19,7 +19,7 @@ def main():
     finally:
         run('up','-d','--no-deps','--wait','gateway')
     run('--profile','reference','up','-d','--wait','reference')
-    for suite in ['transactions','mutations','relational','transaction_protocol','local_commit','transaction_start','scans','read_batches']:
+    for suite in ['extended_cycles','transactions','mutations','relational','transaction_protocol','local_commit','transaction_start','scans','read_batches']:
         run('--profile','test','run','--no-deps','--rm','tests','python',f'/tests/{suite}.py')
 
 if __name__=='__main__': main()

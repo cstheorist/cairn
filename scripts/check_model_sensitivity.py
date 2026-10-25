@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
 """Ensure bounded models detect early acknowledgements and weak commit guards."""
 import argparse
+import os
 import pathlib
 import shutil
 import subprocess
 import tempfile
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
+TLA2TOOLS = pathlib.Path(os.environ.get('TLA2TOOLS', ROOT / '.tools/tla2tools.jar')).resolve()
 OUTPUT = ROOT / 'tla/out/mutations'
 OUTPUT.mkdir(parents=True, exist_ok=True)
 parser = argparse.ArgumentParser(description=__doc__)
-parser.add_argument('--model', choices=['ShardStore','ReplicaEpoch','TwoPhaseCommit','PredicateLocks','ReadBatch','VoteCommit','LocalFinish','VolatileOpen','IprotoPipeline'])
+parser.add_argument('--model', choices=['ShardStore','ReplicaEpoch','TwoPhaseCommit','PredicateLocks','ReadBatch','VoteCommit','LocalFinish','VolatileOpen','IprotoPipeline','ExtendedCycle'])
 options = parser.parse_args()
 if options.model in (None, 'ShardStore'):
     with tempfile.TemporaryDirectory(prefix="cairn-tla-") as temporary:
@@ -21,7 +23,7 @@ if options.model in (None, 'ShardStore'):
         (directory / "ShardStore.tla").write_text(source.replace(guard, 'phase[op] \\in {"sent", "stored"}'))
         shutil.copyfile(ROOT / "tla/ShardStore.cfg", directory / "ShardStore.cfg")
         result = subprocess.run([
-            "docker", "run", "--rm", "-v", f"{directory}:/model", "-v", f"{ROOT / '.tools/tla2tools.jar'}:/tla2tools.jar:ro",
+            "docker", "run", "--rm", "-v", f"{directory}:/model", "-v", f"{TLA2TOOLS}:/tla2tools.jar:ro",
             "-w", "/model", "eclipse-temurin:21-jre", "java", "-cp", "/tla2tools.jar", "tlc2.TLC",
             "-workers", "1", "-metadir", "/tmp/states", "-config", "ShardStore.cfg", "ShardStore.tla",
         ], text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -60,6 +62,15 @@ CASES = [
     ("IprotoPipeline", 'IF p[2] = generation /\\ generation < 3 THEN generation+1 ELSE generation', 'IF generation < 3 THEN generation+1 ELSE generation', "OldFailureCannotInvalidateNewPool"),
     ("IprotoPipeline", '/\\ retries[r] = 0', '/\\ retries[r] < 2', "FenceRetryAtMostOnce"),
     ("IprotoPipeline", '/\\ pending\' = pending \\* retain ownership after caller cancellation', '/\\ pending\' = {c \\in pending : c[3] # r}', "PendingOwnership"),
+    ("ExtendedCycle", 'FastEligible == a.mode = "none" /\\ a.prefix \\in KnownSyncViews', 'FastEligible == a.mode = "none"', "CommittedHistoriesSerializable"),
+    ("ExtendedCycle", '/\\ UNCHANGED <<bpc,phase,locks,seen,writes,rows,abortedHistory>> \\* Flush retains claims', '/\\ locks\' = Clear(1) /\\ UNCHANGED <<bpc,phase,seen,writes,rows,abortedHistory>>', "CommittedHistoriesSerializable"),
+    ("ExtendedCycle", '/\\ UNCHANGED <<bpc,phase,locks,seen,writes,rows,abortedHistory>> \\* BEGIN adopts claims', '/\\ locks\' = Clear(1) /\\ UNCHANGED <<bpc,phase,seen,writes,rows,abortedHistory>>', "CommittedHistoriesSerializable"),
+    ("ExtendedCycle", '/\\ UNCHANGED <<bpc,phase,locks,seen,writes,rows,abortedHistory>> \\* explicit Sync retains claims', '/\\ locks\' = Clear(1) /\\ UNCHANGED <<bpc,phase,seen,writes,rows,abortedHistory>>', "CommittedHistoriesSerializable"),
+    ("ExtendedCycle", 'FastEligible == a.mode = "none" /\\ a.prefix \\in KnownSyncViews', 'FastEligible == a.mode = "none" /\\ (a.prefix \\in KnownSyncViews \\/ a.prefix = "partial_sync")', "FastReadRequiresKnownSync"),
+    ("ExtendedCycle", 'Spec == Init /\\ [][Next]_vars', 'FlushConflictIsReachable == ~(a.flushed /\\ a.claimed /\\ a.readMode = "none" /\\ phase[1] = "committed" /\\ phase[2] = "aborted" /\\ seen[2][2] = 0 /\\ writes[1] = {2})\nSpec == Init /\\ [][Next]_vars', "FlushConflictIsReachable"),
+    ("ExtendedCycle", 'Spec == Init /\\ [][Next]_vars', 'FastSyncBoundaryIsReachable == ~(a.fast /\\ a.prefix = "sync_tail" /\\ a.ended /\\ phase[1] = "committed" /\\ phase[2] = "committed" /\\ phase[3] = "committed" /\\ seen[1][1] = 0 /\\ seen[2][2] = 0 /\\ writes[3] = {2})\nSpec == Init /\\ [][Next]_vars', "FastSyncBoundaryIsReachable"),
+    ("ExtendedCycle", 'Spec == Init /\\ [][Next]_vars', 'FragmentSyncBoundaryIsReachable == ~(a.claimed /\\ ~a.fast /\\ a.prefix = "partial_sync" /\\ a.ended /\\ phase[1] = "committed" /\\ phase[2] = "committed" /\\ phase[3] = "committed" /\\ seen[1][1] = 0 /\\ seen[2][2] = 0 /\\ writes[3] = {2})\nSpec == Init /\\ [][Next]_vars', "FragmentSyncBoundaryIsReachable"),
+    ("ExtendedCycle", 'Spec == Init /\\ [][Next]_vars', 'BeginSyncScopeIsReachable == ~(a.promoted /\\ a.synced /\\ a.wroteAfterSync /\\ a.claimed /\\ a.flushed /\\ phase[1] = "committed" /\\ phase[2] = "aborted" /\\ seen[2][2] = 0 /\\ writes[1] = {2})\nSpec == Init /\\ [][Next]_vars', "BeginSyncScopeIsReachable"),
 ]
 for number, (model, guard, mutation, invariant) in enumerate(CASES, start=1):
     if options.model is not None and model != options.model: continue
@@ -67,17 +78,26 @@ for number, (model, guard, mutation, invariant) in enumerate(CASES, start=1):
         directory = pathlib.Path(temporary)
         source = (ROOT / f"tla/{model}.tla").read_text()
         assert source.count(guard) == 1, (model, guard)
-        (directory / f"{model}.tla").write_text(source.replace(guard, mutation))
+        mutated_source = source.replace(guard, mutation)
+        flush_scenario = model == 'ExtendedCycle' and invariant == 'CommittedHistoriesSerializable' and guard.startswith('FastEligible')
+        if flush_scenario:
+            # Exercise the interactive SELECT/Flush/continuation bug, rather
+            # than stopping at the shorter immediately-following-write case.
+            scenario = 'FlushScenario == a.next \\in {"unset","Flush"}\n'
+            mutated_source = mutated_source.replace('Spec ==', scenario + 'Spec ==', 1)
+        (directory / f"{model}.tla").write_text(mutated_source)
         config_name = 'IprotoPipelineCount' if model == 'IprotoPipeline' and invariant == 'CountBound' else model
         configuration = (ROOT / f"tla/{config_name}.cfg").read_text()
-        if model == 'IprotoPipeline':
+        if model in ('IprotoPipeline', 'ExtendedCycle'):
             # Check the named consequence rather than stopping at a different,
             # earlier invariant. In particular, unknown replay must exhibit two
             # server-side effects, not merely the forbidden retry admission.
             configuration = configuration.split('INVARIANTS', 1)[0] + f'INVARIANT {invariant}\n'
+        if flush_scenario:
+            configuration += 'CONSTRAINT FlushScenario\n'
         (directory / f"{model}.cfg").write_text(configuration)
         result = subprocess.run([
-            "docker", "run", "--rm", "-v", f"{directory}:/model", "-v", f"{ROOT / '.tools/tla2tools.jar'}:/tla2tools.jar:ro",
+            "docker", "run", "--rm", "-v", f"{directory}:/model", "-v", f"{TLA2TOOLS}:/tla2tools.jar:ro",
             "-w", "/model", "eclipse-temurin:21-jre", "java", "-cp", "/tla2tools.jar", "tlc2.TLC",
             "-workers", "1", "-metadir", "/tmp/states", "-config", f"{model}.cfg", f"{model}.tla",
         ], text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
