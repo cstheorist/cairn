@@ -8,7 +8,7 @@ from replication import connect, leader, native
 
 
 def call(shard, function, *arguments):
-    for attempt in range(4):
+    for attempt in range(8):
         info = leader(shard)
         with closing(native(info["node"], "gateway")) as connection:
             try:
@@ -17,9 +17,11 @@ def call(shard, function, *arguments):
                 # Recovery may concurrently resolve this participant. Error 97
                 # confirms MVCC rollback; uncertain transport outcomes never retry.
                 if (function not in {"tx_apply", "tx_complete", "tx_release", "tx_clean"}
-                        or error.code != 97 or attempt == 3):
+                        or error.code != 97 or attempt == 7):
                     raise
-        time.sleep(.01 * (attempt + 1))
+        # Allow an in-flight resolution to finish across several 250ms recovery
+        # intervals; seven capped waits total 2.25 seconds before the last try.
+        time.sleep(min(.05 * 2**attempt, .5))
 
 
 def begin():
