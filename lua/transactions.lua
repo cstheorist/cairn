@@ -22,6 +22,10 @@ return function(ctx)
     assert(timeout >= 1 and timeout <= 3600)
     local exports = {}
     local volatile
+    -- Cairn only creates tables: a catalogued table's native format is immutable.
+    -- Retain one validator per table instead of allocating a format per write.
+    local tuple_formats = {}
+    local durable_spaces, open_spaces
     function exports.next_incarnation(current)
         local checked = verified.cairn_next_incarnation(current)
         assert(checked.valid == 1, 'storage incarnation exhausted')
@@ -117,12 +121,16 @@ return function(ctx)
         box.space._cairn_locks:create_index('by_mode', {parts = {{1, 'string'}, {2, 'integer'}, {4, 'string'}, {3, 'string'}}, if_not_exists = true})
         box.space._cairn_tx:create_index('pending', {parts = {{2, 'string'}, {6, 'boolean'}}, unique = false, if_not_exists = true})
         volatile.initialize()
+        -- SQL DDL is CREATE-only: these metadata spaces are never replaced.
+        -- Refresh handles after initialization, including each leader election.
+        durable_spaces = {parts = box.space._cairn_parts, intents = box.space._cairn_intents,
+            locks = box.space._cairn_locks, tables = box.space._cairn_table_locks}
+        open_spaces = {parts = box.space._cairn_open_parts, intents = box.space._cairn_open_intents,
+            locks = box.space._cairn_open_locks, tables = box.space._cairn_open_table_locks}
     end
 
     local function spaces(id)
-        local prefix = #id == 53 and '_cairn_open_' or '_cairn_'
-        return {parts = box.space[prefix .. 'parts'], intents = box.space[prefix .. 'intents'],
-            locks = box.space[prefix .. 'locks'], tables = box.space[prefix .. 'table_locks']}
+        return #id == 53 and open_spaces or durable_spaces
     end
 
     function exports.check_unlocked(name, key, id, write)
@@ -456,7 +464,12 @@ return function(ctx)
             else error('invalid mutation') end
             if updated then
                 assert(#updated == #schema.columns and updated[schema.primary_key + 1] == key, 'invalid tuple/key')
-                box.tuple.new(updated, {format = box.tuple.format.new(box.space[name]:format())})
+                local format = tuple_formats[name]
+                if not format then
+                    format = box.tuple.format.new(box.space[name]:format())
+                    tuple_formats[name] = format
+                end
+                box.tuple.new(updated, {format = format})
             end
             local intents = spaces(id).intents
             if not intents:get{id, name, key} and intents.index.primary:count{id} >= 4096 then
@@ -572,10 +585,12 @@ return function(ctx)
     local function finish_participant(id, decision)
         local part = box.space._cairn_parts:get{id}
         if part and part[2] == 'DONE_' .. decision then return end
+        local intents
         if decision == 'COMMIT' then
             assert(part and (part[2] == 'PREPARED' or part[2] == 'APPLIED_COMMIT'), 'commit requires durable YES')
             if part[2] == 'PREPARED' then
-                for _, intent in box.space._cairn_intents.index.primary:pairs({id}, {iterator = 'EQ'}) do
+                intents = box.space._cairn_intents.index.primary:select{id}
+                for _, intent in ipairs(intents) do
                     if intent[4] then box.space[intent[2]]:delete{intent[3]}
                     else box.space[intent[2]]:replace(intent[5]) end
                 end
@@ -588,7 +603,7 @@ return function(ctx)
         -- retain their write locks, so SQL cannot read their old versions.
         local locks = box.space._cairn_locks.index.by_tx:select{id}
         for _, lock in ipairs(locks) do box.space._cairn_locks:delete{lock[1], lock[2], id} end
-        local intents = box.space._cairn_intents.index.primary:select{id}
+        intents = intents or box.space._cairn_intents.index.primary:select{id}
         for _, intent in ipairs(intents) do box.space._cairn_intents:delete{id, intent[2], intent[3]} end
         local tables = box.space._cairn_table_locks.index.by_tx:select{id}
         for _, lock in ipairs(tables) do box.space._cairn_table_locks:delete{lock[1], id} end

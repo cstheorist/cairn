@@ -27,6 +27,7 @@ ha-test:
 	docker compose -f compose.replication.yaml --profile test run --no-deps --rm tests python /tests/read_batches.py
 	docker compose -f compose.replication.yaml --profile test run --no-deps --rm tests python /tests/relational.py
 	docker compose -f compose.replication.yaml --profile test run --no-deps --rm tests python /tests/mutations.py
+	docker compose -f compose.replication.yaml --profile test run --no-deps --rm tests python /tests/storage_formats.py
 	$(PYTHON) scripts/check_replication.py
 ha-recovery:
 	$(PYTHON) scripts/check_transaction_recovery.py

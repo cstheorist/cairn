@@ -60,11 +60,12 @@ return function(h)
             h.fail('LIMIT', 'open transaction identity capacity exhausted')
         end
     end
-    local function clear_claims(id)
+    local function clear_claims(id, intents, locks, tables)
         local s = h.spaces(id)
-        for _, lock in ipairs(s.locks.index.by_tx:select{id}) do s.locks:delete{lock[1], lock[2], id} end
-        for _, lock in ipairs(s.tables.index.by_tx:select{id}) do s.tables:delete{lock[1], id} end
-        for _, intent in ipairs(s.intents.index.primary:select{id}) do s.intents:delete{id, intent[2], intent[3]} end
+        -- Prepare may reuse the rows it just copied inside this same transaction.
+        for _, lock in ipairs(locks or s.locks.index.by_tx:select{id}) do s.locks:delete{lock[1], lock[2], id} end
+        for _, lock in ipairs(tables or s.tables.index.by_tx:select{id}) do s.tables:delete{lock[1], id} end
+        for _, intent in ipairs(intents or s.intents.index.primary:select{id}) do s.intents:delete{id, intent[2], intent[3]} end
         s.parts:delete{id}
         box.space._cairn_open_tx:delete{id}
     end
@@ -270,11 +271,14 @@ return function(h)
             end
             -- Copy every acknowledged write AND every row/table read claim in
             -- the same WAL transaction as YES. Atomic removal leaves no gap.
-            for _, intent in ipairs(s.intents.index.primary:select{id}) do box.space._cairn_intents:insert(intent:totable()) end
-            for _, lock in ipairs(s.locks.index.by_tx:select{id}) do box.space._cairn_locks:insert(lock:totable()) end
-            for _, lock in ipairs(s.tables.index.by_tx:select{id}) do box.space._cairn_table_locks:insert(lock:totable()) end
+            local intents = s.intents.index.primary:select{id}
+            for _, intent in ipairs(intents) do box.space._cairn_intents:insert(intent:totable()) end
+            local locks = s.locks.index.by_tx:select{id}
+            for _, lock in ipairs(locks) do box.space._cairn_locks:insert(lock:totable()) end
+            local tables = s.tables.index.by_tx:select{id}
+            for _, lock in ipairs(tables) do box.space._cairn_table_locks:insert(lock:totable()) end
             box.space._cairn_parts:insert{id,'PREPARED','YES',blob,mac}
-            clear_claims(id)
+            clear_claims(id, intents, locks, tables)
             return true
         end)
         if not yes then h.fail('ABORTED', 'participant durably voted NO because open state was lost, closed or expired') end

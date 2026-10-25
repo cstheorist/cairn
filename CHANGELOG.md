@@ -19,6 +19,11 @@
 - Matched-resource YugabyteDB/TiDB harness with explicit isolation, source/image
   hashes, restart/replication checks and per-key expected values.
 
+### Changed
+
+- Storage reuses immutable tuple validators and metadata handles, and reuses
+  claim snapshots during prepare/finish without changing WAL records or ordering.
+
 ### Fixed
 
 - Native transport rejects nonfinal push responses, ambiguous response identity,

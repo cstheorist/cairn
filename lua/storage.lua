@@ -4,6 +4,8 @@ local json = require('json')
 local shard_id = assert(tonumber(os.getenv('CAIRN_SHARD_ID')))
 local shard_count = assert(tonumber(os.getenv('CAIRN_SHARD_COUNT')))
 assert(shard_id >= 0 and shard_id < shard_count and shard_count <= 1024)
+-- The persisted topology fixes this divisor for the lifetime of the process.
+local shard_count_u64 = ffi.new('uint64_t', shard_count)
 local gateway_password = assert(os.getenv('CAIRN_GATEWAY_PASSWORD'))
 local reader_password = assert(os.getenv('CAIRN_READER_PASSWORD'))
 local managed = os.getenv('CAIRN_MANAGED_CONFIG') == '1'
@@ -112,7 +114,7 @@ end
 
 local function check_owner(key)
     local normalized = ffi.cast('uint64_t', ffi.cast('int64_t', key)) + 0x8000000000000000ULL
-    local owner = tonumber(normalized % ffi.new('uint64_t', shard_count))
+    local owner = tonumber(normalized % shard_count_u64)
     assert(owner == shard_id, 'wrong shard for primary key')
 end
 
