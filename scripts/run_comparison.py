@@ -27,7 +27,7 @@ def source_archive():
            and '_TTrace_' not in path.name}
     paths.update(ROOT/path for path in ['Cargo.toml','Cargo.lock','rust-toolchain.toml','rustfmt.toml','Dockerfile','Makefile','.dockerignore','.gitignore',
         'compose.yaml','compose.replication.yaml','compose.comparison.yaml','compose.votes.yaml',
-        'bench/resources.yaml','bench/tikv.toml','bench/tikv.Dockerfile','bench/yugabyte-start.sh','bench/yugabyte.Dockerfile',
+        'bench/resources.yaml','bench/resources-storage.yaml','bench/tikv.toml','bench/tikv.Dockerfile','bench/yugabyte-start.sh','bench/yugabyte.Dockerfile',
         'bench/driver/Cargo.toml','bench/driver/Cargo.lock','bench/driver/Dockerfile','bench/driver/.dockerignore'])
     contents={str(path.relative_to(ROOT)):path.read_bytes() for path in sorted(paths)}
     hashes={name:hashlib.sha256(data).hexdigest() for name,data in contents.items()}
@@ -69,7 +69,7 @@ def snapshot(compose, services):
         "started_at":record["State"]["StartedAt"],
     } for record in records]
 
-def fast_metadata():
+def fast_metadata(cpu_layout='standard'):
     nodes = []
     for node in FAST[1:]:
         code = ("local c=require('net.box').connect('reader:local-reader@127.0.0.1:3301'); "
@@ -83,7 +83,7 @@ def fast_metadata():
     environment=json.loads(run(['docker','inspect','cairn-ha-gateway-1','--format','{{json .Config.Env}}'],True))
     settings={entry.split('=',1)[0]:entry.split('=',1)[1] for entry in environment
               if entry.split('=',1)[0] in ['CAIRN_VOTE_COMMIT','CAIRN_RECOVERY','TOKIO_WORKER_THREADS','CAIRN_LOG_ERRORS','CAIRN_PROFILE_RPC','CAIRN_STORAGE_CONNECTIONS']}
-    return {"nodes":nodes,"gateway_settings":settings,"wal_mode":"fsync","replica_count":3,"quorum":2,
+    return {"nodes":nodes,"gateway_settings":settings,"cpu_layout":cpu_layout,"wal_mode":"fsync","replica_count":3,"quorum":2,
             "reads":"linearizable","transaction_isolation":"strict two-phase locking"}
 
 def yb_metadata():
@@ -153,9 +153,12 @@ def main():
     parser.add_argument("--cairn-commit",choices=['legacy','votes','local-finish','volatile'],default='legacy')
     parser.add_argument('--yugabyte-isolation',choices=['repeatable-read','serializable','read-committed'],default='repeatable-read')
     parser.add_argument('--cairn-connections',type=int,choices=range(1,65),default=8)
+    parser.add_argument('--cairn-cpu-layout',choices=['standard','storage'],default='standard')
     options = parser.parse_args()
     os.environ['YB_ISOLATION']=options.yugabyte_isolation
     os.environ['CAIRN_STORAGE_CONNECTIONS']=str(options.cairn_connections)
+    if options.cairn_cpu_layout=='storage':
+        HA.extend(['-f','bench/resources-storage.yaml'])
     if options.cairn_commit!='legacy' or options.cairn_connections!=8:
         HA.extend(['-f','compose.votes.yaml'])
         os.environ['CAIRN_VOTE_COMMIT']={'legacy':'0','votes':'1','local-finish':'2','volatile':'3'}[options.cairn_commit]
@@ -189,7 +192,7 @@ def main():
             evidence_path.write_text(json.dumps(evidence,indent=2))
             if database=="cairn":
                 run([*HA,"up","-d","--build","--wait","gateway"])
-                metadata = fast_metadata()
+                metadata = fast_metadata(options.cairn_cpu_layout)
                 topology = snapshot(HA,FAST)
             else:
                 run([*HA,"stop",*FAST])
@@ -228,7 +231,7 @@ def main():
             metadata["containers_after"] = snapshot(HA if database=="cairn" else COMPARISON,
                                                      FAST if database=="cairn" else YB if database=="yugabyte" else TIDB)
             if database=="cairn":
-                metadata["topology_after"]=fast_metadata()
+                metadata["topology_after"]=fast_metadata(options.cairn_cpu_layout)
             before_by_service={item["service"]:item for item in metadata["containers"]}
             failure = None
             if database=="cairn" and metadata["nodes"]!=metadata["topology_after"]["nodes"]:

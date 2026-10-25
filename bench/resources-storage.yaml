@@ -1,0 +1,9 @@
+# Optional CPU-only overlay after resources.yaml; memory limits stay unchanged.
+services:
+  s0a: {cpus: 0.875}
+  s0b: {cpus: 0.875}
+  s0c: {cpus: 0.875}
+  s1a: {cpus: 0.875}
+  s1b: {cpus: 0.875}
+  s1c: {cpus: 0.875}
+  gateway: {cpus: 0.75}
