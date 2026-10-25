@@ -21,6 +21,8 @@
 
 ### Fixed
 
+- Native transport rejects nonfinal push responses, ambiguous response identity,
+  malformed maps and trailing data before mapping SQL errors or retryable fences.
 - Bind parameters reject invalid UTF-8 and embedded NUL with PostgreSQL's
   `22021`, accept nonzero binary BOOLEAN values, and distinguish short from
   overlong binary scalars. Error recovery and transaction rollback remain intact.
