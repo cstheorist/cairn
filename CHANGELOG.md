@@ -21,6 +21,9 @@
 
 ### Fixed
 
+- Bind parameters reject invalid UTF-8 and embedded NUL with PostgreSQL's
+  `22021`, accept nonzero binary BOOLEAN values, and distinguish short from
+  overlong binary scalars. Error recovery and transaction rollback remain intact.
 - Native protocol tests tolerate explicit MVCC rollback when recovery races an
   idempotent resolution phase. Transport uncertainty and mutations remain fail-fast.
 

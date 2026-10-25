@@ -17,6 +17,7 @@ ha-test:
 	docker cp cairn-ha-s0a-1:/usr/local/lib/libcairn_verified_native.so artifacts/libcairn_verified_native.so
 	docker compose -f compose.replication.yaml --profile test run --no-deps --rm tests python /tests/native_core.py /artifacts/libcairn_verified_native.so
 	docker compose -f compose.replication.yaml --profile reference up -d --wait reference
+	docker compose -f compose.replication.yaml --profile test run --no-deps --rm tests python /tests/encoding.py
 	docker compose -f compose.replication.yaml --profile test run --no-deps --rm tests python /tests/transactions.py
 	docker compose -f compose.replication.yaml --profile test run --no-deps --rm tests python /tests/transaction_protocol_retries.py
 	docker compose -f compose.replication.yaml --profile test run --no-deps --rm tests python /tests/transaction_protocol.py
