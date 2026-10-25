@@ -41,6 +41,65 @@ fn field(value: &Value, key: u64) -> Option<&Value> {
         .map(|(_, v)| v)
 }
 
+fn response_field(header: &Value, key: u64) -> Result<u64> {
+    let mut fields = header
+        .as_map()
+        .ok_or_else(|| transport("response header is not a map"))?
+        .iter()
+        .filter(|(candidate, _)| candidate.as_u64() == Some(key));
+    let value = fields
+        .next()
+        .and_then(|(_, value)| value.as_u64())
+        .ok_or_else(|| transport("missing or invalid response identity"))?;
+    if fields.next().is_some() {
+        return Err(transport("duplicate response identity"));
+    }
+    Ok(value)
+}
+
+fn decode_response(response: &[u8], sync: u64) -> Result<Value> {
+    let mut cursor = Cursor::new(response);
+    let header = rmpv::decode::read_value(&mut cursor).map_err(transport)?;
+    let body = rmpv::decode::read_value(&mut cursor).map_err(transport)?;
+    if cursor.position() != response.len() as u64 || !body.is_map() {
+        return Err(transport("invalid response body or trailing data"));
+    }
+    if response_field(&header, 1)? != sync {
+        return Err(transport("response sync mismatch"));
+    }
+    let status = response_field(&header, 0)?;
+    // Only OK and TYPE_ERROR terminate a request. In particular, CHUNK (0x80)
+    // leaves a final response pending. Retire this unsupported stream instead
+    // of returning a reusable SQL error or interpreting a push as a fence.
+    if status != 0 && !(0x8000..=0xffff).contains(&status) {
+        return Err(transport("unsupported nonfinal or unknown response type"));
+    }
+    if status != 0 {
+        let message = field(&body, 0x31).and_then(Value::as_str).unwrap_or("Tarantool error");
+        let code = if message.starts_with("[CAIRN:FENCED]") {
+            "57P03"
+        } else if message.starts_with("[CAIRN:CONFLICT]")
+            || message.starts_with("Transaction has been aborted by conflict")
+        {
+            "40001"
+        } else if message.starts_with("[CAIRN:ABORTED]") {
+            "25P02"
+        } else if message.starts_with("[CAIRN:LIMIT]") {
+            "54000"
+        } else if message.starts_with("[CAIRN:RANGE]") {
+            "22003"
+        } else if message.starts_with("[CAIRN:NOT_NULL]") {
+            "23502"
+        } else if message.starts_with("[CAIRN:DUPLICATE]") || status & 0x7fff == 3 {
+            "23505"
+        } else {
+            "XX000"
+        };
+        return Err(DbError::new(code, message));
+    }
+    Ok(field(&body, 0x30).cloned().unwrap_or(Value::Array(vec![])))
+}
+
 struct Connection {
     socket: tokio::io::BufReader<TcpStream>,
     sync: u64,
@@ -112,39 +171,7 @@ impl Connection {
         }
         let mut response = vec![0; length as usize];
         self.socket.read_exact(&mut response).await.map_err(transport)?;
-        let mut cursor = Cursor::new(response);
-        let header = rmpv::decode::read_value(&mut cursor).map_err(transport)?;
-        let body = rmpv::decode::read_value(&mut cursor).map_err(transport)?;
-        if field(&header, 1).and_then(Value::as_u64) != Some(self.sync) {
-            return Err(transport("response sync mismatch"));
-        }
-        let status = field(&header, 0)
-            .and_then(Value::as_u64)
-            .ok_or_else(|| transport("missing response status"))?;
-        if status != 0 {
-            let message = field(&body, 0x31).and_then(Value::as_str).unwrap_or("Tarantool error");
-            let code = if message.starts_with("[CAIRN:FENCED]") {
-                "57P03"
-            } else if message.starts_with("[CAIRN:CONFLICT]")
-                || message.starts_with("Transaction has been aborted by conflict")
-            {
-                "40001"
-            } else if message.starts_with("[CAIRN:ABORTED]") {
-                "25P02"
-            } else if message.starts_with("[CAIRN:LIMIT]") {
-                "54000"
-            } else if message.starts_with("[CAIRN:RANGE]") {
-                "22003"
-            } else if message.starts_with("[CAIRN:NOT_NULL]") {
-                "23502"
-            } else if message.starts_with("[CAIRN:DUPLICATE]") || status & 0x7fff == 3 {
-                "23505"
-            } else {
-                "XX000"
-            };
-            return Err(DbError::new(code, message));
-        }
-        Ok(field(&body, 0x30).cloned().unwrap_or(Value::Array(vec![])))
+        decode_response(&response, self.sync)
     }
 
     async fn call(&mut self, function: &str, args: Vec<Value>) -> Result<Vec<Value>> {
@@ -160,6 +187,9 @@ impl Connection {
             .ok_or_else(|| transport("CALL response is not an array"))
     }
 }
+
+#[cfg(test)]
+mod tests;
 
 struct Pool {
     members: Vec<String>,
