@@ -52,6 +52,14 @@ For diagnostics, `CAIRN_PROFILE_RPC=1` emits per-shard/function RPC counts, fail
 
 `--cairn-connections N` selects 1..64 storage sockets per shard (default 8). The selected `CAIRN_STORAGE_CONNECTIONS` is recorded with the other gateway settings. Known SQL errors keep a fully consumed, correctly matched native connection reusable; a transport failure, timeout or leadership fence retires it. Failed mutations are still never replayed automatically.
 
+`--cairn-cpu-layout standard|storage` selects the benchmark CPU allocation. The default `standard` keeps the gateway at 1.5 CPUs and each of six storage nodes at 0.75 CPU. The optional `storage` layout applies `resources-storage.yaml` after `resources.yaml`: the gateway gets 0.75 CPU and each storage node gets 0.875 CPU. Both total six CPUs and retain the same six GiB memory limit, RF3, quorum two, fsync and election configuration. All replicas receive equal caps, so leader movement does not change the new leader's allocated capacity.
+
+```sh
+python3 scripts/run_comparison.py --databases cairn --cairn-commit volatile --cairn-cpu-layout storage
+```
+
+This optional experiment follows a diagnostic that observed leader throttling alongside unused gateway quota. It is not a measured improvement: a smaller gateway cap may hurt reads, mixed workloads or recovery bursts. Validate faults and repeat every workload before drawing conclusions. Cairn metadata records `cpu_layout`; evidence still records actual container limits and checks the aggregate budget, and source archives include both resource files. Report the selected allocation with any result, retain the standard layout as a control, and use fresh matched repeated measurements for comparative claims.
+
 ## Broader performance coverage
 
 - Match replica count, durable commit policy, read consistency, hardware, core/memory limits, network placement, dataset, indexes, key distribution, and client concurrency.
