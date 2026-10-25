@@ -26,6 +26,8 @@
 
 ### Fixed
 
+- INTEGER and BOOLEAN text input follows PostgreSQL 16 whitespace, spelling,
+  radix/separator, width and syntax-versus-overflow rules.
 - Native transport rejects nonfinal push responses, ambiguous response identity,
   malformed maps and trailing data before mapping SQL errors or retryable fences.
 - Bind parameters reject invalid UTF-8 and embedded NUL with PostgreSQL's

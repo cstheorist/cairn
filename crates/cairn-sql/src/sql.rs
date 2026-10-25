@@ -223,6 +223,118 @@ pub(crate) fn kind(data_type: &DataType) -> Result<&'static str> {
     }
 }
 
+fn scalar_whitespace(byte: u8) -> bool {
+    matches!(byte, b' ' | b'\t' | b'\n' | b'\r' | 0x0b | 0x0c)
+}
+
+fn trim_scalar_text(mut bytes: &[u8]) -> &[u8] {
+    while bytes.first().is_some_and(|byte| scalar_whitespace(*byte)) {
+        bytes = &bytes[1..];
+    }
+    while bytes.last().is_some_and(|byte| scalar_whitespace(*byte)) {
+        bytes = &bytes[..bytes.len() - 1];
+    }
+    bytes
+}
+
+fn integer_digit(byte: u8, radix: u64) -> Option<u64> {
+    let digit = match byte {
+        b'0'..=b'9' => u64::from(byte - b'0'),
+        b'a'..=b'f' => u64::from(byte - b'a') + 10,
+        b'A'..=b'F' => u64::from(byte - b'A') + 10,
+        _ => return None,
+    };
+    (digit < radix).then_some(digit)
+}
+
+fn parse_integer_text(text: &str, kind: &str) -> Result<i64> {
+    let invalid = || DbError::new("22P02", format!("invalid {kind} value"));
+    let overflow = || DbError::new("22003", format!("{kind} value out of range"));
+    let mut bytes = trim_scalar_text(text.as_bytes());
+    let negative = bytes.first() == Some(&b'-');
+    if negative || bytes.first() == Some(&b'+') {
+        bytes = &bytes[1..];
+    }
+    let radix = match bytes {
+        [b'0', b'x' | b'X', ..] => 16,
+        [b'0', b'o' | b'O', ..] => 8,
+        [b'0', b'b' | b'B', ..] => 2,
+        _ => 10,
+    };
+    if radix != 10 {
+        bytes = &bytes[2..];
+    }
+    let negative_limit = match kind {
+        "smallint" => 1u64 << 15,
+        "integer" => 1u64 << 31,
+        _ => 1u64 << 63,
+    };
+    let mut magnitude = 0u64;
+    let mut position = 0;
+    while let Some(&byte) = bytes.get(position) {
+        if let Some(digit) = integer_digit(byte, radix) {
+            // Match PostgreSQL 16's pg_strtoint*_safe ordering: overflow while
+            // accumulating precedes a later syntax error, but final range
+            // checks follow syntax validation. The threshold keeps this u64
+            // update below 2^63 + radix, even for a negative BIGINT boundary.
+            if magnitude > negative_limit / radix {
+                return Err(overflow());
+            }
+            magnitude = magnitude * radix + digit;
+            position += 1;
+        } else if byte == b'_' {
+            // A radix prefix may be followed by one underscore; decimal input
+            // must begin with a digit. Every underscore needs a following digit.
+            if (radix == 10 && position == 0)
+                || bytes
+                    .get(position + 1)
+                    .and_then(|byte| integer_digit(*byte, radix))
+                    .is_none()
+            {
+                return Err(invalid());
+            }
+            position += 1;
+        } else {
+            break;
+        }
+    }
+    if position == 0 || position != bytes.len() {
+        return Err(invalid());
+    }
+    if magnitude > negative_limit - u64::from(!negative) {
+        return Err(overflow());
+    }
+    Ok(if negative {
+        if magnitude == 1u64 << 63 {
+            i64::MIN
+        } else {
+            -(magnitude as i64)
+        }
+    } else {
+        magnitude as i64
+    })
+}
+
+fn parse_boolean_text(text: &str) -> Result<bool> {
+    let bytes = trim_scalar_text(text.as_bytes());
+    // PostgreSQL accepts case-insensitive unique prefixes; "o" is ambiguous.
+    for (word, value, minimum) in [
+        (&b"true"[..], true, 1),
+        (&b"false"[..], false, 1),
+        (&b"yes"[..], true, 1),
+        (&b"no"[..], false, 1),
+        (&b"on"[..], true, 2),
+        (&b"off"[..], false, 2),
+        (&b"1"[..], true, 1),
+        (&b"0"[..], false, 1),
+    ] {
+        if bytes.len() >= minimum && bytes.len() <= word.len() && bytes.eq_ignore_ascii_case(&word[..bytes.len()]) {
+            return Ok(value);
+        }
+    }
+    Err(DbError::new("22P02", "invalid BOOLEAN value"))
+}
+
 pub fn text_value(text: Option<&str>, column: &Column) -> Result<Value> {
     let Some(text) = text else {
         return if column.nullable {
@@ -232,21 +344,8 @@ pub fn text_value(text: Option<&str>, column: &Column) -> Result<Value> {
         };
     };
     match column.kind.as_str() {
-        "bigint" | "integer" | "smallint" => {
-            let value = text.trim().parse::<i64>().map_err(|error| {
-                let state = match error.kind() {
-                    std::num::IntErrorKind::PosOverflow | std::num::IntErrorKind::NegOverflow => "22003",
-                    _ => "22P02",
-                };
-                DbError::new(state, format!("invalid {} value", column.kind))
-            })?;
-            integer_value(value, &column.kind)
-        }
-        "boolean" => match text {
-            "true" | "t" | "1" => Ok(true.into()),
-            "false" | "f" | "0" => Ok(false.into()),
-            _ => Err(DbError::new("22P02", "invalid BOOLEAN value")),
-        },
+        "bigint" | "integer" | "smallint" => parse_integer_text(text, &column.kind).map(Value::from),
+        "boolean" => parse_boolean_text(text).map(Value::from),
         _ => Ok(text.into()),
     }
 }
@@ -854,5 +953,211 @@ impl Engine {
             }
         };
         Ok(Output { rows, tag })
+    }
+}
+
+#[cfg(test)]
+mod text_input_tests {
+    use super::*;
+
+    fn column(kind: &str) -> Column {
+        Column {
+            name: "value".into(),
+            kind: kind.into(),
+            nullable: true,
+        }
+    }
+
+    fn integer_spelling(magnitude: u64, radix: u32) -> String {
+        match radix {
+            2 => format!("0b{magnitude:b}"),
+            8 => format!("0o{magnitude:o}"),
+            16 => format!("0x{magnitude:x}"),
+            _ => magnitude.to_string(),
+        }
+    }
+
+    #[test]
+    fn integer_text_accepts_radices_signs_and_underscores() {
+        for kind in ["smallint", "integer", "bigint"] {
+            let column = column(kind);
+            for (text, expected) in [
+                ("42", 42),
+                ("+00042", 42),
+                ("-0", 0),
+                ("+0X2A", 42),
+                ("-0x2a", -42),
+                ("0o52", 42),
+                ("0B10_1010", 42),
+                ("1_000", 1000),
+                ("0_42", 42),
+                ("0x_2a", 42),
+                ("0o_52", 42),
+                ("0b_101010", 42),
+                ("052", 52),
+            ] {
+                assert_eq!(text_value(Some(text), &column).unwrap(), Value::from(expected));
+            }
+            for whitespace in [' ', '\t', '\n', '\r', '\u{b}', '\u{c}'] {
+                let text = format!("{whitespace}+42{whitespace}");
+                assert_eq!(text_value(Some(&text), &column).unwrap(), Value::from(42));
+            }
+        }
+    }
+
+    #[test]
+    fn integer_text_enforces_each_width_in_every_radix() {
+        for (kind, bits) in [("smallint", 16), ("integer", 32), ("bigint", 64)] {
+            let column = column(kind);
+            let negative_limit = 1u64 << (bits - 1);
+            let minimum = -(i128::from(negative_limit));
+            let maximum = i128::from(negative_limit) - 1;
+            for magnitude in [negative_limit - 1, negative_limit, negative_limit + 1] {
+                for radix in [2, 8, 10, 16] {
+                    for negative in [false, true] {
+                        let text = format!(
+                            "{}{}",
+                            if negative { "-" } else { "+" },
+                            integer_spelling(magnitude, radix)
+                        );
+                        let expected = if negative {
+                            -i128::from(magnitude)
+                        } else {
+                            i128::from(magnitude)
+                        };
+                        let result = text_value(Some(&text), &column);
+                        if (minimum..=maximum).contains(&expected) {
+                            assert_eq!(
+                                result.unwrap(),
+                                Value::from(i64::try_from(expected).unwrap()),
+                                "{kind}: {text}"
+                            );
+                        } else {
+                            assert_eq!(result.unwrap_err().code, "22003", "{kind}: {text}");
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn integer_text_preserves_syntax_and_overflow_precedence() {
+        for (kind, bits) in [("smallint", 16), ("integer", 32), ("bigint", 64)] {
+            let column = column(kind);
+            let limit = 1u64 << (bits - 1);
+            for radix in [2, 8, 10, 16] {
+                let boundary = integer_spelling(limit, radix);
+                for (text, code) in [
+                    (format!("{boundary}g"), "22P02"),
+                    (format!("{boundary}_"), "22P02"),
+                    (format!("{boundary}0g"), "22003"),
+                    (format!("{boundary}_0g"), "22003"),
+                ] {
+                    assert_eq!(
+                        text_value(Some(&text), &column).unwrap_err().code,
+                        code,
+                        "{kind}: {text}"
+                    );
+                }
+            }
+            for text in [
+                "", "+", "-", "+ 1", "- 1", "_1", "1_", "1__0", "0x", "0x_", "0x__1", "0b2", "0o8", "0xg", "1.0",
+                "1e2", "12 34", "123abc", "４２",
+            ] {
+                assert_eq!(
+                    text_value(Some(text), &column).unwrap_err().code,
+                    "22P02",
+                    "{kind}: {text}"
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn boolean_text_accepts_only_case_insensitive_unique_prefixes() {
+        let column = column("boolean");
+        for (word, value, minimum) in [
+            ("true", true, 1),
+            ("false", false, 1),
+            ("yes", true, 1),
+            ("no", false, 1),
+            ("on", true, 2),
+            ("off", false, 2),
+            ("1", true, 1),
+            ("0", false, 1),
+        ] {
+            for length in minimum..=word.len() {
+                let text = &word[..length];
+                for text in [
+                    text.to_owned(),
+                    text.to_ascii_uppercase(),
+                    format!(" \t\n\r\u{b}\u{c}{text} \t\n\r\u{b}\u{c}"),
+                ] {
+                    assert_eq!(
+                        text_value(Some(&text), &column).unwrap(),
+                        Value::from(value),
+                        "{text:?}"
+                    );
+                }
+            }
+        }
+        for text in [
+            "", " ", "o", "O", "00", "01", "10", "2", "+1", "-0", "truex", "yesno", "onn", "ofx",
+        ] {
+            assert_eq!(text_value(Some(text), &column).unwrap_err().code, "22P02", "{text:?}");
+        }
+    }
+
+    #[test]
+    fn scalar_text_preserves_nulls_and_rejects_unicode_whitespace() {
+        for kind in ["smallint", "integer", "bigint", "boolean"] {
+            let mut column = column(kind);
+            for whitespace in [
+                '\u{85}', '\u{a0}', '\u{1680}', '\u{2003}', '\u{2028}', '\u{2029}', '\u{202f}', '\u{3000}',
+            ] {
+                let text = format!(
+                    "{whitespace}{}{whitespace}",
+                    if kind == "boolean" { "true" } else { "42" }
+                );
+                assert_eq!(
+                    text_value(Some(&text), &column).unwrap_err().code,
+                    "22P02",
+                    "{kind}: {text:?}"
+                );
+            }
+            assert_eq!(text_value(None, &column).unwrap(), Value::Nil);
+            column.nullable = false;
+            assert_eq!(text_value(None, &column).unwrap_err().code, "23502");
+        }
+        let text = "\u{a0}text \t";
+        assert_eq!(text_value(Some(text), &column("text")).unwrap(), Value::from(text));
+    }
+
+    #[test]
+    fn scalar_text_handles_bounded_long_inputs_without_a_digit_cutoff() {
+        let length = 128 * 1024;
+        for kind in ["smallint", "integer", "bigint"] {
+            let column = column(kind);
+            assert_eq!(
+                text_value(Some(&format!("{}42", "0".repeat(length))), &column).unwrap(),
+                Value::from(42)
+            );
+            assert_eq!(
+                text_value(Some(&format!("{}_", "0".repeat(length))), &column)
+                    .unwrap_err()
+                    .code,
+                "22P02"
+            );
+            assert_eq!(
+                text_value(Some(&"9".repeat(length)), &column).unwrap_err().code,
+                "22003"
+            );
+        }
+        let boolean = format!("{}TrU{}", " ".repeat(length), "\u{b}".repeat(length));
+        assert_eq!(
+            text_value(Some(&boolean), &column("boolean")).unwrap(),
+            Value::from(true)
+        );
     }
 }
