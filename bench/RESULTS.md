@@ -2,7 +2,80 @@
 
 Cairn's performance goal is OLTP across point reads, writes and distributed
 transactions. The goal remains open. These development runs do not establish
-an advantage over TiDB or a production-wide ranking.
+an OLTP-wide advantage over TiDB or a production-wide ranking. The current
+64-client control does demonstrate a point-read advantage under its stated budget.
+
+## Current source across concurrency, October 25, 2026
+
+These fresh controls measure Cairn commit `1a94b50`, including bounded IPROTO
+pipelining, committed point reads through temporary OPEN claims, and the
+extended-query transaction-boundary fix. Each concurrency reruns all three
+engines: no comparator results are reused between the one-, 16- and 64-client
+controls. Every workload has three ten-second samples after two seconds of
+warmup, 10,000 rows and 128-byte text payloads. Rates below are medians.
+
+| Clients | Workload | Cairn ops/s | YugabyteDB ops/s | TiDB ops/s |
+|---:|---|---:|---:|---:|
+| 1 | read | 2,566 | 3,578 | 4,578 |
+| 1 | mixed | 2,338 | 2,132 | 3,925 |
+| 1 | transfer | 378 | 235 | 689 |
+| 16 | read | 24,926 | 8,333 | 28,228 |
+| 16 | mixed | 12,692 | 3,840 | 18,296 |
+| 16 | transfer | 1,200 | 549 | 2,301 |
+| 64 | read | 48,916 | 8,031 | 32,914 |
+| 64 | mixed | 23,080 | 4,715 | 24,201 |
+| 64 | transfer | 1,995 | 793 | 3,532 |
+
+Selected latencies are median per-run p50/p99 in milliseconds:
+
+| Clients | Workload | Cairn p50 / p99 | YugabyteDB p50 / p99 | TiDB p50 / p99 |
+|---:|---|---:|---:|---:|
+| 1 | read | 0.373 / 0.565 | 0.271 / 0.432 | 0.213 / 0.372 |
+| 1 | transfer | 2.553 / 4.152 | 4.100 / 6.446 | 1.361 / 2.323 |
+| 64 | read | 0.974 / 17.991 | 1.460 / 84.225 | 1.352 / 26.679 |
+| 64 | transfer | 23.675 / 76.054 | 92.149 / 186.967 | 12.801 / 49.903 |
+
+Cairn's 64-client read median is 1.49 times TiDB's, with lower p50 and p99.
+Its mixed throughput is 95% of TiDB's and its transfer throughput is 56%.
+TiDB has lower one-client point-read and transfer latency and leads mixed and
+transfer throughput at every measured concurrency. YugabyteDB's one-client
+point-read latency also beats Cairn's. These results distinguish low-load
+latency from throughput under concurrency; they establish no OLTP-wide win.
+
+Each engine has RF3, quorum two and durable WAL acknowledgement within six
+database CPUs/six GiB. Cairn uses mode 3, eight pipelined storage connections
+per shard and the storage allocation: gateway 0.75 CPU/1.5 GiB, six replicas
+at 0.875 CPU/768 MiB each. The load generator has four CPUs/768 MiB. Profiling
+and error logging are disabled. The frozen source archive is
+`source-a274ae67471ab42a.tar.gz`; the load binary SHA-256 is
+`a70535c3cfeb59f1067f53f4cfad6c161cd7393e17b6c481987241c40d68c546`.
+
+YugabyteDB `2026.1.2.0-b137` uses explicitly verified REPEATABLE READ and
+fail-on-conflict, with all SQL connections to `yb1`. Its three nodes each
+combine master, TServer and PostgreSQL within two CPUs/two GiB. TiDB/TiKV/PD
+`8.5.4` uses pessimistic REPEATABLE READ, separately capped SQL, KV and PD
+roles, and the documented byte-identical-code TiKV debug-section removal.
+Cairn uses strict transaction claims. These isolation contracts differ for
+general read/write histories. Transfers here use two arithmetic updates on
+different storage partitions; the mix is 90% point reads/10% increments.
+
+Replication, per-key expected values, aggregate resources, source/result hashes
+and before/after restart/OOM checks passed for all nine engine/concurrency
+combinations. Strict reporting accepted the curated
+[one-client](results/platform-2026-10-25/clients-1/),
+[16-client](results/platform-2026-10-25/clients-16/) and
+[64-client](results/platform-2026-10-25/clients-64/) evidence. Their summaries
+retain repeat ranges and sample standard deviations. These are sequential,
+single-host, warm-cache, closed-loop experiments, with no production confidence
+interval or measured network/disk bandwidth. Retained test data, CPU quotas,
+client placement and repeated-text compressibility constrain interpretation.
+The runs do not isolate the causal effect of individual code changes.
+
+Use the [harness](README.md) with `BENCH_CLIENTS=1`, `16` or `64` and
+`--cairn-commit volatile --cairn-connections 8 --cairn-cpu-layout storage
+--cairn-pipeline`; keep the default three ten-second repeats. The
+[platform comparison](../docs/platform-performance.md) separates architectural
+judgment from these measurements and reviews Tarn's different evidence.
 
 ## Repeated Cairn comparison, October 25, 2026
 

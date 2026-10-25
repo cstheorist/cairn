@@ -20,6 +20,9 @@
 - PostgreSQL differential, concurrency, native protocol and failure-recovery suites.
 - Matched-resource YugabyteDB/TiDB harness with explicit isolation, source/image
   hashes, restart/replication checks and per-key expected values.
+- Fresh repeated RF3 comparisons at one, 16 and 64 clients, with curated evidence
+  and a platform assessment covering Tarn, TiDB and YugabyteDB. The 64-client
+  point-read advantage is separate from the remaining OLTP-wide performance goal.
 
 ### Changed
 
