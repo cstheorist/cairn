@@ -1,5 +1,6 @@
 """Independent client checks of durable 2PC receipts before SQL session integration."""
 from contextlib import closing
+import time
 import uuid
 import psycopg
 import tarantool
@@ -7,9 +8,18 @@ from replication import connect, leader, native
 
 
 def call(shard, function, *arguments):
-    info = leader(shard)
-    with closing(native(info["node"], "gateway")) as connection:
-        return connection.call("cairn." + function, *arguments, info["term"]).data
+    for attempt in range(4):
+        info = leader(shard)
+        with closing(native(info["node"], "gateway")) as connection:
+            try:
+                return connection.call("cairn." + function, *arguments, info["term"]).data
+            except tarantool.DatabaseError as error:
+                # Recovery may concurrently resolve this participant. Error 97
+                # confirms MVCC rollback; uncertain transport outcomes never retry.
+                if (function not in {"tx_apply", "tx_complete", "tx_release", "tx_clean"}
+                        or error.code != 97 or attempt == 3):
+                    raise
+        time.sleep(.01 * (attempt + 1))
 
 
 def begin():

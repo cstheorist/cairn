@@ -19,6 +19,11 @@
 - Matched-resource YugabyteDB/TiDB harness with explicit isolation, source/image
   hashes, restart/replication checks and per-key expected values.
 
+### Fixed
+
+- Native protocol tests tolerate explicit MVCC rollback when recovery races an
+  idempotent resolution phase. Transport uncertainty and mutations remain fail-fast.
+
 ### Known gaps
 
 - Full PostgreSQL/ORM compatibility, secondary indexes, additional types,
