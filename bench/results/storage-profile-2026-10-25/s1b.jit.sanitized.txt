@@ -1,0 +1,334 @@
+# Sanitized copy of stock jit.p output. Native entry addresses removed; percentages unchanged.
+61%  C code
+  -- 13%  atomic < volatile.lua:250 < [address removed]
+  -- 12%  volatile.lua:250 < [address removed]
+  --  7%  volatile.lua:175 < [address removed]
+  --  7%  transactions.lua:432 < [address removed]
+  --  6%  atomic < volatile.lua:296 < [address removed]
+  --  6%  atomic < volatile.lua:287 < [address removed]
+  --  5%  volatile.lua:287 < [address removed]
+  --  5%  volatile.lua:220 < [address removed]
+  --  5%  volatile.lua:163 < [address removed]
+  --  4%  volatile.lua:296 < [address removed]
+  --  4%  volatile.lua:255 < pcall < atomic
+  --  2%  clear_claims < volatile.lua:255 < pcall
+  --  2%  finish < volatile.lua:293 < pcall
+  --  1%  finish < volatile.lua:308 < pcall
+  --  1%  totable < volatile.lua:255 < pcall
+  --  1%  transaction_id < validate < scope
+  --  1%  schema.lua:429 < [address removed]
+  --  1%  transactions.lua:437 < pcall < schema.lua:453
+  --  1%  volatile.lua:179 < pcall < schema.lua:453
+  --  1%  volatile.lua:222 < pcall < schema.lua:453
+  --  1%  lock_table < transactions.lua:437 < pcall
+  --  1%  active_participant < transactions.lua:437 < pcall
+  --  1%  select < finish < volatile.lua:308
+  --  1%  transaction_id < home < open_id
+  --  1%  clear < finish < volatile.lua:293
+  --  1%  lock_row < transactions.lua:437 < pcall
+  --  0%  start_local < transactions.lua:437 < pcall
+  --  0%  scope < volatile.lua:250 < [address removed]
+  --  0%  select < finish < volatile.lua:293
+  --  0%  unsigned < scope < volatile.lua:287
+  --  0%  transaction_id < home < scope
+  --  0%  fence < volatile.lua:287 < [address removed]
+  --  0%  box_begin_impl < begin < storage.lua:91
+  --  0%  unsigned < decode_token < active_participant
+  --  0%  mark_used < active_participant < transactions.lua:437
+  --  0%  [string]:0
+  --  0%  clear_claims < clear < finish
+  --  0%  tuple_encode < pairs < check_unlocked
+  --  0%  decode_token < active_participant < transactions.lua:437
+  --  0%  totable < transactions.lua:85 < [address removed]
+  --  0%  transactions.lua:613 < [address removed]
+  --  0%  fence < transactions.lua:432 < [address removed]
+  --  0%  scope < volatile.lua:287 < [address removed]
+  --  0%  unsigned < scope < volatile.lua:296
+  --  0%  unsigned < volatile.lua:222 < pcall
+  --  0%  transaction_id < validate_certificate < verify_receipts
+  --  0%  transactions.lua:568 < [address removed]
+  --  0%  __index < transactions.lua:85 < [address removed]
+  --  0%  decode_token < volatile.lua:250 < [address removed]
+  --  0%  fence < require_home < volatile.lua:220
+  --  0%  storage.lua:237
+  --  0%  fence < require_home < volatile.lua:175
+  --  0%  name_ok < schema < transactions.lua:432
+  --  0%  unsigned < volatile.lua:175 < [address removed]
+  --  0%  clear < finish < volatile.lua:308
+  --  0%  __index < volatile.lua:255 < pcall
+  --  0%  __index < transactions.lua:85 < pcall
+  --  0%  tuple_iterator < totable < current_row
+  --  0%  pairs < check_unlocked < lock_row
+  --  0%  volatile.lua:323 < [address removed]
+  --  0%  totable < current_row < transactions.lua:437
+  --  0%  transaction_id < validate < decode_token
+  --  0%  decode_r < decode_unchecked < totable
+  --  0%  transaction_id < home < volatile.lua:255
+  --  0%  totable < transactions.lua:437 < pcall
+  --  0%  unsigned < decode_token < volatile.lua:250
+  --  0%  tuple_iterator < totable < transactions.lua:85
+  --  0%  scope < volatile.lua:323 < [address removed]
+  --  0%  len < capacity < transactions.lua:432
+  --  0%  add_integer < transactions.lua:437 < pcall
+  --  0%  transaction_id < validate < volatile.lua:296
+  --  0%  unsigned < start_local < transactions.lua:437
+  --  0%  tuple.lua:73 < check_param_table < new
+  --  0%  transactions.lua:270 < [address removed]
+  --  0%  unsigned < scope < volatile.lua:250
+  --  0%  fence < volatile.lua:250 < [address removed]
+  --  0%  decode_unchecked < __index < transactions.lua:85
+  --  0%  tuple_encode < select < finish
+  --  0%  scope < volatile.lua:296 < [address removed]
+  --  0%  __index < volatile.lua:179 < pcall
+  --  0%  storage.lua:77 < [address removed]
+  --  0%  encode_u8 < encode_str < encode_r
+22%  Compiled
+  -- 10%  init < hmac_new < sha256
+  --  5%  hmac_new < sha256 < certificate
+  --  4%  check_unlocked < lock_row < transactions.lua:437
+  --  3%  select < volatile.lua:255 < pcall
+  --  3%  get < volatile.lua:255 < pcall
+  --  2%  result < sha256 < certificate
+  --  2%  decode_r < decode_unchecked < __index
+  --  2%  (for generator) < check_unlocked < lock_row
+  --  2%  get < active_participant < transactions.lua:437
+  --  2%  select < clear_claims < clear
+  --  2%  free < sha256 < certificate
+  --  2%  pairs < check_unlocked < lock_row
+  --  2%  select < finish < volatile.lua:293
+  --  2%  get < finish < volatile.lua:308
+  --  2%  get < current_row < transactions.lua:437
+  --  2%  get < start_local < transactions.lua:437
+  --  2%  certificate < transactions.lua:85 < [address removed]
+  --  2%  lock_table < transactions.lua:437 < pcall
+  --  1%  totable < transactions.lua:85 < [address removed]
+  --  1%  encode_str < encode_r < tuple_encode
+  --  1%  pairs < lock_table < transactions.lua:437
+  --  1%  free < sha256 < transactions.lua:53
+  --  1%  decode_r < decode_unchecked < totable
+  --  1%  transaction_id < home < open_id
+  --  1%  transaction_id < validate < scope
+  --  1%  totable < volatile.lua:255 < pcall
+  --  1%  get < volatile.lua:308 < pcall
+  --  1%  transactions.lua:53 < [address removed]
+  --  1%  get < install_root < volatile.lua:255
+  --  1%  decode_r < decode_r < decode_unchecked
+  --  1%  certificate < transactions.lua:85 < pcall
+  --  1%  get < finish < volatile.lua:293
+  --  1%  certificate < token < volatile.lua:163
+  --  1%  get < volatile.lua:179 < pcall
+  --  1%  __index < transactions.lua:85 < [address removed]
+  --  1%  tuple_encode < pairs < check_unlocked
+  --  1%  certificate < validate < decode_token
+  --  1%  certificate < validate < scope
+  --  1%  tuple_bless < select < volatile.lua:255
+  --  1%  select < finish < volatile.lua:308
+  --  1%  digest.lua:208 < [address removed]
+  --  1%  volatile.lua:163 < [address removed]
+  --  1%  clear_claims < volatile.lua:255 < pcall
+  --  1%  hmac_new < sha256 < transactions.lua:53
+  --  1%  scope < volatile.lua:296 < [address removed]
+  --  1%  transactions.lua:437 < pcall < schema.lua:453
+  --  1%  volatile.lua:255 < pcall < atomic
+  --  1%  certificate < volatile.lua:222 < pcall
+  --  1%  certificate < volatile.lua:179 < pcall
+  --  1%  result < sha256 < transactions.lua:53
+  --  1%  iterator_pos_set < select < finish
+  --  1%  (for generator) < lock_table < transactions.lua:437
+  --  1%  mark_used < active_participant < transactions.lua:437
+  --  1%  decode_unchecked < totable < transactions.lua:85
+  --  1%  tuple_encode < count < lock_row
+  --  1%  scope < volatile.lua:287 < [address removed]
+  --  1%  __index < volatile.lua:222 < pcall
+  --  1%  check_primary_index < get < finish
+  --  1%  decode_token < volatile.lua:250 < [address removed]
+  --  1%  finish < volatile.lua:293 < pcall
+  --  1%  __index < volatile.lua:255 < pcall
+  --  1%  iterator_pos_set < pairs < check_unlocked
+  --  1%  tuple_encode < select < finish
+  --  1%  transaction_id < home < scope
+  --  1%  unsigned < scope < volatile.lua:250
+  --  0%  count < transactions.lua:437 < pcall
+  --  0%  finish < volatile.lua:308 < pcall
+  --  0%  begin < atomic < volatile.lua:296
+  --  0%  count < lock_row < transactions.lua:437
+  --  0%  reserve < encode_str < encode_r
+  --  0%  certificate < validate_certificate < verify_receipts
+  --  0%  check_primary_index < get < volatile.lua:222
+  --  0%  unsigned < scope < volatile.lua:296
+  --  0%  current_row < transactions.lua:437 < pcall
+  --  0%  same_incarnation < active_participant < transactions.lua:437
+  --  0%  active_participant < transactions.lua:437 < pcall
+  --  0%  tuple_bless < select < finish
+  --  0%  same_incarnation < start_local < transactions.lua:437
+  --  0%  lock_row < transactions.lua:437 < pcall
+  --  0%  volatile.lua:308 < pcall < atomic
+  --  0%  verify_receipts < volatile.lua:296 < [address removed]
+  --  0%  __index < transactions.lua:85 < pcall
+  --  0%  open_id < scope < volatile.lua:250
+  --  0%  check_space_arg < delete < clear_claims
+  --  0%  insert < volatile.lua:255 < pcall
+  --  0%  open_id < require_home < volatile.lua:163
+  --  0%  totable < transactions.lua:85 < pcall
+  --  0%  get < transactions.lua:437 < pcall
+  --  0%  begin < atomic < volatile.lua:250
+  --  0%  install_root < volatile.lua:255 < pcall
+  --  0%  get < mark_used < active_participant
+  --  0%  tuple_encode < get < start_local
+  --  0%  get < volatile.lua:377 < pcall
+  --  0%  is_select_long < select < finish
+  --  0%  check_select_opts < select < finish
+  --  0%  fence < require_home < volatile.lua:163
+  --  0%  home < open_id < require_home
+  --  0%  schema < transactions.lua:432 < volatile.lua:163
+  --  0%  unsigned < volatile.lua:175 < [address removed]
+  --  0%  check_iterator_type < check_pairs_opts < pairs
+  --  0%  get < volatile.lua:222 < pcall
+  --  0%  ibuf_unpoison_unallocated < reserve < encode_str
+  --  0%  check_index_arg < delete < clear_claims
+  --  0%  bswap_u16 < decode_r < decode_unchecked
+  --  0%  len < capacity < transactions.lua:432
+  --  0%  capacity < transactions.lua:432 < volatile.lua:163
+  --  0%  volatile.lua:222 < pcall < schema.lua:453
+  --  0%  decode_unchecked < __index < active_participant
+  --  0%  name_ok < schema < transactions.lua:432
+  --  0%  schema.lua:2809 < pcall < atomic
+  --  0%  checkibuf < alloc < result
+  --  0%  get < lock_table < transactions.lua:437
+  --  0%  incarnation < start_local < transactions.lua:437
+  --  0%  volatile.lua:220 < [address removed]
+  --  0%  __index < finish < volatile.lua:293
+  --  0%  sha256 < transactions.lua:53 < [address removed]
+  --  0%  open_id < require_home < volatile.lua:220
+ 9%  Garbage Collector
+  --  7%  tuple_encode < pairs < check_unlocked
+  --  6%  decode_r < decode_r < decode_unchecked
+  --  5%  volatile.lua:255 < pcall < atomic
+  --  4%  scope < volatile.lua:250 < [address removed]
+  --  3%  verify_receipts < volatile.lua:296 < [address removed]
+  --  3%  volatile.lua:175 < [address removed]
+  --  3%  volatile.lua:222 < pcall < schema.lua:453
+  --  3%  alloc < encode_fix < encode_array
+  --  3%  totable < current_row < transactions.lua:437
+  --  3%  start_local < transactions.lua:437 < pcall
+  --  3%  volatile.lua:220 < [address removed]
+  --  3%  transactions.lua:432 < [address removed]
+  --  3%  volatile.lua:296 < [address removed]
+  --  3%  volatile.lua:250 < [address removed]
+  --  3%  totable < transactions.lua:85 < pcall
+  --  2%  add_integer < transactions.lua:437 < pcall
+  --  2%  fence < require_home < volatile.lua:175
+  --  2%  decode_r < decode_unchecked < __index
+  --  2%  finish < volatile.lua:308 < pcall
+  --  2%  tuple_encode < count < lock_row
+  --  2%  tuple_encode < select < finish
+  --  2%  lock_table < transactions.lua:437 < pcall
+  --  2%  tuple_encode < get < finish
+  --  2%  totable < transactions.lua:85 < [address removed]
+  --  2%  fence < volatile.lua:287 < [address removed]
+  --  2%  transaction_id < validate_certificate < verify_receipts
+  --  1%  tuple_encode < get < install_root
+  --  1%  totable < volatile.lua:255 < pcall
+  --  1%  unsigned < volatile.lua:222 < pcall
+  --  1%  fence < require_home < volatile.lua:296
+  --  1%  tuple_encode < get < volatile.lua:179
+  --  1%  decode_token < volatile.lua:250 < [address removed]
+  --  1%  tuple_iterator < totable < volatile.lua:255
+  --  1%  unsigned < scope < volatile.lua:250
+  --  1%  fence < transactions.lua:432 < [address removed]
+  --  1%  select < finish < volatile.lua:308
+  --  1%  fence < volatile.lua:250 < [address removed]
+  --  1%  unsigned < decode_token < volatile.lua:250
+  --  1%  fence < require_home < volatile.lua:163
+  --  1%  volatile.lua:308 < pcall < atomic
+  --  1%  tuple_iterator < totable < transactions.lua:85
+  --  1%  decorate < transactions.lua:85 < [address removed]
+  --  1%  decorate < transactions.lua:85 < pcall
+  --  1%  unsigned < decode_token < active_participant
+  --  1%  size < select < finish
+  --  1%  fence < transactions.lua:432 < volatile.lua:163
+  --  1%  clear_claims < clear < finish
+  --  1%  active_participant < transactions.lua:437 < pcall
+  --  1%  tuple_encode < get < active_participant
+  --  1%  volatile.lua:179 < pcall < schema.lua:453
+  --  1%  transactions.lua:437 < pcall < schema.lua:453
+  --  1%  tuple_iterator < totable < current_row
+  --  1%  mark_used < active_participant < transactions.lua:437
+  --  1%  finish_participant < transactions.lua:618 < pcall
+  --  1%  select < clear_claims < volatile.lua:377
+  --  1%  get < volatile.lua:255 < pcall
+  --  1%  volatile.lua:287 < [address removed]
+  --  1%  select < finish < volatile.lua:293
+ 7%  Interpreted
+  --  6%  volatile.lua:250 < [address removed]
+  --  6%  decode_r < decode_r < decode_unchecked
+  --  5%  select < finish < volatile.lua:308
+  --  5%  volatile.lua:255 < pcall < atomic
+  --  3%  fence < require_home < volatile.lua:163
+  --  3%  new < transactions.lua:437 < pcall
+  --  2%  __index < new < transactions.lua:437
+  --  2%  unsigned < decode_token < active_participant
+  --  2%  fence < volatile.lua:250 < [address removed]
+  --  2%  unsigned < scope < volatile.lua:250
+  --  2%  validate < decode_token < active_participant
+  --  2%  volatile.lua:179 < pcall < schema.lua:453
+  --  2%  select < finish < volatile.lua:293
+  --  2%  volatile.lua:296 < [address removed]
+  --  2%  pairs < check_param_table < new
+  --  2%  totable < volatile.lua:255 < pcall
+  --  2%  totable < current_row < transactions.lua:437
+  --  2%  bswap_u16 < decode_r < decode_r
+  --  2%  volatile.lua:220 < [address removed]
+  --  2%  transactions.lua:437 < pcall < schema.lua:453
+  --  2%  atomic < volatile.lua:296 < [address removed]
+  --  2%  tuple_iterator < totable < volatile.lua:255
+  --  2%  transaction_id < validate < decode_token
+  --  2%  decode_token < active_participant < transactions.lua:437
+  --  2%  check_param_table < new < transactions.lua:437
+  --  2%  valid < add_integer < transactions.lua:437
+  --  2%  transactions.lua:85 < [address removed]
+  --  1%  __index < current_row < transactions.lua:437
+  --  1%  active_participant < transactions.lua:437 < pcall
+  --  1%  transactions.lua:432 < volatile.lua:163 < [address removed]
+  --  1%  add_integer < transactions.lua:437 < pcall
+  --  1%  volatile.lua:287 < [address removed]
+  --  1%  validate < decode_token < volatile.lua:250
+  --  1%  decode_unchecked < __index < finish
+  --  1%  totable < transactions.lua:85 < pcall
+  --  1%  insert < volatile.lua:255 < pcall
+  --  1%  start_local < transactions.lua:437 < pcall
+  --  1%  finish < volatile.lua:308 < pcall
+  --  1%  fence < require_home < volatile.lua:220
+  --  1%  size < select < finish
+  --  1%  schema.lua:453 < [address removed]
+  --  1%  clear_claims < volatile.lua:255 < pcall
+  --  1%  __index < volatile.lua:179 < pcall
+  --  1%  iterator_pos_set < select < finish
+  --  1%  home < open_id < scope
+  --  1%  transactions.lua:85 < pcall < schema.lua:453
+  --  1%  volatile.lua:222 < pcall < schema.lua:453
+  --  1%  scope < volatile.lua:250 < [address removed]
+  --  1%  atomic < volatile.lua:287 < [address removed]
+  --  1%  is_old < new < transactions.lua:437
+  --  1%  name_ok < schema < transactions.lua:432
+  --  1%  fence < require_home < volatile.lua:175
+  --  1%  fence < transactions.lua:432 < [address removed]
+  --  1%  is_select_long < select < finish
+  --  1%  decode_r < decode_r < decode_r
+  --  1%  tuple_iterator < totable < current_row
+  --  1%  transaction_id < validate < volatile.lua:296
+  --  1%  fence < require_home < volatile.lua:296
+  --  1%  digest.lua:208 < [address removed]
+  --  1%  unsigned < decode_token < volatile.lua:250
+  --  1%  atomic < volatile.lua:250 < [address removed]
+  --  1%  home < scope < volatile.lua:250
+  --  1%  volatile.lua:193 < sort < volatile.lua:179
+  --  1%  schema.lua:453 < volatile.lua:163 < [address removed]
+  --  1%  fence < transactions.lua:432 < volatile.lua:163
+  --  1%  fence < volatile.lua:287 < [address removed]
+  --  1%  unsigned < scope < volatile.lua:296
+  --  1%  transactions.lua:432 < [address removed]
+ 0%  JIT Compiler
+  -- 33%  (for generator) < check_unlocked < lock_row
+  -- 33%  ibuf_unpoison_unallocated < alloc < encode_fix
+  -- 33%  alloc < encode_fix < encode_array

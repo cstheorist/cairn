@@ -1,0 +1,114 @@
+{
+  "format": "sanitized-storage-profile-v1",
+  "diagnostic_only": true,
+  "performance_claim": false,
+  "workload": {
+    "name": "transfer",
+    "clients": 16,
+    "measured_seconds": 20,
+    "warmup_seconds": 2,
+    "repeats": 1,
+    "rows": 10000,
+    "payload_bytes": 128,
+    "cross_shard_transfers": true
+  },
+  "gateway_settings": {
+    "CAIRN_LOG_ERRORS": "0",
+    "CAIRN_RECOVERY": "1",
+    "CAIRN_STORAGE_CONNECTIONS": "8",
+    "CAIRN_STORAGE_PIPELINE": "1",
+    "TOKIO_WORKER_THREADS": "2",
+    "CAIRN_PROFILE_RPC": "1",
+    "CAIRN_VOTE_COMMIT": "3"
+  },
+  "cpu_layout": "storage",
+  "wal_mode": "fsync",
+  "replicas_per_shard": 3,
+  "quorum": 2,
+  "resource_limits": [
+    {
+      "service": "gateway",
+      "cpu_limit": 0.75,
+      "memory_limit_bytes": 1610612736
+    },
+    {
+      "service": "s0a",
+      "cpu_limit": 0.875,
+      "memory_limit_bytes": 805306368
+    },
+    {
+      "service": "s0b",
+      "cpu_limit": 0.875,
+      "memory_limit_bytes": 805306368
+    },
+    {
+      "service": "s0c",
+      "cpu_limit": 0.875,
+      "memory_limit_bytes": 805306368
+    },
+    {
+      "service": "s1a",
+      "cpu_limit": 0.875,
+      "memory_limit_bytes": 805306368
+    },
+    {
+      "service": "s1b",
+      "cpu_limit": 0.875,
+      "memory_limit_bytes": 805306368
+    },
+    {
+      "service": "s1c",
+      "cpu_limit": 0.875,
+      "memory_limit_bytes": 805306368
+    }
+  ],
+  "leaders": [
+    "s0a",
+    "s1b"
+  ],
+  "loaded_utc": "2026-10-25T18:09:34.951335+00:00",
+  "lua_started_utc": {
+    "s0a": "2026-10-25T18:09:35.705980+00:00",
+    "s1b": "2026-10-25T18:09:35.706259+00:00"
+  },
+  "window_note": "Profiles were triggered after loaded and initialized, before the driver completed its two-second warmup; they overlap warmup and most of the measured interval. They are not an exact full-measurement-window profile.",
+  "harness_exit_code": 0,
+  "profiled_workload_result": {
+    "clients": 16,
+    "correctness": {
+      "all_key_values_verified": true,
+      "rows": 10000,
+      "sum_after": "10000000000",
+      "sum_before": "10000000000",
+      "verified": true
+    },
+    "elapsed_seconds": 20.006125093,
+    "latency_us": {
+      "p50": 6125.666,
+      "p95": 39352.75,
+      "p99": 52190.584,
+      "p999": 65382.667
+    },
+    "measured_updates": 0,
+    "operations": 26429,
+    "operations_per_second": 1321.0454236961318,
+    "repeat": 1,
+    "retry_reasons": {
+      "[CAIRN:CONFLICT] row belongs to an unresolved transaction; retry the whole transaction": 138
+    },
+    "serialization_retries": 138,
+    "warmup_updates": 0,
+    "workload": "transfer"
+  },
+  "cleanup": {
+    "all_six_nodes_owned_lease_inactive": true,
+    "owned_native_collectors_remaining": 0
+  },
+  "limitations": [
+    "One profiled diagnostic; no throughput improvement or comparative performance claim.",
+    "No syscall/off-CPU duration collection, cgroup CPU deltas or independent profiler-overhead measurement.",
+    "Native categories overlap; Lua VM and native process percentages use different denominators.",
+    "Kernel symbols unresolved; exact offline symfs user symbols used instead of the initial live-root decode."
+  ],
+  "raw_result_sha256": "808ba732c9428a5afc34e20fd3080ed344c53f5132382e9cbeeb1829a806db48"
+}
