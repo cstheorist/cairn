@@ -24,6 +24,8 @@ Only a complete final response with a unique matching sync and status can become
 
 Concurrent autocommit primary-key reads share a bounded per-shard queue. The worker captures up to 64 pending requests before starting one linearizable storage transaction. Requests arriving during that transaction wait for the next capture. Each response echoes its table and key for association checks; oversized read-only replies are split. Explicit transaction reads retain their individual lock-bearing path. This reduces repeated quorum barriers without caching data across requests.
 
+`CAIRN_READ_BATCH_US` selects the existing busy-yield collection window: an integer from 0 to 1000 microseconds, default 50. Invalid or empty values fail startup. Zero still drains requests already queued before freezing the batch, without yielding to collect more. The window does not change queue limits, membership after capture, storage barriers or the five-second request deadline. Scheduler delays can exceed the collection window; it is not a response-time guarantee.
+
 The default deployment has two independent singleton shards. The isolated HA deployment has two three-node replica sets, synchronous user spaces, majority acknowledgement, strict election fencing, leader discovery and linearizable SQL reads. Leader death, quorum loss, a live network partition, and healing are covered by fault tests. Shard migration and membership changes remain pending. First access to an uncached table still requires metadata agreement from every shard.
 
 ## Consistency and metadata

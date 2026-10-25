@@ -30,6 +30,7 @@ Use `make ha-test` for leader death, quorum loss and partition/heal tests.
 | `CAIRN_STORAGE_PASSWORD` | Required native service password |
 | `CAIRN_PASSWORD` | Required PostgreSQL password |
 | `CAIRN_STORAGE_CONNECTIONS` | 8 sockets per shard; allowed range 1..64 |
+| `CAIRN_READ_BATCH_US` | 50 microseconds; public point-read busy-yield collection window, integer 0..1000 |
 | `CAIRN_VOTE_COMMIT` | 0 default coordinator protocol; 1 votes; 2 local finish; 3 volatile OPEN |
 | `CAIRN_RECOVERY` | Enabled unless exactly `0`; disabling is for deterministic fault tests |
 | `CAIRN_LOG_ERRORS` | `1` logs SQLSTATE, message tag and connection identity |
@@ -39,6 +40,13 @@ Use `make ha-test` for leader death, quorum loss and partition/heal tests.
 The shard order/count is persisted and checked. Reordering or changing it on an
 existing dataset is refused; online resharding is pending. Each shard accepts
 1..9 replica addresses. Leadership changes invalidate cached connections.
+
+For `CAIRN_READ_BATCH_US`, zero drains already queued reads before freezing the
+batch without yielding to collect more. Requests arriving during a storage RPC
+wait for the next batch. Empty, malformed and out-of-range values fail startup.
+The collection window is not a bound on scheduler or response latency. Compare
+values with `scripts/run_comparison.py --cairn-read-batch-us US`, which records
+and checks both the requested value and the actual gateway environment.
 
 ## Storage configuration
 

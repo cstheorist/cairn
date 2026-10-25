@@ -233,7 +233,45 @@ pub struct Cluster {
     user: String,
     password: String,
     pipeline: bool,
+    read_batch_window: Duration,
     profile: Option<std::sync::Mutex<std::collections::BTreeMap<String, RpcCounters>>>,
+}
+
+fn read_batch_window(value: std::result::Result<String, std::env::VarError>) -> Result<Duration> {
+    let invalid = || DbError::new("22023", "CAIRN_READ_BATCH_US must be an integer from 0 to 1000");
+    let micros = match value {
+        Ok(value) => value.parse::<u64>().map_err(|_| invalid())?,
+        Err(std::env::VarError::NotPresent) => 50,
+        Err(std::env::VarError::NotUnicode(_)) => return Err(invalid()),
+    };
+    if micros > 1000 {
+        return Err(invalid());
+    }
+    Ok(Duration::from_micros(micros))
+}
+
+async fn collect_read_batch(
+    first: PointRead,
+    receiver: &mut mpsc::Receiver<PointRead>,
+    window: Duration,
+) -> Vec<PointRead> {
+    let mut batch = vec![first];
+    // Drain queued invocations even at zero; arrivals during the RPC stay queued.
+    let capture_until = std::time::Instant::now() + window;
+    loop {
+        while batch.len() < MAX_READ_BATCH {
+            match receiver.try_recv() {
+                Ok(request) if !request.reply.is_closed() => batch.push(request),
+                Ok(_) => {}
+                Err(_) => break,
+            }
+        }
+        if batch.len() == MAX_READ_BATCH || std::time::Instant::now() >= capture_until {
+            break;
+        }
+        tokio::task::yield_now().await;
+    }
+    batch
 }
 
 #[derive(Default, Serialize)]
@@ -249,6 +287,7 @@ struct RpcCounters {
 
 impl Cluster {
     pub fn new(addresses: Vec<String>, user: String, password: String) -> Result<Self> {
+        let read_batch_window = read_batch_window(std::env::var("CAIRN_READ_BATCH_US"))?;
         let connections = std::env::var("CAIRN_STORAGE_CONNECTIONS")
             .ok()
             .map(|value| value.parse::<usize>())
@@ -298,6 +337,7 @@ impl Cluster {
             user,
             password,
             pipeline: std::env::var("CAIRN_STORAGE_PIPELINE").as_deref() == Ok("1"),
+            read_batch_window,
             profile: (std::env::var("CAIRN_PROFILE_RPC").as_deref() == Ok("1"))
                 .then(|| std::sync::Mutex::new(std::collections::BTreeMap::new())),
         })
@@ -336,28 +376,13 @@ impl Cluster {
             .get_or_init(|| async {
                 let (sender, mut receiver) = mpsc::channel::<PointRead>(256);
                 let weak = std::sync::Arc::downgrade(self);
+                let window = self.read_batch_window;
                 tokio::spawn(async move {
                     while let Some(first) = receiver.recv().await {
                         if first.reply.is_closed() {
                             continue;
                         }
-                        let mut batch = vec![first];
-                        // Collect already pending invocations before starting the
-                        // quorum barrier. Arrivals during the RPC stay in the queue.
-                        let capture_until = std::time::Instant::now() + Duration::from_micros(50);
-                        loop {
-                            while batch.len() < MAX_READ_BATCH {
-                                match receiver.try_recv() {
-                                    Ok(request) if !request.reply.is_closed() => batch.push(request),
-                                    Ok(_) => {}
-                                    Err(_) => break,
-                                }
-                            }
-                            if batch.len() == MAX_READ_BATCH || std::time::Instant::now() >= capture_until {
-                                break;
-                            }
-                            tokio::task::yield_now().await;
-                        }
+                        let batch = collect_read_batch(first, &mut receiver, window).await;
                         let Some(cluster) = weak.upgrade() else {
                             break;
                         };

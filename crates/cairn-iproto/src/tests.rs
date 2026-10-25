@@ -1,6 +1,141 @@
 use super::*;
 use tokio::net::TcpListener;
 
+#[test]
+fn read_batch_window_defaults_and_config_boundaries() {
+    assert_eq!(
+        read_batch_window(Err(std::env::VarError::NotPresent)).unwrap(),
+        Duration::from_micros(50)
+    );
+    for micros in [0, 1, 50, 999, 1000] {
+        assert_eq!(
+            read_batch_window(Ok(micros.to_string())).unwrap(),
+            Duration::from_micros(micros)
+        );
+    }
+    for invalid in [
+        "",
+        "-1",
+        "1001",
+        "1.5",
+        "50 ",
+        " 50",
+        "invalid",
+        "18446744073709551616",
+        "５０",
+    ] {
+        assert_eq!(read_batch_window(Ok(invalid.into())).unwrap_err().code, "22023");
+    }
+    assert_eq!(
+        read_batch_window(Err(std::env::VarError::NotUnicode(std::ffi::OsString::new())))
+            .unwrap_err()
+            .code,
+        "22023"
+    );
+}
+
+fn point(key: i64) -> (PointRead, oneshot::Receiver<Result<Vec<Value>>>) {
+    let (reply, response) = oneshot::channel();
+    (
+        PointRead {
+            arguments: vec!["batch".into(), key.into()],
+            reply,
+        },
+        response,
+    )
+}
+
+#[tokio::test]
+async fn zero_window_drains_queued_requests_without_changing_the_batch_cap() {
+    let (sender, mut receiver) = mpsc::channel(256);
+    let (first, first_reply) = point(0);
+    let mut replies = vec![first_reply];
+    for key in 1..=MAX_READ_BATCH as i64 {
+        let (request, reply) = point(key);
+        replies.push(reply);
+        sender.send(request).await.unwrap();
+    }
+    let batch = collect_read_batch(first, &mut receiver, Duration::ZERO).await;
+    assert_eq!(batch.len(), MAX_READ_BATCH);
+    for (key, request) in batch.iter().enumerate() {
+        assert_eq!(request.arguments[1], Value::from(key as i64));
+    }
+    assert_eq!(
+        receiver.try_recv().unwrap().arguments[1],
+        Value::from(MAX_READ_BATCH as i64)
+    );
+    assert!(receiver.try_recv().is_err());
+    assert_eq!(replies.len(), MAX_READ_BATCH + 1);
+}
+
+#[tokio::test]
+async fn zero_window_keeps_existing_abandonment_filtering() {
+    let (sender, mut receiver) = mpsc::channel(8);
+    let (first, _first_reply) = point(0);
+    let (abandoned, reply) = point(1);
+    drop(reply);
+    sender.send(abandoned).await.unwrap();
+    let (live, _live_reply) = point(2);
+    sender.send(live).await.unwrap();
+    let batch = collect_read_batch(first, &mut receiver, Duration::ZERO).await;
+    assert_eq!(batch.len(), 2);
+    assert_eq!(batch[1].arguments[1], Value::from(2));
+}
+
+#[tokio::test]
+async fn late_reads_stay_out_of_the_active_rpc_at_every_window_boundary() {
+    for micros in [0, 50, 1000] {
+        let (mut cluster, mut socket) = connected_cluster().await;
+        cluster.read_batch_window = Duration::from_micros(micros);
+        let cluster = std::sync::Arc::new(cluster);
+        let (captured, captured_reply) = oneshot::channel();
+        let (release, release_reply) = oneshot::channel();
+        let server = tokio::spawn(async move {
+            let mut captured = Some(captured);
+            let mut release_reply = Some(release_reply);
+            for (key, value) in [(1, 101), (2, 202)] {
+                let (sync, body) = read_request(&mut socket).await;
+                assert_eq!(field(&body, 0x22).and_then(Value::as_str), Some("cairn.get_many"));
+                let arguments = field(&body, 0x21).unwrap().as_array().unwrap();
+                assert_eq!(
+                    arguments[0],
+                    Value::Array(vec![Value::Array(vec!["batch".into(), key.into()])])
+                );
+                if key == 1 {
+                    captured.take().unwrap().send(()).unwrap();
+                    release_reply.take().unwrap().await.unwrap();
+                }
+                let envelope = Value::Array(vec!["batch".into(), key.into(), Value::Array(vec![value.into()])]);
+                let data = Value::Array(vec![Value::Array(vec![envelope])]);
+                write_response(&mut socket, &response(sync, 0, Value::Map(vec![(0x30.into(), data)]))).await;
+            }
+        });
+        let first_cluster = cluster.clone();
+        let first = tokio::spawn(async move { first_cluster.read(0, vec!["batch".into(), 1.into()]).await });
+        tokio::time::timeout(Duration::from_secs(2), captured_reply)
+            .await
+            .unwrap()
+            .unwrap();
+        let second_cluster = cluster.clone();
+        let second = tokio::spawn(async move { second_cluster.read(0, vec!["batch".into(), 2.into()]).await });
+        // Confirm the late request is queued while the first storage response is held.
+        tokio::time::timeout(Duration::from_secs(2), async {
+            while cluster.shards[0].read_queue.get().unwrap().capacity() != 255 {
+                tokio::task::yield_now().await;
+            }
+        })
+        .await
+        .unwrap();
+        release.send(()).unwrap();
+        assert_eq!(first.await.unwrap().unwrap(), vec![Value::Array(vec![101.into()])]);
+        assert_eq!(second.await.unwrap().unwrap(), vec![Value::Array(vec![202.into()])]);
+        tokio::time::timeout(Duration::from_secs(2), server)
+            .await
+            .unwrap()
+            .unwrap();
+    }
+}
+
 pub(super) fn response(sync: u64, status: u64, body: Value) -> Vec<u8> {
     encode(
         Value::Map(vec![(0.into(), status.into()), (1.into(), sync.into())]),

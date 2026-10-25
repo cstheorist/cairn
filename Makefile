@@ -57,6 +57,7 @@ comparison-report:
 check:
 	$(PYTHON) -B tests/profile_storage.py
 	$(PYTHON) -B tests/replication_probe.py
+	$(PYTHON) -B -m unittest discover -s tests -p test_read_batch_settings.py
 	$(PYTHON) scripts/extract_core.py --check
 	cargo fmt --all --check
 	cargo clippy --workspace --locked --all-targets -- -D warnings
