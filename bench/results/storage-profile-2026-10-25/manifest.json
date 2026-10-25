@@ -1,0 +1,108 @@
+{
+  "format": "sanitized-storage-profile-v1",
+  "sanitized_copy": true,
+  "transforms": [
+    "Explicit field allowlists for summaries and provenance; host paths, ownership tokens, container IDs, network addresses, registers and stacks omitted.",
+    "Lua text: regex @?0x[0-9a-fA-F]+ replaced by [address removed], with a sanitization header. Percentages and source-relative Lua call sites unchanged.",
+    "Native data reduced to aggregate sample counts; replication thread names normalized to relay; only named top user caller contexts retained.",
+    "Only original-source/hash metadata retained, not source/binary archives or raw profiling data."
+  ],
+  "raw_artifact_sha256": {
+    "diagnostic.json": "f9b2b709bd40fc5e03e5414e6302a0c2715bb5dfb5c53a3486113fd01630f0be",
+    "sampling.json": "e59b0d105284a41191d03c64d2653cc46102bd39ea8731f8be1eb7b7c1a25e9b",
+    "harness.log": "20a75c04b835037083689382a405c8e86a8d64d4624f04a000404a9feda6413d",
+    "cairn-benchmark.json": "808ba732c9428a5afc34e20fd3080ed344c53f5132382e9cbeeb1829a806db48",
+    "comparison-environment.json": "ba73504ef7345d64d42ff8bbf20380b1b84720fae06edd2c664f02740e1d0ad4",
+    "gateway-rpc.log": "24a9654adeb50d10e958b37f7f900456924a3fb7fae2a0748e523ad4f9d4a5d7",
+    "analysis.json": "b4a2fe680ee6bfa405e3f203f10ba7b83972f9499af3c4d32229ba9c98a315e3",
+    "provenance-validation.json": "a43696ac55d3d43fd3470635619f0da56fb19fcc224fe2d9a7643e7c311d746e",
+    "collector-manifest.json": "df6a752f68adda72de92adf9c4e4c38ca08f9688e89872f4aa67e7160468e5a1",
+    "s0a.jit.txt": "4d6110743cfb64c43653c6fda4b23b21c0cd9446f1052a2e14b663b0e8bc90b3",
+    "s0a.jit.json": "3b5a9904e464a31d8125249f6b9ddb07ef5502dab800367a771ae85db0a5416e",
+    "s0a-native/storage-perf.data": "f7a3077436e22225e32e2731844e6f38c2ecbbca7f3a175424235fa4bb9ba3d0",
+    "s0a-native/capture.json": "62b25c9460af63acc3a7b3247f4c099f13b0f632c6ad01cea395793abe3b70eb",
+    "s0a-native/capture.log": "798a7c51c44ce5ed7d27df93df3d4517cfd4a7e3c41b9615e74621e1b8598898",
+    "s0a-native/process.maps": "5f3bdad8a08780633fdee20dc6e854c643d348d785154b15550d74e69b16cf04",
+    "s0a-native/process.status": "bc11400e955636e335b450a2ca6dd8b7719b95fab412484bd4afdbfc2a0faf92",
+    "s0a-native/offline.report.txt": "35479e9d518646af2f4c1b3233e51d08c932b572f2afac82441975b960dc785d",
+    "s0a-native/offline.script.txt": "577176df22dfb442fb074e99a13e5de07e4f94296ff6d95bdaaea7a521629cb8",
+    "s0a-native/offline.buildids.txt": "818ff63750806dafb8aededb600c6ea72526bd0333b53178398ba9084e767731",
+    "s0a-native/target-symbol-files.json": "cbc1090fdb8c7c73ea01365fc9c9de216257be7f8aeb89d648185e9654090d52",
+    "s0a-native/target-tarantool-elf.txt": "12d3627a1d6f17488d3315de90c481d5b8dbf99da487cd6b91e6ce7b392d9305",
+    "s1b.jit.txt": "8f71666a992b8a99fa92d82d2e13bff5c831f4fa3b7ae815e03a50f99602e968",
+    "s1b.jit.json": "cfd7f19ccca8b86a05175a99a4ba543f765e05d6c64cd477408888a5c9a67d78",
+    "s1b-native/storage-perf.data": "69af66f7e05d651952d28473f5a78920e52c9059deceadcc1a10b12311e6d0d3",
+    "s1b-native/capture.json": "5b9e91f65a7022016e23cda17eba0ca047332928a896d20ac19d9f059dcb8416",
+    "s1b-native/capture.log": "bc0051da0ba6af1880e26d56093bbc314a911fd13ffeb30dc8e64b11ac75004b",
+    "s1b-native/process.maps": "9a425807c6655a7867be1df0895100e0fd9e86e483e635ac7223b88d6eaf28e7",
+    "s1b-native/process.status": "9741ff6d17fe0cddae6efa61527698796d2c6269518274e2f8a934f104afa4b1",
+    "s1b-native/offline.report.txt": "5acf2d67c4ad8089111b6a9adf216016ea72a25c5f6a9371b5e509009df4fc0f",
+    "s1b-native/offline.script.txt": "fe1e7c9db08fb630d390d316b080733ee61f235b90414729b025e75bd2553086",
+    "s1b-native/offline.buildids.txt": "818ff63750806dafb8aededb600c6ea72526bd0333b53178398ba9084e767731",
+    "s1b-native/target-symbol-files.json": "cbc1090fdb8c7c73ea01365fc9c9de216257be7f8aeb89d648185e9654090d52",
+    "s1b-native/target-tarantool-elf.txt": "12d3627a1d6f17488d3315de90c481d5b8dbf99da487cd6b91e6ce7b392d9305"
+  },
+  "published_sha256": {
+    "lua-aggregates.json": "972beec5a7743dd5f408898c14dd9df71180fc8fc7288a7dc29bb2ffb1bac03a",
+    "native-aggregates.json": "aaa4353fbbfee71261a50c487321bef112f903b009a7adac3f19989dfb3007c0",
+    "provenance.json": "42aaa55f505d96ac3c27f447b832f8712bf8393a1a8c04d176849b0c69045bd3",
+    "rpc-aggregates.json": "f3d0de09427f18e8dfc974eedda9326d110666dc524ecefde3333872c39c25bd",
+    "s0a.jit.sanitized.txt": "241a7ccb3a5fd03fd9c71e3cb2cdbb8c9e2de47643cfceb93c1cf7b04e956be6",
+    "s1b.jit.sanitized.txt": "a1ce50435038fac66d6cdcd334901b28484d213f8715bfbd7eedd1e3793b7acb",
+    "summary.json": "167bb796ce0d640808db565570a1b14bed489b4941471eca531c4e5e3db80581"
+  },
+  "helper_provenance": {
+    "captured_helper": {
+      "repository_relative_private_path": ".tools/profile-storage/profile_storage.py",
+      "sha256": "486dc0d1f3b334674fdc4bb7245a371042601d0e2bf88ddf11db8390a7cd15ab",
+      "used_for_capture": true,
+      "source_published": false,
+      "hash_recording": "Computed at publication from the retained ignored helper used by run_transfer_profile.py; not a runtime hash attestation."
+    },
+    "captured_supervisor": {
+      "repository_relative_private_path": ".tools/profile-storage/run_transfer_profile.py",
+      "sha256": "6cf7d59404893d81da4e1ab56b47446e6fd9b253b2f2ae13a88b5bc78018911b",
+      "source_published": false,
+      "helper_import": "import profile_storage as helper"
+    },
+    "published_helper": {
+      "repository_relative_path": "scripts/profile_storage.py",
+      "sha256": "46394a58e2e03c7ac2dc67047e22d8704caae2eb32270a78c038325baea5f35f",
+      "used_for_capture": false,
+      "validation": "15 offline mocked checks plus a separate single-node 20-second owned-lease smoke; not used for the original CPU diagnostic"
+    },
+    "shared_sampling_contract": {
+      "profiler": "stock jit.p",
+      "mode": "vf3i10m0",
+      "lease_seconds": 20,
+      "eval_retry": false,
+      "container_identity_and_incarnation_checks": true
+    },
+    "publication_changes": [
+      "Repository-root discovery and private manifest location adapted for scripts/.",
+      "Manifest files explicitly mode0600; initial ownership creation and local output/provenance reservation exclusive.",
+      "Unsupported node validation explicit rather than a Python assert.",
+      "Failed profiler.stop conservatively retains active state; collection still requires stop_ok=true.",
+      "Collected provenance uses an explicit token-free field allowlist."
+    ],
+    "limits": "The two helper source hashes differ. Original CPU evidence exercises the retained ignored version. A subsequent separate lease smoke exercises normal automatic stop/status/stop/collect of the hardened published version; it does not recapture or modify the original CPU evidence or validate every failure branch. The retained capture helper was not included in the benchmark source archive.",
+    "separate_published_helper_smoke": {
+      "started_utc": "2026-10-25T20:10:52.432634+00:00",
+      "finished_utc": "2026-10-25T20:11:13.972658+00:00",
+      "node": "s0c",
+      "helper_sha256": "46394a58e2e03c7ac2dc67047e22d8704caae2eb32270a78c038325baea5f35f",
+      "passed": true,
+      "automatic_stop_ok": true,
+      "automatic_lease_seconds": 20.001271134999115,
+      "manifest_mode": "0o600",
+      "owned_status_stop_collect_ok": true,
+      "overwrite_refused": true,
+      "all_six_owned_leases_inactive": true,
+      "stderr_errors_observed": false,
+      "raw_smoke_metadata_sha256": "e0645716f17cb6078e743a764704739ab74ef92bd141c737cb406c6e05776177",
+      "raw_output_published": false,
+      "not_performance_evidence": true,
+      "unexercised": "No forced profiler-stop failure, container replacement or concurrent-start fault was injected; those remain offline checks."
+    }
+  }
+}

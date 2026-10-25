@@ -1,0 +1,41 @@
+{
+  "denominator": "stock jit.p VM samples; separate from native whole-process CPU sample denominator",
+  "mode": "vf3i10m0",
+  "interval_ms": 10,
+  "requested_seconds": 20,
+  "rounded_percentages": true,
+  "compiled_crypto_row_match": "hmac_new|sha256|certificate",
+  "weighted_percent_note": "Parent Compiled percentage times sum of matching rounded child percentages; approximate VM sample share, not process CPU self time.",
+  "nodes": {
+    "s0a": {
+      "vm_state_percent": {
+        "C": 58,
+        "Compiled": 24,
+        "GC": 10,
+        "Interpreted": 7,
+        "JIT": 1
+      },
+      "compiled_crypto_child_percent_sum": 31,
+      "weighted_crypto_vm_percent_approx": 7.44,
+      "lease_duration_seconds": 20.001115424995078,
+      "stop_ok": true,
+      "raw_text_sha256": "4d6110743cfb64c43653c6fda4b23b21c0cd9446f1052a2e14b663b0e8bc90b3",
+      "sanitized_text_sha256": "241a7ccb3a5fd03fd9c71e3cb2cdbb8c9e2de47643cfceb93c1cf7b04e956be6"
+    },
+    "s1b": {
+      "vm_state_percent": {
+        "C": 61,
+        "Compiled": 22,
+        "GC": 9,
+        "Interpreted": 7,
+        "JIT": 0
+      },
+      "compiled_crypto_child_percent_sum": 30,
+      "weighted_crypto_vm_percent_approx": 6.6,
+      "lease_duration_seconds": 20.00068088399712,
+      "stop_ok": true,
+      "raw_text_sha256": "8f71666a992b8a99fa92d82d2e13bff5c831f4fa3b7ae815e03a50f99602e968",
+      "sanitized_text_sha256": "a1ce50435038fac66d6cdcd334901b28484d213f8715bfbd7eedd1e3793b7acb"
+    }
+  }
+}

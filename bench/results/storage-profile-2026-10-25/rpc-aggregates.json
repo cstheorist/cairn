@@ -1,0 +1,133 @@
+{
+  "notes": "Aggregates full reset-counter dumps timestamped inside 18:09:36..18:09:55 UTC. These contain approximately preceding one-second intervals; phase latency includes queue/network/server. Concurrent phase sums overlap and are not critical-path latency or CPU.",
+  "dump_timestamps": [
+    "2026-10-25T18:09:36.417187718Z",
+    "2026-10-25T18:09:37.419290885Z",
+    "2026-10-25T18:09:38.419472385Z",
+    "2026-10-25T18:09:39.420627178Z",
+    "2026-10-25T18:09:40.422022678Z",
+    "2026-10-25T18:09:41.423985762Z",
+    "2026-10-25T18:09:42.426146387Z",
+    "2026-10-25T18:09:43.427511679Z",
+    "2026-10-25T18:09:44.431099722Z",
+    "2026-10-25T18:09:45.431806139Z",
+    "2026-10-25T18:09:46.432463750Z",
+    "2026-10-25T18:09:47.433274250Z",
+    "2026-10-25T18:09:48.434189876Z",
+    "2026-10-25T18:09:49.435248668Z",
+    "2026-10-25T18:09:50.436292502Z",
+    "2026-10-25T18:09:51.437292169Z",
+    "2026-10-25T18:09:52.438291878Z",
+    "2026-10-25T18:09:53.439388712Z",
+    "2026-10-25T18:09:54.440322712Z"
+  ],
+  "phases": {
+    "cairn.tx_clean": {
+      "samples": 804,
+      "failures": 0,
+      "total_ns": 410953249,
+      "maximum_ns": 37550166,
+      "mean_us": 511.13588184079606
+    },
+    "cairn.tx_decide": {
+      "samples": 733,
+      "failures": 0,
+      "total_ns": 522993240,
+      "maximum_ns": 53655500,
+      "mean_us": 713.4969167803547
+    },
+    "cairn.tx_finish_vote": {
+      "samples": 1615,
+      "failures": 1,
+      "total_ns": 1221356712,
+      "maximum_ns": 53803542,
+      "mean_us": 756.2580260061919
+    },
+    "cairn.tx_mutate": {
+      "samples": 25043,
+      "failures": 59,
+      "total_ns": 35013424394,
+      "maximum_ns": 55296667,
+      "mean_us": 1398.1321883959588
+    },
+    "cairn.tx_open_abort": {
+      "samples": 201,
+      "failures": 0,
+      "total_ns": 139107660,
+      "maximum_ns": 32711875,
+      "mean_us": 692.0779104477612
+    },
+    "cairn.tx_open_enlist": {
+      "samples": 25041,
+      "failures": 0,
+      "total_ns": 16280766676,
+      "maximum_ns": 55277583,
+      "mean_us": 650.1643974282177
+    },
+    "cairn.tx_open_finish": {
+      "samples": 24989,
+      "failures": 0,
+      "total_ns": 49170940932,
+      "maximum_ns": 56186750,
+      "mean_us": 1967.7034267877866
+    },
+    "cairn.tx_open_finish_last": {
+      "samples": 24983,
+      "failures": 0,
+      "total_ns": 65994386812,
+      "maximum_ns": 60001500,
+      "mean_us": 2641.5717412640597
+    },
+    "cairn.tx_open_freeze": {
+      "samples": 24984,
+      "failures": 0,
+      "total_ns": 21423067392,
+      "maximum_ns": 55364209,
+      "mean_us": 857.4714774255523
+    },
+    "cairn.tx_open_pending": {
+      "samples": 130,
+      "failures": 0,
+      "total_ns": 448187875,
+      "maximum_ns": 38942458,
+      "mean_us": 3447.5990384615384
+    },
+    "cairn.tx_open_prepare": {
+      "samples": 49969,
+      "failures": 0,
+      "total_ns": 104268625626,
+      "maximum_ns": 59612959,
+      "mean_us": 2086.6662455922674
+    },
+    "cairn.tx_open_recover": {
+      "samples": 360,
+      "failures": 0,
+      "total_ns": 316928743,
+      "maximum_ns": 36805167,
+      "mean_us": 880.3576194444445
+    },
+    "cairn.tx_open_start": {
+      "samples": 25124,
+      "failures": 83,
+      "total_ns": 24070643935,
+      "maximum_ns": 53644041,
+      "mean_us": 958.0737117895239
+    },
+    "cairn.tx_pending": {
+      "samples": 130,
+      "failures": 0,
+      "total_ns": 1052147786,
+      "maximum_ns": 38192417,
+      "mean_us": 8093.4445076923075
+    },
+    "cairn.tx_vote_status": {
+      "samples": 1466,
+      "failures": 0,
+      "total_ns": 3293570297,
+      "maximum_ns": 54763333,
+      "mean_us": 2246.6373103683495
+    }
+  },
+  "sanitized_copy": true,
+  "raw_rpc_log_sha256": "24a9654adeb50d10e958b37f7f900456924a3fb7fae2a0748e523ad4f9d4a5d7"
+}

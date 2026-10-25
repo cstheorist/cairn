@@ -1,0 +1,95 @@
+{
+  "denominator": "all native cpu-clock samples per node, all captured Tarantool threads",
+  "event": "cpu-clock",
+  "frequency_hz": 99,
+  "call_graph": "dwarf,8192",
+  "kernel_symbols_resolved": false,
+  "user_symbols": "exact captured executable and mapped DSOs, offline symfs decode",
+  "initial_live_root_decode_used": false,
+  "categories_overlap": true,
+  "stack_presence_rules": {
+    "event_notify": "any evpipe_write or ev_async_send frame",
+    "network_write": "any frame beginning sio_write, plain_iostream_write or coio_write",
+    "gc": "any frame beginning gc_ or lj_gc_, or equal to propagatemark",
+    "allocation": "any frame beginning lj_alloc_ or lj_mem_, or equal to alloc_with_limit",
+    "crypto": "any frame beginning HMAC_, EVP_, SHA256, sha256, OPENSSL_ or CRYPTO_"
+  },
+  "notes": [
+    "Stack-presence counts are caller contexts; categories overlap and are not function self time.",
+    "Kernel names remain unresolved. A resolved user caller does not identify every kernel routine or establish removable work.",
+    "CPU sampling does not measure syscall latency, off-CPU waits or full-container utilization.",
+    "DWARF unwinding may stop at JIT/fiber boundaries. No JIT address maps or raw stacks are published."
+  ],
+  "nodes": {
+    "s0a": {
+      "samples": 1156,
+      "lost_samples": 0,
+      "capture_exit_code": 0,
+      "decode_exit_code": 0,
+      "thread_samples": {
+        "tarantool": 696,
+        "relay": 248,
+        "wal": 105,
+        "iproto": 107
+      },
+      "kernel_leaf_samples": 501,
+      "kernel_leaf_first_resolved_user_caller": {
+        "evpipe_write": 252,
+        "sio_writev": 136,
+        "epoll_poll": 72,
+        "sio_read": 27,
+        "other": 14
+      },
+      "stack_presence_counts": {
+        "gc": 131,
+        "allocation": 71,
+        "event_notify": 259,
+        "network_write": 142,
+        "crypto": 26
+      },
+      "kernel_leaf_stack_presence_counts": {
+        "event_notify": 252,
+        "network_write": 136,
+        "allocation": 3,
+        "gc": 1
+      },
+      "perf_event_count_approx": 11676767560,
+      "first_to_last_sample_ms": 19904.0
+    },
+    "s1b": {
+      "samples": 1161,
+      "lost_samples": 0,
+      "capture_exit_code": 0,
+      "decode_exit_code": 0,
+      "thread_samples": {
+        "tarantool": 695,
+        "relay": 248,
+        "wal": 113,
+        "iproto": 105
+      },
+      "kernel_leaf_samples": 519,
+      "kernel_leaf_first_resolved_user_caller": {
+        "evpipe_write": 257,
+        "sio_writev": 146,
+        "epoll_poll": 67,
+        "sio_read": 24,
+        "other": 25
+      },
+      "stack_presence_counts": {
+        "allocation": 65,
+        "gc": 121,
+        "event_notify": 269,
+        "network_write": 151,
+        "crypto": 25
+      },
+      "kernel_leaf_stack_presence_counts": {
+        "event_notify": 257,
+        "network_write": 146,
+        "allocation": 4,
+        "gc": 1
+      },
+      "perf_event_count_approx": 11727272610,
+      "first_to_last_sample_ms": 19836.999
+    }
+  }
+}
