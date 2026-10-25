@@ -25,10 +25,12 @@ index and SQL column order. Staged transaction values live in metadata until a
 commit decision is irrevocable. The public native reader has per-table read
 access; validated storage procedures perform writes.
 
-SQL point reads and `cairn.get` use a linearizable barrier and reject unresolved
-write claims. Explicit transaction reads hold row claims, while scans hold table
-claims for predicates and absent rows. Raw native SELECT retains Tarantool's
-local visibility and can observe follower lag or cross-shard apply progress.
+Public point reads and `cairn.get` use a linearizable barrier and reject durable
+write claims and all exclusive table claims. Temporary OPEN row intents leave
+the previous committed tuple readable; prepare durably copies their claims with
+YES before they can commit. Explicit transaction reads hold row claims, while
+scans hold table claims for predicates and absent rows. Raw native SELECT retains
+Tarantool's local visibility and can observe follower lag or cross-shard apply progress.
 
 ## Commit protocols
 

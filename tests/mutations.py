@@ -116,7 +116,8 @@ class Mutations(unittest.TestCase):
         self.same(f'UPDATE {table} SET n=n+%s WHERE id=0',(7,))
         self.same(f'SELECT n FROM {table} WHERE id=0')
         for connection in self.connections: connection.execute('ROLLBACK')
-        self.same(f'SELECT n FROM {table} WHERE id=0')
+        # A strict scan checks both rollback values and release of OPEN claims.
+        self.same(f'SELECT * FROM {table} ORDER BY id')
 
     def test_contended_increment_has_no_lost_updates(self):
         table='counter_'+uuid.uuid4().hex[:8]
