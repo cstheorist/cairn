@@ -1,6 +1,81 @@
 use super::*;
 use tokio::net::TcpListener;
 
+#[test]
+fn read_reply_moves_nested_arrays_and_large_utf8_without_copying() {
+    let text = "雪🦀".repeat(32768);
+    let tuple = Value::Array(vec![
+        42.into(),
+        Value::Array(vec![text.clone().into(), Value::Nil, Value::Array(vec![7.into()])]),
+        Value::Nil,
+    ]);
+    let fields = tuple.as_array().unwrap();
+    let tuple_allocation = fields.as_ptr();
+    let nested = fields[1].as_array().unwrap();
+    let nested_allocation = nested.as_ptr();
+    let string_allocation = nested[0].as_str().unwrap().as_ptr();
+    let deepest_allocation = nested[2].as_array().unwrap().as_ptr();
+    let reply = owned_read_reply(Value::Array(vec!["rows".into(), 42.into(), tuple])).unwrap();
+    assert_eq!(reply.len(), 1);
+    let fields = reply[0].as_array().unwrap();
+    assert_eq!(fields.as_ptr(), tuple_allocation);
+    assert_eq!(fields[0], Value::from(42));
+    assert_eq!(fields[2], Value::Nil);
+    let nested = fields[1].as_array().unwrap();
+    assert_eq!(nested.as_ptr(), nested_allocation);
+    assert_eq!(nested[0].as_str().unwrap(), text);
+    assert_eq!(nested[0].as_str().unwrap().as_ptr(), string_allocation);
+    assert_eq!(nested[1], Value::Nil);
+    assert_eq!(nested[2].as_array().unwrap(), &[Value::from(7)]);
+    assert_eq!(nested[2].as_array().unwrap().as_ptr(), deepest_allocation);
+    assert_eq!(
+        owned_read_reply(Value::Array(vec!["rows".into(), 0.into(), Value::Array(vec![])])).unwrap(),
+        vec![Value::Array(vec![])]
+    );
+}
+
+#[test]
+fn read_reply_preserves_missing_envelope_field_errors() {
+    for envelope in [
+        Value::Nil,
+        Value::Map(vec![]),
+        Value::Array(vec![]),
+        Value::Array(vec!["rows".into()]),
+        Value::Array(vec!["rows".into(), 42.into()]),
+    ] {
+        let error = owned_read_reply(envelope).unwrap_err();
+        assert_eq!(error.code, "XX000");
+        assert_eq!(error.message, "invalid read envelope");
+    }
+}
+
+#[tokio::test]
+async fn malformed_read_envelopes_still_fail_before_dispatch() {
+    for envelope in [
+        Value::Nil,
+        Value::Array(vec!["rows".into(), 42.into()]),
+        Value::Array(vec!["other".into(), 42.into(), Value::Array(vec![])]),
+        Value::Array(vec!["rows".into(), 43.into(), Value::Array(vec![])]),
+        Value::Array(vec!["rows".into(), 42.into(), Value::Nil]),
+        Value::Array(vec!["rows".into(), 42.into(), Value::Array(vec![]), Value::Nil]),
+    ] {
+        let (cluster, mut socket) = connected_cluster().await;
+        let cluster = std::sync::Arc::new(cluster);
+        let server = tokio::spawn(async move {
+            let (sync, _) = read_request(&mut socket).await;
+            let data = Value::Array(vec![Value::Array(vec![envelope])]);
+            write_response(&mut socket, &response(sync, 0, Value::Map(vec![(0x30.into(), data)]))).await;
+        });
+        let error = tokio::time::timeout(Duration::from_secs(2), cluster.read(0, vec!["rows".into(), 42.into()]))
+            .await
+            .unwrap()
+            .unwrap_err();
+        assert_eq!(error.code, "XX000");
+        assert_eq!(error.message, "batched read response does not match its requests");
+        server.await.unwrap();
+    }
+}
+
 pub(super) fn response(sync: u64, status: u64, body: Value) -> Vec<u8> {
     encode(
         Value::Map(vec![(0.into(), status.into()), (1.into(), sync.into())]),
