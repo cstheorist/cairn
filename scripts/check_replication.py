@@ -9,8 +9,8 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 COMPOSE = ["docker", "compose", "-f", str(ROOT / "compose.replication.yaml")]
 
 
-def run(*arguments):
-    subprocess.run(list(arguments), cwd=ROOT, check=True)
+def run(*arguments, timeout=None):
+    subprocess.run(list(arguments), cwd=ROOT, check=True, timeout=timeout)
 
 
 def test(stage):
@@ -24,6 +24,27 @@ def state():
 def node(value):
     assert re.fullmatch(r"s[01][abc]", value), value
     return value
+
+
+def check_fenced(isolated):
+    # These net.box options are supported by Tarantool 3.3.5:
+    # https://github.com/tarantool/tarantool/blob/3.3.5/src/box/lua/net_box.lua
+    lua = """
+local c
+local ok, err = pcall(function()
+    c = require('net.box').connect('operator:local-operator@127.0.0.1:3301',
+        {connect_timeout = 3, wait_connected = 3, fetch_schema = false})
+    assert(c:is_connected(), 'isolated-node probe could not connect')
+    assert(c:eval('return box.info.ro', {}, {timeout = 3}) == true,
+        'isolated old leader is not fenced read-only')
+end)
+if c then c:close() end
+if not ok then io.stderr:write(tostring(err), '\\n') end
+-- net.box background fibers must not keep this one-shot probe alive.
+os.exit(ok and 0 or 1)
+"""
+    run(*COMPOSE, "exec", "-T", isolated, "env", "-u", "TT_INSTANCE_NAME", "-u", "TT_APP_NAME",
+        "tarantool", "-e", lua, timeout=15)
 
 
 def main():
@@ -49,8 +70,7 @@ def main():
         test("partition")
         # Query the isolated old leader over its local socket namespace, not the
         # disconnected cluster network; it must have fenced itself read-only.
-        lua = "local c=require('net.box').connect('operator:local-operator@127.0.0.1:3301'); assert(c:eval('return box.info.ro')); c:close()"
-        run(*COMPOSE, "exec", "-T", isolated, "env", "-u", "TT_INSTANCE_NAME", "-u", "TT_APP_NAME", "tarantool", "-e", lua)
+        check_fenced(isolated)
         run("docker", "network", "connect", "--alias", isolated, "cairn-ha_default", f"cairn-ha-{isolated}-1")
         isolated = None
         test("healed")
