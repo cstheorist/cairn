@@ -28,6 +28,15 @@ struct PointRead {
     reply: oneshot::Sender<Result<Vec<Value>>>,
 }
 
+fn owned_read_reply(envelope: Value) -> Result<Vec<Value>> {
+    let value = match envelope {
+        Value::Array(fields) => fields.into_iter().nth(2),
+        _ => None,
+    }
+    .ok_or_else(|| DbError::new("XX000", "invalid read envelope"))?;
+    Ok(vec![value])
+}
+
 fn transport(error: impl std::fmt::Display) -> DbError {
     DbError::new(
         "08006",
@@ -408,12 +417,7 @@ impl Cluster {
                             match result {
                                 Ok(rows) => {
                                     for (request, row) in batch.into_iter().zip(rows) {
-                                        let value = row
-                                            .as_array()
-                                            .and_then(|row| row.get(2))
-                                            .cloned()
-                                            .ok_or_else(|| DbError::new("XX000", "invalid read envelope"));
-                                        let _ = request.reply.send(value.map(|value| vec![value]));
+                                        let _ = request.reply.send(owned_read_reply(row));
                                     }
                                 }
                                 Err(error) => {
