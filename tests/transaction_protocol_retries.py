@@ -36,16 +36,25 @@ class ResolutionRetries(unittest.TestCase):
                 self.assertEqual(self.connection.call.call_args_list,
                                  [call("cairn." + function, "transaction", "proof", 7)] * 2)
                 self.assertEqual(self.connection.close.call_count, 2)
-                self.sleep.assert_called_once_with(.01)
+                self.sleep.assert_called_once_with(.05)
+
+    def test_resolution_can_succeed_after_four_known_conflicts(self):
+        error = tarantool.DatabaseError(97, "conflict")
+        result = self.invoke("tx_release", [error] * 4 + [SimpleNamespace(data=["receipt"])])
+        self.assertEqual(result, ["receipt"])
+        self.assertEqual(self.connection.call.call_count, 5)
+        self.assertEqual(self.connection.close.call_count, 5)
+        self.assertEqual(self.sleep.call_args_list, [call(.05), call(.1), call(.2), call(.4)])
 
     def test_conflict_retries_are_bounded(self):
         error = tarantool.DatabaseError(97, "conflict")
         with self.assertRaises(tarantool.DatabaseError) as raised:
-            self.invoke("tx_apply", [error] * 5)
+            self.invoke("tx_apply", [error] * 9)
         self.assertIs(raised.exception, error)
-        self.assertEqual(self.connection.call.call_count, 4)
-        self.assertEqual(self.connection.close.call_count, 4)
-        self.assertEqual(self.sleep.call_count, 3)
+        self.assertEqual(self.connection.call.call_count, 8)
+        self.assertEqual(self.connection.close.call_count, 8)
+        self.assertEqual(self.sleep.call_args_list,
+                         [call(.05), call(.1), call(.2), call(.4), call(.5), call(.5), call(.5)])
 
     def test_non_resolution_conflicts_are_never_retried(self):
         for function in ("tx_mutate", "tx_start", "tx_start_voted", "tx_start_finished",
