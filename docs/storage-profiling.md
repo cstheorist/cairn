@@ -300,6 +300,43 @@ dumps and exact executable/library copies are excluded. Original source and
 result hashes validate; all 154 recorded source-member hashes matched the
 private source archive. Public aggregate files have their own hashes.
 
+The actual capture used the retained ignored helper
+`.tools/profile-storage/profile_storage.py`, imported by the ignored
+`run_transfer_profile.py` supervisor. It did **not** use the newly published
+`scripts/profile_storage.py`. Their source identities are deliberately distinct:
+
+| Helper | SHA-256 | Validation scope |
+| --- | --- | --- |
+| Retained capture helper | `486dc0d1f3b334674fdc4bb7245a371042601d0e2bf88ddf11db8390a7cd15ab` | The live diagnostic above |
+| Hardened published helper | `46394a58e2e03c7ac2dc67047e22d8704caae2eb32270a78c038325baea5f35f` | Fifteen offline mocked checks and separate owned-lease smoke |
+
+Both versions use the container identity/incarnation guards, stock `jit.p`,
+`vf3i10m0`, a 20-second lease and no EVAL retry. Publication adapts repository-root
+and private-manifest paths, adds mode-0600/exclusive local writes and explicit
+node validation, keeps activity uncertain after a failed stop, and allowlists
+collected metadata. The original live run does not validate every new hardening branch.
+The capture-helper/supervisor hashes were computed at publication from their
+retained private sources, rather than attested during the run; those ignored
+sources are not in the benchmark source archive or public evidence copies.
+
+`manifest.json` records both identities and the capture supervisor hash. The
+published helper can be checked directly from a checkout:
+
+```sh
+python3 - <<'PYHASH'
+import hashlib, json
+from pathlib import Path
+manifest = json.loads(Path("bench/results/storage-profile-2026-10-25/manifest.json").read_text())
+expected = manifest["helper_provenance"]["published_helper"]["sha256"]
+assert hashlib.sha256(Path("scripts/profile_storage.py").read_bytes()).hexdigest() == expected
+print("published helper SHA-256 matches")
+PYHASH
+```
+
+The retained private helper can likewise be checked against `captured_helper`
+when that source is available; public readers cannot independently reconstruct
+its bytes from the hash. No identical-tool or bit-for-bit recapture claim follows.
+
 The helper's offline checks are part of `make check` and require no Docker,
 network, profiler or Python third-party packages:
 
@@ -311,8 +348,14 @@ Fifteen checks cover identity guards, local bounded EVAL, no replay, private and
 exclusive manifest creation, simultaneous starts, token/incarnation-bound
 stop, collection completion and overwrite races. The predecessor helper's
 20-second Lua leases and native capture were exercised in this diagnostic;
-publication ownership/path hardening has offline coverage. No new live capture
-was run to prepare these published copies.
+publication ownership/path hardening has offline coverage. A subsequent,
+separate smoke at `2026-10-25T20:10:52Z` used the hardened helper on current
+leader `s0c`: one 20-second automatic lease, owned status/stop/collect, mode-0600
+manifest, overwrite refusal and six-node inactive-lease confirmation passed,
+with command exit zero and no stderr errors. Its raw Lua output remains private
+and was not used in any CPU count or rate reported above. The manifest records
+its source hash, outcome and raw metadata hash separately. No profiler-stop
+failure, container replacement or concurrent-start fault was injected live.
 
 ## Upstream references
 

@@ -50,5 +50,59 @@
     "s0a.jit.sanitized.txt": "241a7ccb3a5fd03fd9c71e3cb2cdbb8c9e2de47643cfceb93c1cf7b04e956be6",
     "s1b.jit.sanitized.txt": "a1ce50435038fac66d6cdcd334901b28484d213f8715bfbd7eedd1e3793b7acb",
     "summary.json": "167bb796ce0d640808db565570a1b14bed489b4941471eca531c4e5e3db80581"
+  },
+  "helper_provenance": {
+    "captured_helper": {
+      "repository_relative_private_path": ".tools/profile-storage/profile_storage.py",
+      "sha256": "486dc0d1f3b334674fdc4bb7245a371042601d0e2bf88ddf11db8390a7cd15ab",
+      "used_for_capture": true,
+      "source_published": false,
+      "hash_recording": "Computed at publication from the retained ignored helper used by run_transfer_profile.py; not a runtime hash attestation."
+    },
+    "captured_supervisor": {
+      "repository_relative_private_path": ".tools/profile-storage/run_transfer_profile.py",
+      "sha256": "6cf7d59404893d81da4e1ab56b47446e6fd9b253b2f2ae13a88b5bc78018911b",
+      "source_published": false,
+      "helper_import": "import profile_storage as helper"
+    },
+    "published_helper": {
+      "repository_relative_path": "scripts/profile_storage.py",
+      "sha256": "46394a58e2e03c7ac2dc67047e22d8704caae2eb32270a78c038325baea5f35f",
+      "used_for_capture": false,
+      "validation": "15 offline mocked checks plus a separate single-node 20-second owned-lease smoke; not used for the original CPU diagnostic"
+    },
+    "shared_sampling_contract": {
+      "profiler": "stock jit.p",
+      "mode": "vf3i10m0",
+      "lease_seconds": 20,
+      "eval_retry": false,
+      "container_identity_and_incarnation_checks": true
+    },
+    "publication_changes": [
+      "Repository-root discovery and private manifest location adapted for scripts/.",
+      "Manifest files explicitly mode0600; initial ownership creation and local output/provenance reservation exclusive.",
+      "Unsupported node validation explicit rather than a Python assert.",
+      "Failed profiler.stop conservatively retains active state; collection still requires stop_ok=true.",
+      "Collected provenance uses an explicit token-free field allowlist."
+    ],
+    "limits": "The two helper source hashes differ. Original CPU evidence exercises the retained ignored version. A subsequent separate lease smoke exercises normal automatic stop/status/stop/collect of the hardened published version; it does not recapture or modify the original CPU evidence or validate every failure branch. The retained capture helper was not included in the benchmark source archive.",
+    "separate_published_helper_smoke": {
+      "started_utc": "2026-10-25T20:10:52.432634+00:00",
+      "finished_utc": "2026-10-25T20:11:13.972658+00:00",
+      "node": "s0c",
+      "helper_sha256": "46394a58e2e03c7ac2dc67047e22d8704caae2eb32270a78c038325baea5f35f",
+      "passed": true,
+      "automatic_stop_ok": true,
+      "automatic_lease_seconds": 20.001271134999115,
+      "manifest_mode": "0o600",
+      "owned_status_stop_collect_ok": true,
+      "overwrite_refused": true,
+      "all_six_owned_leases_inactive": true,
+      "stderr_errors_observed": false,
+      "raw_smoke_metadata_sha256": "e0645716f17cb6078e743a764704739ab74ef92bd141c737cb406c6e05776177",
+      "raw_output_published": false,
+      "not_performance_evidence": true,
+      "unexercised": "No forced profiler-stop failure, container replacement or concurrent-start fault was injected; those remain offline checks."
+    }
   }
 }
