@@ -120,14 +120,19 @@ alongside the original durable coordinator protocol. See [design](docs/design.md
 ## Performance
 
 The goal is strong OLTP performance across point reads, writes and distributed
-transactions. It remains open: current development measurements still trail TiDB
-on important workloads.
+transactions. Fresh RF3 controls demonstrate a 64-client point-read advantage
+over TiDB. TiDB retains the mixed/transfer lead and lower one-client point-read
+latency, so the overall goal remains open.
 
 [Benchmarks](bench/RESULTS.md) distinguish repeated historical measurements from
 short diagnostics. [The harness](bench/README.md) runs actual YugabyteDB and TiDB
 clusters with matched resources and replication, explicit session isolation,
 per-key correctness checks and retained source/image hashes. A read-only result
 does not establish an OLTP-wide advantage.
+
+The [platform comparison](docs/platform-performance.md) reviews Cairn, Tarn,
+TiDB and YugabyteDB, distinguishing architectural judgment from measured latency
+and throughput.
 
 ## Correctness
 
@@ -156,6 +161,7 @@ Tarantool. [Verification](docs/verification.md) states the boundaries and comman
 | [Design](docs/design.md) | Architecture, locking, commit and recovery |
 | [Verification](docs/verification.md) | Models, executable proofs, tests and trusted boundaries |
 | [Benchmarks](bench/RESULTS.md) | Method, evidence and current performance gaps |
+| [Platform performance](docs/platform-performance.md) | Cairn, Tarn, TiDB and YugabyteDB tradeoffs |
 | [Roadmap](docs/roadmap.md) | Remaining implementation and validation work |
 
 ## Repository layout
