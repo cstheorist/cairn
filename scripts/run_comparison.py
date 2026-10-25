@@ -69,7 +69,7 @@ def snapshot(compose, services):
         "started_at":record["State"]["StartedAt"],
     } for record in records]
 
-def fast_metadata(cpu_layout='standard'):
+def fast_metadata(cpu_layout='standard', requested_read_batch_us=None):
     nodes = []
     for node in FAST[1:]:
         code = ("local c=require('net.box').connect('reader:local-reader@127.0.0.1:3301'); "
@@ -82,9 +82,15 @@ def fast_metadata(cpu_layout='standard'):
             raise AssertionError("expected one leader per shard")
     environment=json.loads(run(['docker','inspect','cairn-ha-gateway-1','--format','{{json .Config.Env}}'],True))
     settings={entry.split('=',1)[0]:entry.split('=',1)[1] for entry in environment
-              if entry.split('=',1)[0] in ['CAIRN_VOTE_COMMIT','CAIRN_RECOVERY','TOKIO_WORKER_THREADS','CAIRN_LOG_ERRORS','CAIRN_PROFILE_RPC','CAIRN_STORAGE_CONNECTIONS','CAIRN_STORAGE_PIPELINE']}
-    return {"nodes":nodes,"gateway_settings":settings,"cpu_layout":cpu_layout,"wal_mode":"fsync","replica_count":3,"quorum":2,
-            "reads":"linearizable","transaction_isolation":"strict two-phase locking"}
+              if entry.split('=',1)[0] in ['CAIRN_VOTE_COMMIT','CAIRN_RECOVERY','TOKIO_WORKER_THREADS','CAIRN_LOG_ERRORS','CAIRN_PROFILE_RPC','CAIRN_STORAGE_CONNECTIONS','CAIRN_STORAGE_PIPELINE','CAIRN_READ_BATCH_US']}
+    result = {"nodes":nodes,"gateway_settings":settings,"cpu_layout":cpu_layout,"wal_mode":"fsync","replica_count":3,"quorum":2,
+              "reads":"linearizable","transaction_isolation":"strict two-phase locking"}
+    if requested_read_batch_us is not None:
+        actual = settings.get('CAIRN_READ_BATCH_US')
+        if actual is None or read_batch_microseconds(actual) != requested_read_batch_us:
+            raise AssertionError(f'CAIRN_READ_BATCH_US requested {requested_read_batch_us}, actual {actual!r}')
+        result['requested_read_batch_us'] = requested_read_batch_us
+    return result
 
 def yb_metadata():
     raw = run([*COMPARISON,"exec","-T","yb1","/home/yugabyte/bin/yb-admin",
@@ -146,6 +152,16 @@ def measure(database):
     }[database]
     run([*COMPARISON,"--profile","load","run","--no-deps","--rm","load"],env=environment)
 
+def read_batch_microseconds(value):
+    try:
+        micros = int(value)
+    except ValueError as error:
+        raise argparse.ArgumentTypeError('read batch window must be an integer from 0 to 1000') from error
+    if not 0 <= micros <= 1000:
+        raise argparse.ArgumentTypeError('read batch window must be from 0 to 1000 microseconds')
+    return micros
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--databases",default="cairn,yugabyte,tidb")
@@ -155,10 +171,13 @@ def main():
     parser.add_argument('--cairn-connections',type=int,choices=range(1,65),default=8)
     parser.add_argument('--cairn-cpu-layout',choices=['standard','storage'],default='standard')
     parser.add_argument('--cairn-pipeline',action='store_true')
+    parser.add_argument('--cairn-read-batch-us',type=read_batch_microseconds,default=50,metavar='US',
+                        help='public point-read collection window, 0..1000 microseconds (default: 50)')
     options = parser.parse_args()
     os.environ['YB_ISOLATION']=options.yugabyte_isolation
     os.environ['CAIRN_STORAGE_CONNECTIONS']=str(options.cairn_connections)
     os.environ['CAIRN_STORAGE_PIPELINE']='1' if options.cairn_pipeline else '0'
+    os.environ['CAIRN_READ_BATCH_US']=str(options.cairn_read_batch_us)
     if options.cairn_cpu_layout=='storage':
         HA.extend(['-f','bench/resources-storage.yaml'])
     if options.cairn_commit!='legacy' or options.cairn_connections!=8:
@@ -194,7 +213,7 @@ def main():
             evidence_path.write_text(json.dumps(evidence,indent=2))
             if database=="cairn":
                 run([*HA,"up","-d","--build","--wait","gateway"])
-                metadata = fast_metadata(options.cairn_cpu_layout)
+                metadata = fast_metadata(options.cairn_cpu_layout, options.cairn_read_batch_us)
                 topology = snapshot(HA,FAST)
             else:
                 run([*HA,"stop",*FAST])
@@ -233,7 +252,7 @@ def main():
             metadata["containers_after"] = snapshot(HA if database=="cairn" else COMPARISON,
                                                      FAST if database=="cairn" else YB if database=="yugabyte" else TIDB)
             if database=="cairn":
-                metadata["topology_after"]=fast_metadata(options.cairn_cpu_layout)
+                metadata["topology_after"]=fast_metadata(options.cairn_cpu_layout, options.cairn_read_batch_us)
             before_by_service={item["service"]:item for item in metadata["containers"]}
             failure = None
             if database=="cairn" and metadata["nodes"]!=metadata["topology_after"]["nodes"]:

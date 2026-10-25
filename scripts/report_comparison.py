@@ -85,6 +85,11 @@ def summarize(directory):
         'cpu_layout':evidence['databases']['cairn'].get('cpu_layout','not recorded')}
     if 'CAIRN_STORAGE_PIPELINE' in gateway:
         cairn_settings['storage_pipeline']=gateway['CAIRN_STORAGE_PIPELINE']
+    if 'CAIRN_READ_BATCH_US' in gateway:
+        cairn_settings['read_batch_us']=gateway['CAIRN_READ_BATCH_US']
+    requested=evidence['databases']['cairn'].get('requested_read_batch_us')
+    if requested is not None and ('CAIRN_READ_BATCH_US' not in gateway or int(gateway['CAIRN_READ_BATCH_US'])!=requested):
+        raise ValueError('Cairn read batch window differs from its requested value')
     return {'scope':'single-host, warm-cache, closed-loop development comparison; no production-wide claim',
             'settings':dict(zip(('rows','payload_bytes','seconds_per_run','warmup_seconds','protocol'),settings)),
             'cairn_settings':cairn_settings,
@@ -108,6 +113,8 @@ def main():
     configuration=f"CAIRN_VOTE_COMMIT={cairn['vote_commit']}; CAIRN_STORAGE_CONNECTIONS={cairn['storage_connections']}; cpu_layout={cairn['cpu_layout']}"
     if 'storage_pipeline' in cairn:
         configuration+=f"; CAIRN_STORAGE_PIPELINE={cairn['storage_pipeline']}"
+    if 'read_batch_us' in cairn:
+        configuration+=f"; CAIRN_READ_BATCH_US={cairn['read_batch_us']}"
     text='\n'.join(lines)+'\n\nMedians of repeated runs. '+report['scope']+'.\n\nIsolation: '+isolation+'.\n\nCairn configuration: '+configuration+'.\n'
     (arguments.directory/'comparison-summary.md').write_text(text)
     print(text)
