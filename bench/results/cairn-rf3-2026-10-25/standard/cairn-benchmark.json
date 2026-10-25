@@ -1,0 +1,261 @@
+{
+  "client": "Rust async, four runtime threads, one outstanding operation per connection",
+  "database": "cairn",
+  "failure": null,
+  "payload_bytes": 128,
+  "protocol": "prepared binary parameters and results",
+  "queueing": "closed loop; latency includes retries; coordinated omission not corrected",
+  "results": [
+    {
+      "clients": 16,
+      "correctness": {
+        "all_key_values_verified": true,
+        "rows": 10000,
+        "sum_after": "10000000000",
+        "sum_before": "10000000000",
+        "verified": true
+      },
+      "elapsed_seconds": 10.000673629,
+      "latency_us": {
+        "p50": 566.208,
+        "p95": 918.834,
+        "p99": 1214.0,
+        "p999": 8282.458
+      },
+      "measured_updates": 0,
+      "operations": 253361,
+      "operations_per_second": 25334.393401790716,
+      "repeat": 1,
+      "retry_reasons": {},
+      "serialization_retries": 0,
+      "warmup_updates": 0,
+      "workload": "read"
+    },
+    {
+      "clients": 16,
+      "correctness": {
+        "all_key_values_verified": true,
+        "rows": 10000,
+        "sum_after": "10000000000",
+        "sum_before": "10000000000",
+        "verified": true
+      },
+      "elapsed_seconds": 10.000816589,
+      "latency_us": {
+        "p50": 576.5,
+        "p95": 929.542,
+        "p99": 1241.375,
+        "p999": 10081.458
+      },
+      "measured_updates": 0,
+      "operations": 251519,
+      "operations_per_second": 25149.84629121669,
+      "repeat": 2,
+      "retry_reasons": {},
+      "serialization_retries": 0,
+      "warmup_updates": 0,
+      "workload": "read"
+    },
+    {
+      "clients": 16,
+      "correctness": {
+        "all_key_values_verified": true,
+        "rows": 10000,
+        "sum_after": "10000000000",
+        "sum_before": "10000000000",
+        "verified": true
+      },
+      "elapsed_seconds": 10.000657046,
+      "latency_us": {
+        "p50": 575.375,
+        "p95": 928.375,
+        "p99": 1215.625,
+        "p999": 10023.917
+      },
+      "measured_updates": 0,
+      "operations": 251497,
+      "operations_per_second": 25148.047657587875,
+      "repeat": 3,
+      "retry_reasons": {},
+      "serialization_retries": 0,
+      "warmup_updates": 0,
+      "workload": "read"
+    },
+    {
+      "clients": 16,
+      "correctness": {
+        "all_key_values_verified": true,
+        "rows": 10000,
+        "sum_after": "10000013861",
+        "sum_before": "10000000000",
+        "verified": true
+      },
+      "elapsed_seconds": 10.001596754,
+      "latency_us": {
+        "p50": 894.458,
+        "p95": 1832.125,
+        "p99": 19844.917,
+        "p999": 38757.458
+      },
+      "measured_updates": 11542,
+      "operations": 115250,
+      "operations_per_second": 11523.160034812177,
+      "repeat": 1,
+      "retry_reasons": {
+        "[CAIRN:CONFLICT] row belongs to an unresolved transaction; retry the whole transaction": 1
+      },
+      "serialization_retries": 1,
+      "warmup_updates": 2319,
+      "workload": "mixed"
+    },
+    {
+      "clients": 16,
+      "correctness": {
+        "all_key_values_verified": true,
+        "rows": 10000,
+        "sum_after": "10000027721",
+        "sum_before": "10000013861",
+        "verified": true
+      },
+      "elapsed_seconds": 10.001008213,
+      "latency_us": {
+        "p50": 895.209,
+        "p95": 1901.791,
+        "p99": 19058.25,
+        "p999": 35788.916
+      },
+      "measured_updates": 11445,
+      "operations": 116004,
+      "operations_per_second": 11599.230550496899,
+      "repeat": 2,
+      "retry_reasons": {
+        "[CAIRN:CONFLICT] row belongs to an unresolved transaction; retry the whole transaction": 17
+      },
+      "serialization_retries": 17,
+      "warmup_updates": 2415,
+      "workload": "mixed"
+    },
+    {
+      "clients": 16,
+      "correctness": {
+        "all_key_values_verified": true,
+        "rows": 10000,
+        "sum_after": "10000041543",
+        "sum_before": "10000027721",
+        "verified": true
+      },
+      "elapsed_seconds": 10.000760005,
+      "latency_us": {
+        "p50": 895.208,
+        "p95": 1867.5,
+        "p99": 21081.542,
+        "p999": 35700.583
+      },
+      "measured_updates": 11459,
+      "operations": 115559,
+      "operations_per_second": 11555.021812564733,
+      "repeat": 3,
+      "retry_reasons": {
+        "[CAIRN:CONFLICT] row belongs to an unresolved transaction; retry the whole transaction": 11
+      },
+      "serialization_retries": 11,
+      "warmup_updates": 2363,
+      "workload": "mixed"
+    },
+    {
+      "clients": 16,
+      "correctness": {
+        "all_key_values_verified": true,
+        "rows": 10000,
+        "sum_after": "10000041543",
+        "sum_before": "10000041543",
+        "verified": true
+      },
+      "elapsed_seconds": 10.004516046,
+      "latency_us": {
+        "p50": 6484.334,
+        "p95": 61723.75,
+        "p99": 68079.542,
+        "p999": 83510.666
+      },
+      "measured_updates": 0,
+      "operations": 10924,
+      "operations_per_second": 1091.9068898257829,
+      "repeat": 1,
+      "retry_reasons": {
+        "[CAIRN:CONFLICT] row belongs to an unresolved transaction; retry the whole transaction": 57
+      },
+      "serialization_retries": 57,
+      "warmup_updates": 0,
+      "workload": "transfer"
+    },
+    {
+      "clients": 16,
+      "correctness": {
+        "all_key_values_verified": true,
+        "rows": 10000,
+        "sum_after": "10000041543",
+        "sum_before": "10000041543",
+        "verified": true
+      },
+      "elapsed_seconds": 10.004081714,
+      "latency_us": {
+        "p50": 6465.167,
+        "p95": 60533.584,
+        "p99": 69384.292,
+        "p999": 79161.75
+      },
+      "measured_updates": 0,
+      "operations": 10907,
+      "operations_per_second": 1090.2549890947441,
+      "repeat": 2,
+      "retry_reasons": {
+        "[CAIRN:CONFLICT] row belongs to an unresolved transaction; retry the whole transaction": 62
+      },
+      "serialization_retries": 62,
+      "warmup_updates": 0,
+      "workload": "transfer"
+    },
+    {
+      "clients": 16,
+      "correctness": {
+        "all_key_values_verified": true,
+        "rows": 10000,
+        "sum_after": "10000041543",
+        "sum_before": "10000041543",
+        "verified": true
+      },
+      "elapsed_seconds": 10.00445913,
+      "latency_us": {
+        "p50": 6590.792,
+        "p95": 61404.75,
+        "p99": 68493.666,
+        "p999": 83466.583
+      },
+      "measured_updates": 0,
+      "operations": 10775,
+      "operations_per_second": 1077.0197428953861,
+      "repeat": 3,
+      "retry_reasons": {
+        "[CAIRN:CONFLICT] row belongs to an unresolved transaction; retry the whole transaction": 45
+      },
+      "serialization_retries": 45,
+      "warmup_updates": 0,
+      "workload": "transfer"
+    }
+  ],
+  "rows": 10000,
+  "seconds_per_run": 10,
+  "status": "complete",
+  "table": "bench_1792944646225697924",
+  "transaction_isolation": "strict two-phase locking",
+  "transfer_partitions": {
+    "all_transfers_cross_partitions": true,
+    "count": 2,
+    "rows": [
+      5000,
+      5000
+    ]
+  },
+  "warmup_seconds": 2
+}

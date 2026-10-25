@@ -80,6 +80,10 @@ def summarize(directory):
                       for database in DATABASES[1:]} for workload in WORKLOADS}
     return {'scope':'single-host, warm-cache, closed-loop development comparison; no production-wide claim',
             'settings':dict(zip(('rows','payload_bytes','seconds_per_run','warmup_seconds','protocol'),settings)),
+            'cairn_settings':{
+                'vote_commit':evidence['databases']['cairn'].get('gateway_settings',{}).get('CAIRN_VOTE_COMMIT','not recorded'),
+                'storage_connections':evidence['databases']['cairn'].get('gateway_settings',{}).get('CAIRN_STORAGE_CONNECTIONS','not recorded'),
+                'cpu_layout':evidence['databases']['cairn'].get('cpu_layout','not recorded')},
             'isolation_levels':{database:evidence['databases'][database]['transaction_isolation'] for database in DATABASES},
             'databases':summaries,'cairn_throughput_ratio':ratios}
 
@@ -96,7 +100,9 @@ def main():
         ratios=report['cairn_throughput_ratio'][workload]
         lines.append(f'| {workload} | {rates[0]:,.0f} | {rates[1]:,.0f} | {rates[2]:,.0f} | {ratios["yugabyte"]:.2f}x | {ratios["tidb"]:.2f}x |')
     isolation='; '.join(f'{database}: {level}' for database,level in report['isolation_levels'].items())
-    text='\n'.join(lines)+'\n\nMedians of repeated runs. '+report['scope']+'.\n\nIsolation: '+isolation+'.\n'
+    cairn=report['cairn_settings']
+    configuration=f"CAIRN_VOTE_COMMIT={cairn['vote_commit']}; CAIRN_STORAGE_CONNECTIONS={cairn['storage_connections']}; cpu_layout={cairn['cpu_layout']}"
+    text='\n'.join(lines)+'\n\nMedians of repeated runs. '+report['scope']+'.\n\nIsolation: '+isolation+'.\n\nCairn configuration: '+configuration+'.\n'
     (arguments.directory/'comparison-summary.md').write_text(text)
     print(text)
 

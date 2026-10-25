@@ -1,0 +1,141 @@
+{
+  "scope": "single-host, warm-cache, closed-loop development comparison; no production-wide claim",
+  "settings": {
+    "rows": 10000,
+    "payload_bytes": 128,
+    "seconds_per_run": 10,
+    "warmup_seconds": 2,
+    "protocol": "prepared binary parameters and results"
+  },
+  "cairn_settings": {
+    "vote_commit": "3",
+    "storage_connections": "32",
+    "cpu_layout": "storage"
+  },
+  "isolation_levels": {
+    "cairn": "strict two-phase locking",
+    "yugabyte": "repeatable read",
+    "tidb": "repeatable read with pessimistic writes"
+  },
+  "databases": {
+    "cairn": {
+      "read": {
+        "clients": 16,
+        "repeats": 3,
+        "median_ops_s": 26260.484282901332,
+        "mean_ops_s": 25832.826239242077,
+        "sample_stddev_ops_s": 881.1762347364686,
+        "min_ops_s": 24819.43295799705,
+        "max_ops_s": 26418.561476827846,
+        "median_p99_us": 1142.625,
+        "serialization_retries": 0
+      },
+      "mixed": {
+        "clients": 16,
+        "repeats": 3,
+        "median_ops_s": 13741.850082318164,
+        "mean_ops_s": 13758.090725947623,
+        "sample_stddev_ops_s": 55.12723867096711,
+        "min_ops_s": 13712.908200142723,
+        "max_ops_s": 13819.513895381982,
+        "median_p99_us": 12162.709,
+        "serialization_retries": 28
+      },
+      "transfer": {
+        "clients": 16,
+        "repeats": 3,
+        "median_ops_s": 1345.6082602469696,
+        "mean_ops_s": 1346.0658153082202,
+        "sample_stddev_ops_s": 3.3363639958341547,
+        "min_ops_s": 1342.9818436426126,
+        "max_ops_s": 1349.6073420350783,
+        "median_p99_us": 44906.875,
+        "serialization_retries": 196
+      }
+    },
+    "yugabyte": {
+      "read": {
+        "clients": 16,
+        "repeats": 3,
+        "median_ops_s": 8090.8736280272515,
+        "mean_ops_s": 8114.859318719721,
+        "sample_stddev_ops_s": 114.70492671608169,
+        "min_ops_s": 8014.043763694151,
+        "max_ops_s": 8239.660564437761,
+        "median_p99_us": 73059.125,
+        "serialization_retries": 0
+      },
+      "mixed": {
+        "clients": 16,
+        "repeats": 3,
+        "median_ops_s": 4541.638361882347,
+        "mean_ops_s": 4506.876342501172,
+        "sample_stddev_ops_s": 74.41821506496875,
+        "min_ops_s": 4421.438207982518,
+        "max_ops_s": 4557.5524576386515,
+        "median_p99_us": 73432.667,
+        "serialization_retries": 1
+      },
+      "transfer": {
+        "clients": 16,
+        "repeats": 3,
+        "median_ops_s": 725.8619131205387,
+        "mean_ops_s": 726.3018531499737,
+        "sample_stddev_ops_s": 4.106992521823838,
+        "min_ops_s": 722.4325411797711,
+        "max_ops_s": 730.6111051496114,
+        "median_p99_us": 74466.833,
+        "serialization_retries": 116
+      }
+    },
+    "tidb": {
+      "read": {
+        "clients": 16,
+        "repeats": 3,
+        "median_ops_s": 28951.001055435645,
+        "mean_ops_s": 29238.91853500578,
+        "sample_stddev_ops_s": 780.7082296034606,
+        "min_ops_s": 28643.057713350998,
+        "max_ops_s": 30122.6968362307,
+        "median_p99_us": 1484.833,
+        "serialization_retries": 0
+      },
+      "mixed": {
+        "clients": 16,
+        "repeats": 3,
+        "median_ops_s": 19325.71878842673,
+        "mean_ops_s": 19227.070262844398,
+        "sample_stddev_ops_s": 227.0874759356986,
+        "min_ops_s": 18967.341453935114,
+        "max_ops_s": 19388.150546171346,
+        "median_p99_us": 11083.209,
+        "serialization_retries": 0
+      },
+      "transfer": {
+        "clients": 16,
+        "repeats": 3,
+        "median_ops_s": 2380.2370432874,
+        "mean_ops_s": 2356.300317426571,
+        "sample_stddev_ops_s": 41.53959651860343,
+        "min_ops_s": 2308.3345525728787,
+        "max_ops_s": 2380.3293564194346,
+        "median_p99_us": 36763.375,
+        "serialization_retries": 0
+      }
+    }
+  },
+  "cairn_throughput_ratio": {
+    "read": {
+      "yugabyte": 3.245692058757846,
+      "tidb": 0.9070665374443362
+    },
+    "mixed": {
+      "yugabyte": 3.025747315693946,
+      "tidb": 0.711065406299274
+    },
+    "transfer": {
+      "yugabyte": 1.8538075023968286,
+      "tidb": 0.5653253166703596
+    }
+  }
+}
