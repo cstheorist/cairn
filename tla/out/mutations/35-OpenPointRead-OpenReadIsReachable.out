@@ -1,0 +1,304 @@
+TLC2 Version 2026.10.24.013619 (rev: 2ef2af8)
+Warning: Please run the Java VM, which executes TLC with a throughput optimized garbage collector, by passing the "-XX:+UseParallelGC" property.
+(Use the -nowarning option to disable this warning.)
+Running breadth-first search Model-Checking with fp 11 and seed -7796360022712623862 with 1 worker on 16 cores with 1960MB heap and 64MB offheap memory [pid: 1] (Linux 6.10.14-linuxkit aarch64, Eclipse Adoptium 21.0.12.1 64bit, MSBDiskFPSet, DiskStateQueue).
+Parsing file /model/OpenPointRead.tla
+Parsing file /tmp/tlc-11558349896838022702/Integers.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/Integers.tla)
+Parsing file /tmp/tlc-11558349896838022702/FiniteSets.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/FiniteSets.tla)
+Parsing file /tmp/tlc-11558349896838022702/Sequences.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/Sequences.tla)
+Parsing file /tmp/tlc-11558349896838022702/TLC.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/TLC.tla)
+Parsing file /tmp/tlc-11558349896838022702/_TLCTrace.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/_TLCTrace.tla)
+Parsing file /tmp/tlc-11558349896838022702/Naturals.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/Naturals.tla)
+Parsing file /tmp/tlc-11558349896838022702/TLCExt.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/TLCExt.tla)
+Semantic processing of module Naturals
+Semantic processing of module Integers
+Semantic processing of module Sequences
+Semantic processing of module FiniteSets
+Semantic processing of module TLC
+Semantic processing of module TLCExt
+Semantic processing of module _TLCTrace
+Semantic processing of module OpenPointRead
+Linting of module TLCExt
+Linting of module _TLCTrace
+Linting of module OpenPointRead
+Starting... (2026-10-25 19:46:57)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-10-25 19:46:57.
+Error: Invariant OpenReadIsReachable is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ phase = <<"active", "active">>
+/\ viewRows = <<0, 0>>
+/\ yes = <<{}, {}>>
+/\ durable = <<{}, {}>>
+/\ viewBlocked = {}
+/\ batchPhase = "idle"
+/\ ticket = <<0>>
+/\ commitAt = <<0, 0>>
+/\ cohort = <<{}>>
+/\ state = <<"new">>
+/\ consistent = <<TRUE, TRUE>>
+/\ cutoff = 0
+/\ applied = <<{}, {}>>
+/\ collected = <<-1>>
+/\ issued = 0
+/\ intents = <<{}, {}>>
+/\ observed = <<<<-1, -1>>, <<-1, -1>>>>
+/\ acknowledged = {}
+/\ responseCut = <<0>>
+/\ tableX = <<{}, {}>>
+/\ history = <<<<0, 0>>>>
+/\ rows = <<0, 0>>
+/\ locks = <<<<"none", "none">>, <<"none", "none">>>>
+/\ result = <<-1>>
+/\ participants = <<{}, {}>>
+/\ logicalRows = <<0, 0>>
+/\ members = {}
+/\ minimum = <<[ack |-> 1, seen |-> 1]>>
+/\ batchShard = 1
+/\ memberCut = <<0>>
+/\ invokeCut = <<0>>
+/\ key = <<1>>
+
+State 2: <OpenWitnessNext line 298, col 20 to line 298, col 186 of module OpenPointRead>
+/\ phase = <<"active", "active">>
+/\ viewRows = <<0, 0>>
+/\ yes = <<{}, {}>>
+/\ durable = <<{}, {}>>
+/\ viewBlocked = {}
+/\ batchPhase = "idle"
+/\ ticket = <<0>>
+/\ commitAt = <<0, 0>>
+/\ cohort = <<{}>>
+/\ state = <<"new">>
+/\ consistent = <<TRUE, TRUE>>
+/\ cutoff = 0
+/\ applied = <<{}, {}>>
+/\ collected = <<-1>>
+/\ issued = 0
+/\ intents = <<{1}, {}>>
+/\ observed = <<<<-1, -1>>, <<-1, -1>>>>
+/\ acknowledged = {}
+/\ responseCut = <<0>>
+/\ tableX = <<{}, {}>>
+/\ history = <<<<0, 0>>>>
+/\ rows = <<0, 0>>
+/\ locks = <<<<"write", "none">>, <<"none", "none">>>>
+/\ result = <<-1>>
+/\ participants = <<{}, {}>>
+/\ logicalRows = <<0, 0>>
+/\ members = {}
+/\ minimum = <<[ack |-> 1, seen |-> 1]>>
+/\ batchShard = 1
+/\ memberCut = <<0>>
+/\ invokeCut = <<0>>
+/\ key = <<1>>
+
+State 3: <OpenWitnessNext line 298, col 20 to line 298, col 186 of module OpenPointRead>
+/\ phase = <<"active", "active">>
+/\ viewRows = <<0, 0>>
+/\ yes = <<{}, {}>>
+/\ durable = <<{}, {}>>
+/\ viewBlocked = {}
+/\ batchPhase = "idle"
+/\ ticket = <<1>>
+/\ commitAt = <<0, 0>>
+/\ cohort = <<{}>>
+/\ state = <<"pending">>
+/\ consistent = <<TRUE, TRUE>>
+/\ cutoff = 0
+/\ applied = <<{}, {}>>
+/\ collected = <<-1>>
+/\ issued = 1
+/\ intents = <<{1}, {}>>
+/\ observed = <<<<-1, -1>>, <<-1, -1>>>>
+/\ acknowledged = {}
+/\ responseCut = <<0>>
+/\ tableX = <<{}, {}>>
+/\ history = <<<<0, 0>>>>
+/\ rows = <<0, 0>>
+/\ locks = <<<<"write", "none">>, <<"none", "none">>>>
+/\ result = <<-1>>
+/\ participants = <<{}, {}>>
+/\ logicalRows = <<0, 0>>
+/\ members = {}
+/\ minimum = <<[ack |-> 1, seen |-> 1]>>
+/\ batchShard = 1
+/\ memberCut = <<0>>
+/\ invokeCut = <<1>>
+/\ key = <<1>>
+
+State 4: <OpenWitnessNext line 298, col 20 to line 298, col 186 of module OpenPointRead>
+/\ phase = <<"active", "active">>
+/\ viewRows = <<0, 0>>
+/\ yes = <<{}, {}>>
+/\ durable = <<{}, {}>>
+/\ viewBlocked = {}
+/\ batchPhase = "collecting"
+/\ ticket = <<1>>
+/\ commitAt = <<0, 0>>
+/\ cohort = <<{}>>
+/\ state = <<"pending">>
+/\ consistent = <<TRUE, TRUE>>
+/\ cutoff = 1
+/\ applied = <<{}, {}>>
+/\ collected = <<-1>>
+/\ issued = 1
+/\ intents = <<{1}, {}>>
+/\ observed = <<<<-1, -1>>, <<-1, -1>>>>
+/\ acknowledged = {}
+/\ responseCut = <<0>>
+/\ tableX = <<{}, {}>>
+/\ history = <<<<0, 0>>>>
+/\ rows = <<0, 0>>
+/\ locks = <<<<"write", "none">>, <<"none", "none">>>>
+/\ result = <<-1>>
+/\ participants = <<{}, {}>>
+/\ logicalRows = <<0, 0>>
+/\ members = {}
+/\ minimum = <<[ack |-> 1, seen |-> 1]>>
+/\ batchShard = 1
+/\ memberCut = <<0>>
+/\ invokeCut = <<1>>
+/\ key = <<1>>
+
+State 5: <OpenWitnessNext line 298, col 20 to line 298, col 186 of module OpenPointRead>
+/\ phase = <<"active", "active">>
+/\ viewRows = <<0, 0>>
+/\ yes = <<{}, {}>>
+/\ durable = <<{}, {}>>
+/\ viewBlocked = {}
+/\ batchPhase = "collecting"
+/\ ticket = <<1>>
+/\ commitAt = <<0, 0>>
+/\ cohort = <<{}>>
+/\ state = <<"running">>
+/\ consistent = <<TRUE, TRUE>>
+/\ cutoff = 1
+/\ applied = <<{}, {}>>
+/\ collected = <<-1>>
+/\ issued = 1
+/\ intents = <<{1}, {}>>
+/\ observed = <<<<-1, -1>>, <<-1, -1>>>>
+/\ acknowledged = {}
+/\ responseCut = <<0>>
+/\ tableX = <<{}, {}>>
+/\ history = <<<<0, 0>>>>
+/\ rows = <<0, 0>>
+/\ locks = <<<<"write", "none">>, <<"none", "none">>>>
+/\ result = <<-1>>
+/\ participants = <<{}, {}>>
+/\ logicalRows = <<0, 0>>
+/\ members = {1}
+/\ minimum = <<[ack |-> 1, seen |-> 1]>>
+/\ batchShard = 1
+/\ memberCut = <<0>>
+/\ invokeCut = <<1>>
+/\ key = <<1>>
+
+State 6: <OpenWitnessNext line 298, col 20 to line 298, col 186 of module OpenPointRead>
+/\ phase = <<"active", "active">>
+/\ viewRows = <<0, 0>>
+/\ yes = <<{}, {}>>
+/\ durable = <<{}, {}>>
+/\ viewBlocked = {}
+/\ batchPhase = "reading"
+/\ ticket = <<1>>
+/\ commitAt = <<0, 0>>
+/\ cohort = <<{}>>
+/\ state = <<"running">>
+/\ consistent = <<TRUE, TRUE>>
+/\ cutoff = 1
+/\ applied = <<{}, {}>>
+/\ collected = <<-1>>
+/\ issued = 1
+/\ intents = <<{1}, {}>>
+/\ observed = <<<<-1, -1>>, <<-1, -1>>>>
+/\ acknowledged = {}
+/\ responseCut = <<0>>
+/\ tableX = <<{}, {}>>
+/\ history = <<<<0, 0>>>>
+/\ rows = <<0, 0>>
+/\ locks = <<<<"write", "none">>, <<"none", "none">>>>
+/\ result = <<-1>>
+/\ participants = <<{}, {}>>
+/\ logicalRows = <<0, 0>>
+/\ members = {1}
+/\ minimum = <<[ack |-> 1, seen |-> 1]>>
+/\ batchShard = 1
+/\ memberCut = <<0>>
+/\ invokeCut = <<1>>
+/\ key = <<1>>
+
+State 7: <OpenWitnessNext line 298, col 20 to line 298, col 186 of module OpenPointRead>
+/\ phase = <<"active", "active">>
+/\ viewRows = <<0, 0>>
+/\ yes = <<{}, {}>>
+/\ durable = <<{}, {}>>
+/\ viewBlocked = {}
+/\ batchPhase = "reading"
+/\ ticket = <<1>>
+/\ commitAt = <<0, 0>>
+/\ cohort = <<{}>>
+/\ state = <<"running">>
+/\ consistent = <<TRUE, TRUE>>
+/\ cutoff = 1
+/\ applied = <<{}, {}>>
+/\ collected = <<0>>
+/\ issued = 1
+/\ intents = <<{1}, {}>>
+/\ observed = <<<<-1, -1>>, <<-1, -1>>>>
+/\ acknowledged = {}
+/\ responseCut = <<0>>
+/\ tableX = <<{}, {}>>
+/\ history = <<<<0, 0>>>>
+/\ rows = <<0, 0>>
+/\ locks = <<<<"write", "none">>, <<"none", "none">>>>
+/\ result = <<-1>>
+/\ participants = <<{}, {}>>
+/\ logicalRows = <<0, 0>>
+/\ members = {1}
+/\ minimum = <<[ack |-> 1, seen |-> 1]>>
+/\ batchShard = 1
+/\ memberCut = <<0>>
+/\ invokeCut = <<1>>
+/\ key = <<1>>
+
+State 8: <OpenWitnessNext line 298, col 20 to line 298, col 186 of module OpenPointRead>
+/\ phase = <<"active", "active">>
+/\ viewRows = <<0, 0>>
+/\ yes = <<{}, {}>>
+/\ durable = <<{}, {}>>
+/\ viewBlocked = {}
+/\ batchPhase = "idle"
+/\ ticket = <<1>>
+/\ commitAt = <<0, 0>>
+/\ cohort = <<{1}>>
+/\ state = <<"done">>
+/\ consistent = <<TRUE, TRUE>>
+/\ cutoff = 1
+/\ applied = <<{}, {}>>
+/\ collected = <<0>>
+/\ issued = 1
+/\ intents = <<{1}, {}>>
+/\ observed = <<<<-1, -1>>, <<-1, -1>>>>
+/\ acknowledged = {}
+/\ responseCut = <<1>>
+/\ tableX = <<{}, {}>>
+/\ history = <<<<0, 0>>>>
+/\ rows = <<0, 0>>
+/\ locks = <<<<"write", "none">>, <<"none", "none">>>>
+/\ result = <<0>>
+/\ participants = <<{}, {}>>
+/\ logicalRows = <<0, 0>>
+/\ members = {}
+/\ minimum = <<[ack |-> 1, seen |-> 1]>>
+/\ batchShard = 1
+/\ memberCut = <<1>>
+/\ invokeCut = <<1>>
+/\ key = <<1>>
+
+41008 states generated, 17896 distinct states found, 10583 states left on queue.
+The depth of the complete state graph search is 8.
+Finished in 00s at (2026-10-25 19:46:57)
+Trace exploration spec path: ./OpenPointRead_TTrace_1792957616.tla

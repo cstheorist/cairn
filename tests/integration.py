@@ -114,6 +114,15 @@ class DatabaseTests(unittest.TestCase):
         self.assertEqual(error.exception.sqlstate, expected, str(error.exception))
         self.assertEqual(self.connection.execute("SELECT 1").fetchone(), (1,), "session must recover after error")
 
+    def assert_released_point(self, key, expected):
+        # Public points may bypass private OPEN claims; explicit readers may not.
+        self.connection.execute("BEGIN")
+        try:
+            row = self.connection.execute(f"SELECT * FROM {self.table} WHERE id = %s", (key,)).fetchone()
+            self.assertEqual(row, expected)
+        finally:
+            self.connection.execute("ROLLBACK")
+
     def test_signed_key_boundaries_and_both_shards(self):
         keys = [-(2**63), -(2**63) + 1, -1, 0, 1, 2**63 - 2, 2**63 - 1]
         for key in keys:
@@ -156,6 +165,7 @@ class DatabaseTests(unittest.TestCase):
         self.connection.execute(f"INSERT INTO {self.table} VALUES (4004, 'original', true)")
         self.sql_error(f"INSERT INTO {self.table} VALUES (4004, 'overwrite', true)", "23505")
         self.assertEqual(self.connection.execute(f"SELECT value FROM {self.table} WHERE id = 4004").fetchone(), ("original",))
+        self.assert_released_point(4004, (4004, "original", True))
 
     def test_reject_unsupported_clauses_and_transactions(self):
         for sql in [
@@ -177,6 +187,7 @@ class DatabaseTests(unittest.TestCase):
                 cursor.execute(f"INSERT INTO {self.table} VALUES (6006, 'must not commit', true); SELECT 1")
             self.assertEqual(error.exception.sqlstate, "0A000")
         self.assertIsNone(self.connection.execute(f"SELECT * FROM {self.table} WHERE id = 6006").fetchone())
+        self.assert_released_point(6006, None)
 
     def test_injection_is_data(self):
         value = "'); DELETE FROM arbitrary; -- 雪"

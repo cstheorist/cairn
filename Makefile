@@ -1,4 +1,4 @@
-.PHONY: up stop test recovery formal bench compare comparison-report check ha-up ha-test ha-recovery vote-test local-finish-test volatile-test pipeline-test
+.PHONY: up stop test recovery formal bench compare comparison-report check ha-up ha-test ha-recovery vote-test local-finish-test volatile-test pipeline-test open-point-test
 PYTHON ?= python3
 up:
 	docker compose up -d --build --wait gateway
@@ -42,7 +42,9 @@ volatile-test:
 	$(PYTHON) scripts/check_volatile.py
 	$(PYTHON) scripts/check_volatile_recovery.py
 pipeline-test:
-	CAIRN_STORAGE_PIPELINE=1 $(MAKE) -j1 ha-up ha-test ha-recovery vote-test local-finish-test volatile-test PYTHON="$(PYTHON)"
+	CAIRN_STORAGE_PIPELINE=1 $(MAKE) -j1 ha-up ha-test ha-recovery vote-test local-finish-test volatile-test open-point-test PYTHON="$(PYTHON)"
+open-point-test:
+	$(PYTHON) scripts/check_open_point_reads.py
 formal:
 	sh scripts/check_formal.sh
 bench:

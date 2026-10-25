@@ -33,8 +33,9 @@ committed tuples directly through Tarantool's **key/value interface**.
 * **Formal checks with executable reuse.** Fourteen Verus-verified functions
   supply the routing, framing, arithmetic and incarnation guards used by Rust.
   Tarantool loads the same arithmetic and incarnation bodies through a native
-  library. Nine bounded TLA+ models and thirty negative checks cover specific
-  storage, locking, batching, transport and commit contracts.
+  library. Ten bounded TLA+ models, thirty-five negative checks and two
+  reachability controls cover specific storage, locking, batching, transport and
+  commit contracts.
 * **Evidence from running systems.** PostgreSQL differential tests, concurrent
   transfers checked per key, native-storage tests, process/leader failures and
   quorum/partition tests. The benchmark harness checks replication, durability,
@@ -84,8 +85,9 @@ connection.close()
 Inside Tarantool this is `box.space.accounts:get{42}`. Native readers have per-table
 read grants. Raw reads can see follower lag or cross-shard application progress.
 For a strong point read, select the writable leader with `cairn.ping` and call
-`cairn.get(table, key, term)`; it checks unresolved writes in the same linearizable
-transaction as the tuple read.
+`cairn.get(table, key, term)`; it checks durable write claims and all exclusive
+table claims in the same linearizable transaction as the tuple read. In volatile
+OPEN mode, private row intents leave the previous committed tuple readable.
 
 ## How it works
 
@@ -129,10 +131,11 @@ does not establish an OLTP-wide advantage.
 
 ## Correctness
 
-* **TLA+:** nine bounded safety models cover durable storage, replica epochs,
+* **TLA+:** ten bounded safety models cover durable storage, replica epochs,
   two-phase commit, predicate locks, read batches, durable votes, local finish,
-  volatile state and pipelined transport. Thirty weakened variants must fail
-  their invariants.
+  volatile state, pipelined transport and committed point visibility. Thirty-five
+  weakened variants must fail their invariants; two controls require reachable
+  reads through OPEN claims and during partial distributed application.
 * **Verus:** fourteen checked executable functions, extracted verbatim into
   `crates/cairn-verified`. The storage-side native library shares those bodies.
 * **Live tests:** SQL/protocol regressions, PostgreSQL differential cases, native

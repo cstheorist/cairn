@@ -29,6 +29,11 @@ class Transactions(unittest.TestCase):
         row = connection.execute(f"SELECT value FROM {self.table} WHERE id = %s", (key,)).fetchone()
         return row[0] if row else None
 
+    def assert_released_before(self):
+        # An implicit scan remains strict against volatile OPEN write claims.
+        rows = self.connection.execute(f"SELECT * FROM {self.table} ORDER BY id").fetchall()
+        self.assertEqual(rows, [(0, "before"), (1, "before")])
+
     def test_cross_shard_commit_and_own_reads(self):
         self.connection.execute("BEGIN")
         self.assertEqual(self.connection.info.transaction_status, TransactionStatus.INTRANS)
@@ -50,6 +55,7 @@ class Transactions(unittest.TestCase):
         self.connection.execute(f"UPDATE {self.table} SET value = 'other' WHERE id = 1")
         self.connection.execute("ROLLBACK")
         for key in (0, 1): self.assertEqual(self.value(self.connection, key), "before")
+        self.assert_released_before()
 
     def test_error_aborts_all_shards_and_commit_becomes_rollback(self):
         self.connection.execute("BEGIN")
@@ -62,6 +68,7 @@ class Transactions(unittest.TestCase):
         self.assertEqual(cursor.statusmessage, "ROLLBACK")
         self.assertEqual(self.connection.info.transaction_status, TransactionStatus.IDLE)
         for key in (0, 1): self.assertEqual(self.value(self.connection, key), "before")
+        self.assert_released_before()
 
     def test_read_only_transaction(self):
         self.connection.execute("BEGIN READ ONLY")
@@ -85,6 +92,10 @@ class Transactions(unittest.TestCase):
             try:
                 self.assertEqual(self.value(self.connection, 0), "before")
                 self.assertEqual(self.value(self.connection, 1), "before")
+                # Public points may see the committed image through volatile
+                # OPEN claims. A strict competing write proves cleanup finished.
+                self.connection.execute(f"UPDATE {self.table} SET value = 'before' WHERE id = 0")
+                self.connection.execute(f"UPDATE {self.table} SET value = 'before' WHERE id = 1")
                 break
             except psycopg.errors.SerializationFailure: time.sleep(.05)
         else: self.fail("disconnected transaction retained row locks")
@@ -118,6 +129,7 @@ class Transactions(unittest.TestCase):
                 self.connection.execute(f"INSERT INTO {self.table} VALUES (1, 'duplicate')")
         self.assertEqual(self.connection.info.transaction_status, TransactionStatus.IDLE)
         self.assertEqual(self.value(self.connection, 0), "before")
+        self.assert_released_before()
 
     def test_cross_shard_write_skew_is_rejected(self):
         with connect() as other:
