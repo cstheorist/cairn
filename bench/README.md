@@ -58,7 +58,7 @@ For diagnostics, `CAIRN_PROFILE_RPC=1` emits per-shard/function RPC counts, fail
 python3 scripts/run_comparison.py --databases cairn --cairn-commit volatile --cairn-cpu-layout storage
 ```
 
-This optional experiment follows a diagnostic that observed leader throttling alongside unused gateway quota. It is not a measured improvement: a smaller gateway cap may hurt reads, mixed workloads or recovery bursts. Validate faults and repeat every workload before drawing conclusions. Cairn metadata records `cpu_layout`; evidence still records actual container limits and checks the aggregate budget, and source archives include both resource files. Report the selected allocation with any result, retain the standard layout as a control, and use fresh matched repeated measurements for comparative claims.
+This optional experiment follows a diagnostic that observed leader throttling alongside unused gateway quota. The [October 25 repeated measurements](RESULTS.md#repeated-cairn-comparison-october-25-2026) observed higher mixed and transfer throughput between two standard controls; read ranges overlapped and TiDB remained ahead. A smaller gateway cap may hurt other workloads or recovery bursts. Fault and volatile-open recovery checks passed under this allocation. Cairn metadata records `cpu_layout`; evidence records actual limits and checks the aggregate budget, and source archives include both resource files. Report the selected allocation with any result, retain the standard layout as a control, and use fresh matched repeated measurements for comparative claims.
 
 ## Broader performance coverage
 
