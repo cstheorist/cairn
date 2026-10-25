@@ -52,6 +52,8 @@ For diagnostics, `CAIRN_PROFILE_RPC=1` emits per-shard/function RPC counts, fail
 
 `--cairn-connections N` selects 1..64 storage sockets per shard (default 8). The selected `CAIRN_STORAGE_CONNECTIONS` is recorded with the other gateway settings. Known SQL errors keep a fully consumed, correctly matched native connection reusable; a transport failure, timeout or leadership fence retires it. Failed mutations are still never replayed automatically.
 
+`--cairn-pipeline` opts into bounded IPROTO multiplexing (`CAIRN_STORAGE_PIPELINE=1`); the default remains serialized. Keep pool size and CPU layout fixed when comparing transports. Both the selected flag and actual gateway environment are retained with the source/image evidence, and summaries display the flag when it was recorded. `make pipeline-test` runs the SQL/native and commit-mode fault suites with pipelining enabled. See the [transport contract](../docs/architecture.md); this option does not imply a measured performance advantage.
+
 `--cairn-cpu-layout standard|storage` selects the benchmark CPU allocation. The default `standard` keeps the gateway at 1.5 CPUs and each of six storage nodes at 0.75 CPU. The optional `storage` layout applies `resources-storage.yaml` after `resources.yaml`: the gateway gets 0.75 CPU and each storage node gets 0.875 CPU. Both total six CPUs and retain the same six GiB memory limit, RF3, quorum two, fsync and election configuration. All replicas receive equal caps, so leader movement does not change the new leader's allocated capacity.
 
 ```sh

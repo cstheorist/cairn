@@ -1,7 +1,7 @@
 use super::*;
 use tokio::net::TcpListener;
 
-fn response(sync: u64, status: u64, body: Value) -> Vec<u8> {
+pub(super) fn response(sync: u64, status: u64, body: Value) -> Vec<u8> {
     encode(
         Value::Map(vec![(0.into(), status.into()), (1.into(), sync.into())]),
         body,
@@ -15,7 +15,7 @@ fn encode(header: Value, body: Value) -> Vec<u8> {
     bytes
 }
 
-fn error_body(message: &str) -> Value {
+pub(super) fn error_body(message: &str) -> Value {
     Value::Map(vec![(0x31.into(), message.into())])
 }
 
@@ -82,18 +82,41 @@ fn ambiguous_or_malformed_response_frames_are_transport_failures() {
     assert_eq!(decode_response(&valid, 7).unwrap(), Value::Array(vec![42.into()]));
 }
 
+#[test]
+fn data_extraction_preserves_first_field_and_terminal_error_precedence() {
+    let body = Value::Map(vec![
+        (0x30.into(), Value::Array(vec![42.into()])),
+        (0x30.into(), Value::Array(vec![99.into()])),
+        (0x31.into(), "[CAIRN:CONFLICT] locked".into()),
+    ]);
+    assert_eq!(
+        decode_response(&response(7, 0, body.clone()), 7).unwrap(),
+        Value::Array(vec![42.into()])
+    );
+    assert_eq!(
+        decode_response(&response(7, 0x8001, body), 7).unwrap_err().code,
+        "40001"
+    );
+    assert_eq!(
+        decode_response(&response(7, 0, Value::Map(vec![])), 7).unwrap(),
+        Value::Array(vec![])
+    );
+}
+
 async fn connected_cluster() -> (Cluster, TcpStream) {
     let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
     let address = listener.local_addr().unwrap().to_string();
     let socket = TcpStream::connect(&address).await.unwrap();
     let (server, _) = listener.accept().await.unwrap();
     let mut cluster = Cluster::new(vec![address.clone()], "unused".into(), "unused".into()).unwrap();
+    cluster.pipeline = false;
     // Install the equivalent of a successfully authenticated pooled connection.
     let pool = &mut cluster.shards[0];
     pool.leader = Mutex::new(Some(Leader {
         address,
         term: 1,
         incarnation: 1,
+        generation: 0,
     }));
     pool.slots = vec![Mutex::new(Some((
         0,
@@ -105,7 +128,7 @@ async fn connected_cluster() -> (Cluster, TcpStream) {
     (cluster, server)
 }
 
-async fn read_request(socket: &mut TcpStream) -> (u64, Value) {
+pub(super) async fn read_request(socket: &mut TcpStream) -> (u64, Value) {
     assert_eq!(socket.read_u8().await.unwrap(), 0xce);
     let length = socket.read_u32().await.unwrap();
     let mut bytes = vec![0; length as usize];
@@ -117,7 +140,7 @@ async fn read_request(socket: &mut TcpStream) -> (u64, Value) {
     (field(&header, 1).and_then(Value::as_u64).unwrap(), body)
 }
 
-async fn write_response(socket: &mut TcpStream, bytes: &[u8]) {
+pub(super) async fn write_response(socket: &mut TcpStream, bytes: &[u8]) {
     socket.write_u8(0xce).await.unwrap();
     socket.write_u32(bytes.len() as u32).await.unwrap();
     socket.write_all(bytes).await.unwrap();

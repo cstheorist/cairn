@@ -24,15 +24,19 @@ else
     cat tla/out/verus.out
     exit 1
 fi
-for model in ShardStore ReplicaEpoch TwoPhaseCommit PredicateLocks ReadBatch VoteCommit LocalFinish VolatileOpen; do
-    output="tla/out/$model.out"
+for model in ShardStore ReplicaEpoch TwoPhaseCommit PredicateLocks ReadBatch VoteCommit LocalFinish VolatileOpen IprotoPipeline; do
+  configurations="$model"
+  if [ "$model" = IprotoPipeline ]; then configurations="$model IprotoPipelineCount"; fi
+  for configuration in $configurations; do
+    output="tla/out/$configuration.out"
     if [ "${TLC_USE_JAVA:-0}" = 1 ]; then
-        if java -XX:+UseParallelGC -cp "$TLA2TOOLS" tlc2.TLC -workers 2 -metadir "tla/states/$model" -config "tla/$model.cfg" "tla/$model.tla" > "$output" 2>&1; then
+        if java -XX:+UseParallelGC -cp "$TLA2TOOLS" tlc2.TLC -workers 2 -metadir "tla/states/$configuration" -config "tla/$configuration.cfg" "tla/$model.tla" > "$output" 2>&1; then
             cat "$output"
         else cat "$output"; exit 1; fi
     else
-        if docker run --rm -v "$PWD:/app" -w /app eclipse-temurin:21-jre java -XX:+UseParallelGC -cp "$TLA2TOOLS" tlc2.TLC -workers 2 -metadir "tla/states/$model" -config "tla/$model.cfg" "tla/$model.tla" > "$output" 2>&1; then
+        if docker run --rm -v "$PWD:/app" -w /app eclipse-temurin:21-jre java -XX:+UseParallelGC -cp "$TLA2TOOLS" tlc2.TLC -workers 2 -metadir "tla/states/$configuration" -config "tla/$configuration.cfg" "tla/$model.tla" > "$output" 2>&1; then
             cat "$output"
         else cat "$output"; exit 1; fi
     fi
+  done
 done

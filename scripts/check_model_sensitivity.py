@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Ensure bounded models detect early acknowledgements and weak commit guards."""
+import argparse
 import pathlib
 import shutil
 import subprocess
@@ -8,22 +9,26 @@ import tempfile
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / 'tla/out/mutations'
 OUTPUT.mkdir(parents=True, exist_ok=True)
-with tempfile.TemporaryDirectory(prefix="cairn-tla-") as temporary:
-    directory = pathlib.Path(temporary)
-    source = (ROOT / "tla/ShardStore.tla").read_text()
-    guard = 'phase[op] = "stored"'
-    assert source.count(guard) == 1
-    (directory / "ShardStore.tla").write_text(source.replace(guard, 'phase[op] \\in {"sent", "stored"}'))
-    shutil.copyfile(ROOT / "tla/ShardStore.cfg", directory / "ShardStore.cfg")
-    result = subprocess.run([
-        "docker", "run", "--rm", "-v", f"{directory}:/model", "-v", f"{ROOT / '.tools/tla2tools.jar'}:/tla2tools.jar:ro",
-        "-w", "/model", "eclipse-temurin:21-jre", "java", "-cp", "/tla2tools.jar", "tlc2.TLC",
-        "-workers", "1", "-metadir", "/tmp/states", "-config", "ShardStore.cfg", "ShardStore.tla",
-    ], text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    (OUTPUT / '00-ShardStore-NoFalseAcknowledgement.out').write_text(result.stdout)
-    if result.returncode == 0 or "Invariant NoFalseAcknowledgement is violated" not in result.stdout:
-        raise SystemExit("expected an early-acknowledgement counterexample, got:\n" + result.stdout)
-    print("mutation check passed: TLC rejected acknowledgement before durable commit")
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument('--model', choices=['ShardStore','ReplicaEpoch','TwoPhaseCommit','PredicateLocks','ReadBatch','VoteCommit','LocalFinish','VolatileOpen','IprotoPipeline'])
+options = parser.parse_args()
+if options.model in (None, 'ShardStore'):
+    with tempfile.TemporaryDirectory(prefix="cairn-tla-") as temporary:
+        directory = pathlib.Path(temporary)
+        source = (ROOT / "tla/ShardStore.tla").read_text()
+        guard = 'phase[op] = "stored"'
+        assert source.count(guard) == 1
+        (directory / "ShardStore.tla").write_text(source.replace(guard, 'phase[op] \\in {"sent", "stored"}'))
+        shutil.copyfile(ROOT / "tla/ShardStore.cfg", directory / "ShardStore.cfg")
+        result = subprocess.run([
+            "docker", "run", "--rm", "-v", f"{directory}:/model", "-v", f"{ROOT / '.tools/tla2tools.jar'}:/tla2tools.jar:ro",
+            "-w", "/model", "eclipse-temurin:21-jre", "java", "-cp", "/tla2tools.jar", "tlc2.TLC",
+            "-workers", "1", "-metadir", "/tmp/states", "-config", "ShardStore.cfg", "ShardStore.tla",
+        ], text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        (OUTPUT / '00-ShardStore-NoFalseAcknowledgement.out').write_text(result.stdout)
+        if result.returncode == 0 or "Invariant NoFalseAcknowledgement is violated" not in result.stdout:
+            raise SystemExit("expected an early-acknowledgement counterexample, got:\n" + result.stdout)
+        print("mutation check passed: TLC rejected acknowledgement before durable commit")
 
 CASES = [
     ("VolatileOpen", '/\\ idEpoch = -1 \\/ idEpoch = incarnation[Home]', '/\\ TRUE', "ActiveHomeIncarnation"),
@@ -43,14 +48,34 @@ CASES = [
     ("TwoPhaseCommit", '/\\ enlisted # {} /\\ preparedReceipts = enlisted', '/\\ enlisted # {}', "CommitRequiresPrepare"),
     ("TwoPhaseCommit", '/\\ enlisted = {p} /\\ phase[p] = "open"', '/\\ p \\in enlisted /\\ phase[p] = "open"', "CommitRequiresPrepare"),
     ("PredicateLocks", 'IF @ \\in {"write","scan_write"} THEN "scan_write" ELSE "scan"', '"scan"', "RepeatableReadsAndNoPhantoms"),
+    ("IprotoPipeline", '/\\ target[2] = frame[1][2]', '/\\ TRUE', "ResponseAssociation"),
+    ("IprotoPipeline", '/\\ s = nextSync[p]', '/\\ (s = nextSync[p] \\/ \\E old \\in pending : old[1] = p /\\ old[2] = s /\\ phase[old[3]] = "abandoned")', "NoSyncReuse"),
+    ("IprotoPipeline", 'TerminalKinds == {"ok","db","fence"}', 'TerminalKinds == {"ok","db","fence","chunk"}', "NoNonfinalCompletion"),
+    ("IprotoPipeline", '/\\ phase[r] = "fenced"', '/\\ phase[r] \\in {"fenced","uncertain"}', "NoDuplicateMutationEffect"),
+    ("IprotoPipeline", '/\\ target[1] = frame[1][1]', '/\\ target[1][1] = frame[1][1][1]', "GenerationIsolation"),
+    ("IprotoPipeline", '/\\ Cardinality(Entries(p)) < MaxCount', '/\\ TRUE', "CountBound"),
+    ("IprotoPipeline", '/\\ Bytes(Entries(p)) + cost[r] <= MaxBytes', '/\\ TRUE', "ByteBound"),
+    ("IprotoPipeline", '/\\ pending\' = pending \\ Entries(p)\n    /\\ phase\' = Resolve(Entries(p), NoFrame, "uncertain")', '/\\ pending\' = pending\n    /\\ phase\' = Resolve(Entries(p), NoFrame, "uncertain")', "RetiredHasNoPending"),
+    ("IprotoPipeline", '/\\ retired\' = retired \\cup {p} \\* fatal protocol frame', '/\\ retired\' = retired \\* fatal protocol frame', "FailureRetiresGeneration"),
+    ("IprotoPipeline", 'IF p[2] = generation /\\ generation < 3 THEN generation+1 ELSE generation', 'IF generation < 3 THEN generation+1 ELSE generation', "OldFailureCannotInvalidateNewPool"),
+    ("IprotoPipeline", '/\\ retries[r] = 0', '/\\ retries[r] < 2', "FenceRetryAtMostOnce"),
+    ("IprotoPipeline", '/\\ pending\' = pending \\* retain ownership after caller cancellation', '/\\ pending\' = {c \\in pending : c[3] # r}', "PendingOwnership"),
 ]
 for number, (model, guard, mutation, invariant) in enumerate(CASES, start=1):
+    if options.model is not None and model != options.model: continue
     with tempfile.TemporaryDirectory(prefix="cairn-tla-") as temporary:
         directory = pathlib.Path(temporary)
         source = (ROOT / f"tla/{model}.tla").read_text()
         assert source.count(guard) == 1, (model, guard)
         (directory / f"{model}.tla").write_text(source.replace(guard, mutation))
-        shutil.copyfile(ROOT / f"tla/{model}.cfg", directory / f"{model}.cfg")
+        config_name = 'IprotoPipelineCount' if model == 'IprotoPipeline' and invariant == 'CountBound' else model
+        configuration = (ROOT / f"tla/{config_name}.cfg").read_text()
+        if model == 'IprotoPipeline':
+            # Check the named consequence rather than stopping at a different,
+            # earlier invariant. In particular, unknown replay must exhibit two
+            # server-side effects, not merely the forbidden retry admission.
+            configuration = configuration.split('INVARIANTS', 1)[0] + f'INVARIANT {invariant}\n'
+        (directory / f"{model}.cfg").write_text(configuration)
         result = subprocess.run([
             "docker", "run", "--rm", "-v", f"{directory}:/model", "-v", f"{ROOT / '.tools/tla2tools.jar'}:/tla2tools.jar:ro",
             "-w", "/model", "eclipse-temurin:21-jre", "java", "-cp", "/tla2tools.jar", "tlc2.TLC",

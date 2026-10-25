@@ -32,3 +32,15 @@ jobs:
         run: docker compose -f compose.replication.yaml logs --tail 100
       - if: always()
         run: docker compose -f compose.replication.yaml down
+  pipeline:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      CAIRN_STORAGE_PIPELINE: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - run: sh ci/check.sh replication
+      - if: always()
+        run: docker compose -f compose.replication.yaml logs --tail 100
+      - if: always()
+        run: docker compose -f compose.replication.yaml down

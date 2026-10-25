@@ -21,6 +21,8 @@ const MAX_PACKET: u64 = 8 * 1024 * 1024;
 const TIMEOUT: Duration = Duration::from_secs(5);
 const MAX_READ_BATCH: usize = 64;
 
+mod pipeline;
+
 struct PointRead {
     arguments: Vec<Value>,
     reply: oneshot::Sender<Result<Vec<Value>>>,
@@ -57,17 +59,26 @@ fn response_field(header: &Value, key: u64) -> Result<u64> {
     Ok(value)
 }
 
-fn decode_response(response: &[u8], sync: u64) -> Result<Value> {
+fn response_parts(response: &[u8]) -> Result<(Value, Value)> {
     let mut cursor = Cursor::new(response);
     let header = rmpv::decode::read_value(&mut cursor).map_err(transport)?;
     let body = rmpv::decode::read_value(&mut cursor).map_err(transport)?;
     if cursor.position() != response.len() as u64 || !body.is_map() {
         return Err(transport("invalid response body or trailing data"));
     }
-    if response_field(&header, 1)? != sync {
+    Ok((header, body))
+}
+
+fn decode_response(response: &[u8], sync: u64) -> Result<Value> {
+    let (header, body) = response_parts(response)?;
+    decode_response_parts(&header, body, sync)
+}
+
+fn decode_response_parts(header: &Value, body: Value, sync: u64) -> Result<Value> {
+    if response_field(header, 1)? != sync {
         return Err(transport("response sync mismatch"));
     }
-    let status = response_field(&header, 0)?;
+    let status = response_field(header, 0)?;
     // Only OK and TYPE_ERROR terminate a request. In particular, CHUNK (0x80)
     // leaves a final response pending. Retire this unsupported stream instead
     // of returning a reusable SQL error or interpreting a push as a fence.
@@ -97,7 +108,14 @@ fn decode_response(response: &[u8], sync: u64) -> Result<Value> {
         };
         return Err(DbError::new(code, message));
     }
-    Ok(field(&body, 0x30).cloned().unwrap_or(Value::Array(vec![])))
+    match body {
+        Value::Map(fields) => Ok(fields
+            .into_iter()
+            .find(|(key, _)| key.as_u64() == Some(0x30))
+            .map(|(_, value)| value)
+            .unwrap_or(Value::Array(vec![]))),
+        _ => Err(transport("response body is not a map")),
+    }
 }
 
 struct Connection {
@@ -181,10 +199,10 @@ impl Connection {
                 Value::Map(vec![(0x22.into(), function.into()), (0x21.into(), Value::Array(args))]),
             )
             .await?;
-        value
-            .as_array()
-            .cloned()
-            .ok_or_else(|| transport("CALL response is not an array"))
+        match value {
+            Value::Array(values) => Ok(values),
+            _ => Err(transport("CALL response is not an array")),
+        }
     }
 }
 
@@ -195,8 +213,9 @@ struct Pool {
     members: Vec<String>,
     leader: Mutex<Option<Leader>>,
     slots: Vec<Mutex<Option<(u64, Connection)>>>,
+    pipeline_slots: Vec<Mutex<Option<pipeline::Pipeline>>>,
     cursor: AtomicUsize,
-    generation: AtomicU64,
+    generation: std::sync::Arc<AtomicU64>,
     observed_term: AtomicU64,
     read_queue: OnceCell<mpsc::Sender<PointRead>>,
 }
@@ -206,12 +225,14 @@ struct Leader {
     address: String,
     term: u64,
     incarnation: u64,
+    generation: u64,
 }
 
 pub struct Cluster {
     shards: Vec<Pool>,
     user: String,
     password: String,
+    pipeline: bool,
     profile: Option<std::sync::Mutex<std::collections::BTreeMap<String, RpcCounters>>>,
 }
 
@@ -267,14 +288,16 @@ impl Cluster {
                     members,
                     leader: Mutex::new(None),
                     slots: (0..connections).map(|_| Mutex::new(None)).collect(),
+                    pipeline_slots: (0..connections).map(|_| Mutex::new(None)).collect(),
                     cursor: AtomicUsize::new(0),
-                    generation: AtomicU64::new(0),
+                    generation: std::sync::Arc::new(AtomicU64::new(0)),
                     observed_term: AtomicU64::new(0),
                     read_queue: OnceCell::new(),
                 })
                 .collect(),
             user,
             password,
+            pipeline: std::env::var("CAIRN_STORAGE_PIPELINE").as_deref() == Ok("1"),
             profile: (std::env::var("CAIRN_PROFILE_RPC").as_deref() == Ok("1"))
                 .then(|| std::sync::Mutex::new(std::collections::BTreeMap::new())),
         })
@@ -435,7 +458,11 @@ impl Cluster {
     async fn leader(&self, shard: usize) -> Result<Leader> {
         let pool = &self.shards[shard];
         let mut cached = pool.leader.lock().await;
-        if let Some(leader) = cached.as_ref() {
+        let generation = pool.generation.load(Ordering::Acquire);
+        if generation == u64::MAX {
+            return Err(transport("storage generation exhausted"));
+        }
+        if let Some(leader) = cached.as_ref().filter(|leader| leader.generation == generation) {
             return Ok(leader.clone());
         }
         let mut probes = tokio::task::JoinSet::new();
@@ -476,6 +503,7 @@ impl Cluster {
                         address,
                         term,
                         incarnation,
+                        generation,
                     });
                 }
             }
@@ -491,6 +519,9 @@ impl Cluster {
                     format!("no writable leader in shard {shard} at epoch {maximum_term}"),
                 )
             })?;
+        if pool.generation.load(Ordering::Acquire) != generation {
+            return Err(transport("leader generation changed during discovery"));
+        }
         *cached = Some(leader.clone());
         Ok(leader)
     }
@@ -498,11 +529,23 @@ impl Cluster {
     async fn invalidate(&self, shard: usize) {
         let pool = &self.shards[shard];
         let mut leader = pool.leader.lock().await;
-        pool.generation.fetch_add(1, Ordering::AcqRel);
+        let mut generation = pool.generation.load(Ordering::Acquire);
+        while let Some(next) = generation.checked_add(1) {
+            match pool
+                .generation
+                .compare_exchange(generation, next, Ordering::AcqRel, Ordering::Acquire)
+            {
+                Ok(_) => break,
+                Err(current) => generation = current,
+            }
+        }
         *leader = None;
     }
 
     async fn call_once(&self, shard: usize, function: &str, mut args: Vec<Value>) -> Result<Vec<Value>> {
+        if self.pipeline {
+            return self.call_once_pipelined(shard, function, args).await;
+        }
         let pool = &self.shards[shard];
         let leader = self.leader(shard).await?;
         if function != "cairn.ping" {
@@ -541,6 +584,55 @@ impl Cluster {
             // Future requests replace every socket established before this failure.
             // The failed operation itself is never retried, including after timeouts.
             self.invalidate(shard).await;
+        }
+        result
+    }
+
+    async fn call_once_pipelined(&self, shard: usize, function: &str, mut args: Vec<Value>) -> Result<Vec<Value>> {
+        let pool = &self.shards[shard];
+        let leader = self.leader(shard).await?;
+        if function != "cairn.ping" {
+            args.push(leader.term.into());
+        }
+        let slot = pool.cursor.fetch_add(1, Ordering::Relaxed) % pool.pipeline_slots.len();
+        let deadline = tokio::time::Instant::now() + TIMEOUT;
+        let operation = async {
+            let connection = {
+                let mut guard = pool.pipeline_slots[slot].lock().await;
+                if pool.generation.load(Ordering::Acquire) != leader.generation {
+                    return Err(transport("leader changed before pipeline admission"));
+                }
+                if guard.as_ref().is_none_or(|connection| !connection.usable()) {
+                    let socket = Connection::connect(&leader.address, &self.user, &self.password).await?;
+                    if pool.generation.load(Ordering::Acquire) != leader.generation {
+                        return Err(transport("leader changed during pipeline authentication"));
+                    }
+                    *guard = Some(pipeline::Pipeline::start(
+                        socket,
+                        pool.generation.clone(),
+                        leader.generation,
+                    ));
+                }
+                guard.as_ref().unwrap().clone()
+            };
+            connection.call(function, args, deadline).await
+        };
+        let result = tokio::time::timeout_at(deadline, operation)
+            .await
+            .map_err(|_| transport("5-second deadline elapsed"))
+            .and_then(|result| result);
+        if result
+            .as_ref()
+            .is_err_and(|error| matches!(error.code, "08006" | "57P03"))
+        {
+            // A pipeline can already have retired in its reader/watchdog, even
+            // when the owner of its triggering request was cancelled.
+            let _ = pool.generation.compare_exchange(
+                leader.generation,
+                leader.generation.saturating_add(1),
+                Ordering::AcqRel,
+                Ordering::Acquire,
+            );
         }
         result
     }
