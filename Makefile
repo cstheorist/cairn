@@ -48,6 +48,7 @@ compare:
 comparison-report:
 	$(PYTHON) scripts/report_comparison.py
 check:
+	$(PYTHON) -B tests/replication_probe.py
 	$(PYTHON) scripts/extract_core.py --check
 	cargo fmt --all --check
 	cargo clippy --workspace --locked --all-targets -- -D warnings
