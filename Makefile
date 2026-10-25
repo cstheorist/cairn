@@ -18,6 +18,7 @@ ha-test:
 	docker compose -f compose.replication.yaml --profile test run --no-deps --rm tests python /tests/native_core.py /artifacts/libcairn_verified_native.so
 	docker compose -f compose.replication.yaml --profile reference up -d --wait reference
 	docker compose -f compose.replication.yaml --profile test run --no-deps --rm tests python /tests/transactions.py
+	docker compose -f compose.replication.yaml --profile test run --no-deps --rm tests python /tests/transaction_protocol_retries.py
 	docker compose -f compose.replication.yaml --profile test run --no-deps --rm tests python /tests/transaction_protocol.py
 	docker compose -f compose.replication.yaml --profile test run --no-deps --rm tests python /tests/local_commit.py
 	docker compose -f compose.replication.yaml --profile test run --no-deps --rm tests python /tests/transaction_start.py
@@ -46,6 +47,7 @@ compare:
 comparison-report:
 	$(PYTHON) scripts/report_comparison.py
 check:
+	$(PYTHON) -B tests/replication_probe.py
 	$(PYTHON) scripts/extract_core.py --check
 	cargo fmt --all --check
 	cargo clippy --workspace --locked --all-targets -- -D warnings

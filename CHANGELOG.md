@@ -19,6 +19,14 @@
 - Matched-resource YugabyteDB/TiDB harness with explicit isolation, source/image
   hashes, restart/replication checks and per-key expected values.
 
+### Fixed
+
+- Isolated-leader fencing probes have bounded native/host deadlines and explicit
+  process exit; timeouts and fencing failures still reconnect the test node.
+
+- Native protocol tests tolerate explicit MVCC rollback when recovery races an
+  idempotent resolution phase. Transport uncertainty and mutations remain fail-fast.
+
 ### Known gaps
 
 - Full PostgreSQL/ORM compatibility, secondary indexes, additional types,
