@@ -1,0 +1,131 @@
+{
+  "scope": "single-host, warm-cache, closed-loop development comparison; no production-wide claim",
+  "settings": {
+    "rows": 10000,
+    "payload_bytes": 128,
+    "seconds_per_run": 10,
+    "warmup_seconds": 2,
+    "protocol": "prepared binary parameters and results"
+  },
+  "databases": {
+    "fastpg": {
+      "read": {
+        "clients": 16,
+        "repeats": 3,
+        "median_ops_s": 27575.702780618412,
+        "mean_ops_s": 27443.010618143064,
+        "sample_stddev_ops_s": 334.1387442043427,
+        "min_ops_s": 27062.90779531779,
+        "max_ops_s": 27690.421278492988,
+        "median_p99_us": 1044.208,
+        "serialization_retries": 0
+      },
+      "mixed": {
+        "clients": 16,
+        "repeats": 3,
+        "median_ops_s": 7852.722120736961,
+        "mean_ops_s": 7913.081959910373,
+        "sample_stddev_ops_s": 241.48166533575665,
+        "min_ops_s": 7707.505835980587,
+        "max_ops_s": 8179.017923013572,
+        "median_p99_us": 23818.5,
+        "serialization_retries": 116
+      },
+      "transfer": {
+        "clients": 16,
+        "repeats": 3,
+        "median_ops_s": 331.9350858670991,
+        "mean_ops_s": 330.8033600701834,
+        "sample_stddev_ops_s": 5.043229783441207,
+        "min_ops_s": 325.2904208443343,
+        "max_ops_s": 335.1845734991168,
+        "median_p99_us": 95677.167,
+        "serialization_retries": 65
+      }
+    },
+    "yugabyte": {
+      "read": {
+        "clients": 16,
+        "repeats": 3,
+        "median_ops_s": 1425.6411492011011,
+        "mean_ops_s": 1422.221151253351,
+        "sample_stddev_ops_s": 13.46734483084228,
+        "min_ops_s": 1407.3735312116855,
+        "max_ops_s": 1433.6487733472666,
+        "median_p99_us": 59106.125,
+        "serialization_retries": 0
+      },
+      "mixed": {
+        "clients": 16,
+        "repeats": 3,
+        "median_ops_s": 455.14064030363824,
+        "mean_ops_s": 452.0249353176263,
+        "sample_stddev_ops_s": 28.171030590311247,
+        "min_ops_s": 422.4255733903841,
+        "max_ops_s": 478.5085922588565,
+        "median_p99_us": 584454.209,
+        "serialization_retries": 420
+      },
+      "transfer": {
+        "clients": 16,
+        "repeats": 3,
+        "median_ops_s": 68.94293927421936,
+        "mean_ops_s": 69.79892963661572,
+        "sample_stddev_ops_s": 1.665303295840368,
+        "min_ops_s": 68.73571878183155,
+        "max_ops_s": 71.71813085379625,
+        "median_p99_us": 4627892.919,
+        "serialization_retries": 2104
+      }
+    },
+    "tidb": {
+      "read": {
+        "clients": 16,
+        "repeats": 3,
+        "median_ops_s": 27875.938948273855,
+        "mean_ops_s": 28218.67945553915,
+        "sample_stddev_ops_s": 820.3896525317755,
+        "min_ops_s": 27625.23869297835,
+        "max_ops_s": 29154.860725365244,
+        "median_p99_us": 1575.584,
+        "serialization_retries": 0
+      },
+      "mixed": {
+        "clients": 16,
+        "repeats": 3,
+        "median_ops_s": 15902.72962772976,
+        "mean_ops_s": 15908.857266444176,
+        "sample_stddev_ops_s": 13.683988279986613,
+        "min_ops_s": 15899.307974841515,
+        "max_ops_s": 15924.534196761255,
+        "median_p99_us": 14976.334,
+        "serialization_retries": 0
+      },
+      "transfer": {
+        "clients": 16,
+        "repeats": 3,
+        "median_ops_s": 2030.4068571191851,
+        "mean_ops_s": 2030.9027196381862,
+        "sample_stddev_ops_s": 27.370806206447302,
+        "min_ops_s": 2003.7832136288707,
+        "max_ops_s": 2058.518088166503,
+        "median_p99_us": 41185.917,
+        "serialization_retries": 0
+      }
+    }
+  },
+  "fastpg_throughput_ratio": {
+    "read": {
+      "yugabyte": 19.342667540194984,
+      "tidb": 0.9892295585733433
+    },
+    "mixed": {
+      "yugabyte": 17.25339691814418,
+      "tidb": 0.49379712191321457
+    },
+    "transfer": {
+      "yugabyte": 4.814634962789054,
+      "tidb": 0.16348205518674253
+    }
+  }
+}

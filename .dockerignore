@@ -1,0 +1,15 @@
+*
+!Cargo.toml
+!Cargo.lock
+!crates/
+!crates/**
+!tests/
+!tests/Dockerfile
+!lua/
+!lua/storage.lua
+!lua/transactions.lua
+!lua/volatile.lua
+!lua/replicated.yaml
+!lua/Dockerfile
+**/target/
+**/__pycache__/

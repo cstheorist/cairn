@@ -1,0 +1,102 @@
+TLC2 Version 2026.10.24.013619 (rev: 2ef2af8)
+Warning: Please run the Java VM, which executes TLC with a throughput optimized garbage collector, by passing the "-XX:+UseParallelGC" property.
+(Use the -nowarning option to disable this warning.)
+Running breadth-first search Model-Checking with fp 59 and seed -6734568255380972515 with 1 worker on 16 cores with 1960MB heap and 64MB offheap memory [pid: 1] (Linux 6.10.14-linuxkit aarch64, Eclipse Adoptium 21.0.12.1 64bit, MSBDiskFPSet, DiskStateQueue).
+Parsing file /model/VoteCommit.tla
+Parsing file /tmp/tlc-11672437042010492990/Integers.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/Integers.tla)
+Parsing file /tmp/tlc-11672437042010492990/FiniteSets.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/FiniteSets.tla)
+Parsing file /tmp/tlc-11672437042010492990/TLC.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/TLC.tla)
+Parsing file /tmp/tlc-11672437042010492990/_TLCTrace.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/_TLCTrace.tla)
+Parsing file /tmp/tlc-11672437042010492990/Naturals.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/Naturals.tla)
+Parsing file /tmp/tlc-11672437042010492990/Sequences.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/Sequences.tla)
+Parsing file /tmp/tlc-11672437042010492990/TLCExt.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/TLCExt.tla)
+Semantic processing of module Naturals
+Semantic processing of module Integers
+Semantic processing of module Sequences
+Semantic processing of module FiniteSets
+Semantic processing of module TLC
+Semantic processing of module TLCExt
+Semantic processing of module _TLCTrace
+Semantic processing of module VoteCommit
+Linting of module TLCExt
+Linting of module _TLCTrace
+Linting of module VoteCommit
+Starting... (2026-10-25 14:18:49)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-10-25 14:18:49.
+Error: Invariant ReleaseRequiresCompletion is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ phase = <<"open", "absent">>
+/\ yes = {}
+/\ no = {}
+/\ frozenMembers = {}
+/\ frozen = FALSE
+/\ acknowledged = FALSE
+/\ online = {0, 1, 2}
+/\ rows = <<0, 0>>
+/\ locks = {1}
+/\ complete = FALSE
+/\ members = {1}
+/\ certificates = {}
+
+State 2: <Prepare(1) line 28, col 5 to line 33, col 84 of module VoteCommit>
+/\ phase = <<"prepared", "absent">>
+/\ yes = {1}
+/\ no = {}
+/\ frozenMembers = {1}
+/\ frozen = TRUE
+/\ acknowledged = FALSE
+/\ online = {0, 1, 2}
+/\ rows = <<0, 0>>
+/\ locks = {1}
+/\ complete = FALSE
+/\ members = {1}
+/\ certificates = {}
+
+State 3: <IssueCommit line 43, col 5 to line 45, col 102 of module VoteCommit>
+/\ phase = <<"prepared", "absent">>
+/\ yes = {1}
+/\ no = {}
+/\ frozenMembers = {1}
+/\ frozen = TRUE
+/\ acknowledged = FALSE
+/\ online = {0, 1, 2}
+/\ rows = <<0, 0>>
+/\ locks = {1}
+/\ complete = FALSE
+/\ members = {1}
+/\ certificates = {"commit"}
+
+State 4: <ApplyCommit(1) line 51, col 5 to line 54, col 104 of module VoteCommit>
+/\ phase = <<"applied_commit", "absent">>
+/\ yes = {1}
+/\ no = {}
+/\ frozenMembers = {1}
+/\ frozen = TRUE
+/\ acknowledged = FALSE
+/\ online = {0, 1, 2}
+/\ rows = <<1, 0>>
+/\ locks = {1}
+/\ complete = FALSE
+/\ members = {1}
+/\ certificates = {"commit"}
+
+State 5: <Release(1) line 67, col 5 to line 71, col 103 of module VoteCommit>
+/\ phase = <<"done_commit", "absent">>
+/\ yes = {1}
+/\ no = {}
+/\ frozenMembers = {1}
+/\ frozen = TRUE
+/\ acknowledged = FALSE
+/\ online = {0, 1, 2}
+/\ rows = <<1, 0>>
+/\ locks = {}
+/\ complete = FALSE
+/\ members = {1}
+/\ certificates = {"commit"}
+
+110 states generated, 57 distinct states found, 31 states left on queue.
+The depth of the complete state graph search is 5.
+Finished in 00s at (2026-10-25 14:18:49)
+Trace exploration spec path: ./VoteCommit_TTrace_1792937929.tla

@@ -1,0 +1,55 @@
+credentials:
+  users:
+    replicator:
+      password: local-replication
+      roles: [replication]
+    gateway:
+      password: local-gateway
+    reader:
+      password: local-reader
+    operator:
+      password: local-operator
+      roles: [super]
+iproto:
+  listen:
+    - uri: 0.0.0.0:3301
+  advertise:
+    peer:
+      login: replicator
+database:
+  use_mvcc_engine: true
+replication:
+  failover: election
+  election_fencing_mode: strict
+  election_timeout: 0.3
+  timeout: 0.2
+  synchro_quorum: 2
+  synchro_timeout: 2
+wal:
+  mode: fsync
+  dir: /var/lib/tarantool
+snapshot:
+  dir: /var/lib/tarantool
+log:
+  level: warn
+app:
+  file: /opt/cairn/storage.lua
+groups:
+  storage:
+    replicasets:
+      shard0:
+        instances:
+          s0a:
+            iproto: {advertise: {peer: {uri: 's0a:3301'}}}
+          s0b:
+            iproto: {advertise: {peer: {uri: 's0b:3301'}}}
+          s0c:
+            iproto: {advertise: {peer: {uri: 's0c:3301'}}}
+      shard1:
+        instances:
+          s1a:
+            iproto: {advertise: {peer: {uri: 's1a:3301'}}}
+          s1b:
+            iproto: {advertise: {peer: {uri: 's1b:3301'}}}
+          s1c:
+            iproto: {advertise: {peer: {uri: 's1c:3301'}}}

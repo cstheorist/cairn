@@ -1,0 +1,124 @@
+TLC2 Version 2026.10.24.013619 (rev: 2ef2af8)
+Warning: Please run the Java VM, which executes TLC with a throughput optimized garbage collector, by passing the "-XX:+UseParallelGC" property.
+(Use the -nowarning option to disable this warning.)
+Running breadth-first search Model-Checking with fp 95 and seed -7828949746496975751 with 1 worker on 16 cores with 1960MB heap and 64MB offheap memory [pid: 1] (Linux 6.10.14-linuxkit aarch64, Eclipse Adoptium 21.0.12.1 64bit, MSBDiskFPSet, DiskStateQueue).
+Parsing file /model/VolatileOpen.tla
+Parsing file /tmp/tlc-12003198456170057875/Integers.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/Integers.tla)
+Parsing file /tmp/tlc-12003198456170057875/FiniteSets.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/FiniteSets.tla)
+Parsing file /tmp/tlc-12003198456170057875/TLC.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/TLC.tla)
+Parsing file /tmp/tlc-12003198456170057875/_TLCTrace.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/_TLCTrace.tla)
+Parsing file /tmp/tlc-12003198456170057875/Naturals.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/Naturals.tla)
+Parsing file /tmp/tlc-12003198456170057875/Sequences.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/Sequences.tla)
+Parsing file /tmp/tlc-12003198456170057875/TLCExt.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/TLCExt.tla)
+Semantic processing of module Naturals
+Semantic processing of module Integers
+Semantic processing of module Sequences
+Semantic processing of module FiniteSets
+Semantic processing of module TLC
+Semantic processing of module TLCExt
+Semantic processing of module _TLCTrace
+Semantic processing of module VolatileOpen
+Linting of module TLCExt
+Linting of module _TLCTrace
+Linting of module VolatileOpen
+Starting... (2026-10-25 14:18:42)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-10-25 14:18:42.
+Error: Invariant ActiveHomeIncarnation is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ clientHasScope = FALSE
+/\ durableWrites = <<{}, {}>>
+/\ tokenEpoch = <<-1, -1>>
+/\ binding = <<-1, -1>>
+/\ present = <<FALSE, FALSE>>
+/\ temporaryWrites = <<{}, {}>>
+/\ scopeEpoch = <<-1, -1>>
+/\ frozen = FALSE
+/\ enlisted = {}
+/\ storedScope = <<FALSE, FALSE>>
+/\ idEpoch = -1
+/\ vote = <<"none", "none">>
+/\ used = <<FALSE, FALSE>>
+/\ decisions = {}
+/\ rootOpen = FALSE
+/\ userAborted = FALSE
+/\ scopeHistory = {}
+/\ incarnation = <<0, 0>>
+/\ acknowledgedWrites = <<{}, {}>>
+/\ scopeMembers = {}
+/\ coordinatorRecorded = FALSE
+
+State 2: <Begin line 32, col 5 to line 41, col 70 of module VolatileOpen>
+/\ clientHasScope = FALSE
+/\ durableWrites = <<{}, {}>>
+/\ tokenEpoch = <<0, -1>>
+/\ binding = <<0, -1>>
+/\ present = <<TRUE, FALSE>>
+/\ temporaryWrites = <<{}, {}>>
+/\ scopeEpoch = <<-1, -1>>
+/\ frozen = FALSE
+/\ enlisted = {1}
+/\ storedScope = <<FALSE, FALSE>>
+/\ idEpoch = 0
+/\ vote = <<"none", "none">>
+/\ used = <<TRUE, FALSE>>
+/\ decisions = {}
+/\ rootOpen = TRUE
+/\ userAborted = FALSE
+/\ scopeHistory = {}
+/\ incarnation = <<0, 0>>
+/\ acknowledgedWrites = <<{}, {}>>
+/\ scopeMembers = {}
+/\ coordinatorRecorded = FALSE
+
+State 3: <Restart(1) line 107, col 5 to line 116, col 70 of module VolatileOpen>
+/\ clientHasScope = FALSE
+/\ durableWrites = <<{}, {}>>
+/\ tokenEpoch = <<0, -1>>
+/\ binding = <<0, -1>>
+/\ present = <<FALSE, FALSE>>
+/\ temporaryWrites = <<{}, {}>>
+/\ scopeEpoch = <<-1, -1>>
+/\ frozen = FALSE
+/\ enlisted = {1}
+/\ storedScope = <<FALSE, FALSE>>
+/\ idEpoch = 0
+/\ vote = <<"none", "none">>
+/\ used = <<FALSE, FALSE>>
+/\ decisions = {}
+/\ rootOpen = FALSE
+/\ userAborted = FALSE
+/\ scopeHistory = {}
+/\ incarnation = <<1, 0>>
+/\ acknowledgedWrites = <<{}, {}>>
+/\ scopeMembers = {}
+/\ coordinatorRecorded = FALSE
+
+State 4: <Begin line 32, col 5 to line 41, col 70 of module VolatileOpen>
+/\ clientHasScope = FALSE
+/\ durableWrites = <<{}, {}>>
+/\ tokenEpoch = <<1, -1>>
+/\ binding = <<1, -1>>
+/\ present = <<TRUE, FALSE>>
+/\ temporaryWrites = <<{}, {}>>
+/\ scopeEpoch = <<-1, -1>>
+/\ frozen = FALSE
+/\ enlisted = {1}
+/\ storedScope = <<FALSE, FALSE>>
+/\ idEpoch = 0
+/\ vote = <<"none", "none">>
+/\ used = <<TRUE, FALSE>>
+/\ decisions = {}
+/\ rootOpen = TRUE
+/\ userAborted = FALSE
+/\ scopeHistory = {}
+/\ incarnation = <<1, 0>>
+/\ acknowledgedWrites = <<{}, {}>>
+/\ scopeMembers = {}
+/\ coordinatorRecorded = FALSE
+
+31 states generated, 26 distinct states found, 17 states left on queue.
+The depth of the complete state graph search is 4.
+Finished in 00s at (2026-10-25 14:18:42)
+Trace exploration spec path: ./VolatileOpen_TTrace_1792937921.tla

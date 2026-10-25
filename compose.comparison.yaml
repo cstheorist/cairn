@@ -1,0 +1,107 @@
+name: cairn-comparison
+x-yugabyte: &yugabyte
+  image: cairn-comparison-yugabyte:2026.1.2.0-b137
+  build: {context: ./bench, dockerfile: yugabyte.Dockerfile}
+  profiles: [yugabyte]
+  cpus: 2
+  mem_limit: 2048m
+  entrypoint: ["/bin/sh","/bench/yugabyte-start.sh"]
+  restart: on-failure
+  healthcheck:
+    test: ["CMD-SHELL","/home/yugabyte/postgres/bin/pg_isready -h \"$${HOSTNAME}\" -p 5433 -U yugabyte"]
+    interval: 2s
+    timeout: 3s
+    retries: 120
+x-pd: &pd
+  image: pingcap/pd:v8.5.4
+  profiles: [tidb]
+  cpus: 0.25
+  mem_limit: 128m
+  restart: on-failure
+x-tikv: &tikv
+  image: cairn-comparison-tikv:8.5.4
+  build: {context: ./bench, dockerfile: tikv.Dockerfile}
+  profiles: [tidb]
+  cpus: 1.25
+  mem_limit: 1664m
+  restart: on-failure
+services:
+  yb1:
+    <<: *yugabyte
+    hostname: yb1
+    command: ["yb1"]
+    volumes: ["./bench:/bench:ro","yb1:/data"]
+  yb2:
+    <<: *yugabyte
+    hostname: yb2
+    command: ["yb2","--join=yb1"]
+    volumes: ["./bench:/bench:ro","yb2:/data"]
+  yb3:
+    <<: *yugabyte
+    hostname: yb3
+    command: ["yb3","--join=yb1"]
+    volumes: ["./bench:/bench:ro","yb3:/data"]
+  pd0:
+    <<: *pd
+    command: ["--name=pd0","--client-urls=http://0.0.0.0:2379","--peer-urls=http://0.0.0.0:2380","--advertise-client-urls=http://pd0:2379","--advertise-peer-urls=http://pd0:2380","--initial-cluster=pd0=http://pd0:2380,pd1=http://pd1:2380,pd2=http://pd2:2380","--data-dir=/data","--log-level=warn"]
+    volumes: ["pd0:/data"]
+  pd1:
+    <<: *pd
+    command: ["--name=pd1","--client-urls=http://0.0.0.0:2379","--peer-urls=http://0.0.0.0:2380","--advertise-client-urls=http://pd1:2379","--advertise-peer-urls=http://pd1:2380","--initial-cluster=pd0=http://pd0:2380,pd1=http://pd1:2380,pd2=http://pd2:2380","--data-dir=/data","--log-level=warn"]
+    volumes: ["pd1:/data"]
+  pd2:
+    <<: *pd
+    command: ["--name=pd2","--client-urls=http://0.0.0.0:2379","--peer-urls=http://0.0.0.0:2380","--advertise-client-urls=http://pd2:2379","--advertise-peer-urls=http://pd2:2380","--initial-cluster=pd0=http://pd0:2380,pd1=http://pd1:2380,pd2=http://pd2:2380","--data-dir=/data","--log-level=warn"]
+    volumes: ["pd2:/data"]
+  tikv0:
+    <<: *tikv
+    command: ["--addr=0.0.0.0:20160","--advertise-addr=tikv0:20160","--data-dir=/data","--pd=pd0:2379,pd1:2379,pd2:2379","--config=/bench/tikv.toml"]
+    volumes: ["tikv0:/data","./bench:/bench:ro"]
+  tikv1:
+    <<: *tikv
+    command: ["--addr=0.0.0.0:20160","--advertise-addr=tikv1:20160","--data-dir=/data","--pd=pd0:2379,pd1:2379,pd2:2379","--config=/bench/tikv.toml"]
+    volumes: ["tikv1:/data","./bench:/bench:ro"]
+  tikv2:
+    <<: *tikv
+    command: ["--addr=0.0.0.0:20160","--advertise-addr=tikv2:20160","--data-dir=/data","--pd=pd0:2379,pd1:2379,pd2:2379","--config=/bench/tikv.toml"]
+    volumes: ["tikv2:/data","./bench:/bench:ro"]
+  tidb:
+    image: pingcap/tidb:v8.5.4
+    profiles: [tidb]
+    cpus: 1.5
+    mem_limit: 768m
+    restart: on-failure
+    command: ["--store=tikv","--path=pd0:2379,pd1:2379,pd2:2379","--advertise-address=tidb","-L=warn"]
+    environment: {GOMAXPROCS: "2", GOMEMLIMIT: "650MiB"}
+  load:
+    profiles: [load]
+    build:
+      context: ./bench/driver
+      args: {BENCH_SOURCE_SHA256: "${BENCH_SOURCE_SHA256:-}"}
+    cpus: 4
+    mem_limit: 768m
+    networks: [default,ha]
+    environment:
+      DB_KIND: ${DB_KIND:-pg}
+      DB_LABEL: ${DB_LABEL:-cairn}
+      YB_ISOLATION: ${YB_ISOLATION:-repeatable-read}
+      DB_URL: ${DB_URL:-host=gateway port=5432 user=cairn dbname=cairn password=local-postgres}
+      BENCH_CLIENTS: ${BENCH_CLIENTS:-16}
+      BENCH_SECONDS: ${BENCH_SECONDS:-10}
+      BENCH_WARMUP: ${BENCH_WARMUP:-2}
+      BENCH_REPEATS: ${BENCH_REPEATS:-3}
+      BENCH_ROWS: ${BENCH_ROWS:-10000}
+      BENCH_WORKLOADS: ${BENCH_WORKLOADS:-read,mixed,transfer}
+    volumes: ["./artifacts:/artifacts"]
+volumes:
+  yb1:
+  yb2:
+  yb3:
+  pd0:
+  pd1:
+  pd2:
+  tikv0:
+  tikv1:
+  tikv2:
+networks:
+  ha: {external: true, name: cairn-ha_default}

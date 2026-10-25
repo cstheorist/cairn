@@ -1,0 +1,47 @@
+memory-usage-limit = "1GB"
+[memory]
+enable-thread-exclusive-arena = false
+enable-heap-profiling = false
+[log]
+level = "warn"
+[server]
+status-addr = "0.0.0.0:20180"
+grpc-concurrency = 2
+grpc-memory-pool-quota = "64MB"
+end-point-memory-quota = "64MB"
+[storage]
+reserve-space = "0MB"
+scheduler-concurrency = 65536
+txn-status-cache-capacity = 32768
+[storage.block-cache]
+capacity = "256MB"
+[readpool.unified]
+min-thread-count = 1
+max-thread-count = 2
+[raftstore]
+sync-log = true
+store-pool-size = 1
+apply-pool-size = 1
+[rocksdb]
+max-background-jobs = 2
+[rocksdb.defaultcf]
+write-buffer-size = "16MB"
+max-write-buffer-number = 3
+[raft-engine]
+memory-limit = "64MB"
+[cdc]
+sink-memory-quota = "32MB"
+old-value-cache-memory-quota = "32MB"
+[resolved-ts]
+memory-quota = "64MB"
+[rocksdb.writecf]
+write-buffer-size = "16MB"
+max-write-buffer-number = 3
+[rocksdb.lockcf]
+write-buffer-size = "8MB"
+max-write-buffer-number = 3
+[raftdb]
+max-background-jobs = 2
+[raftdb.defaultcf]
+write-buffer-size = "16MB"
+max-write-buffer-number = 3

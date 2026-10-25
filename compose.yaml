@@ -1,0 +1,81 @@
+name: cairn
+services:
+  shard0:
+    image: cairn-storage:3.3.5
+    build: {context: ., dockerfile: lua/Dockerfile}
+    entrypoint: ["/usr/bin/env", "-u", "TT_INSTANCE_NAME", "-u", "TT_APP_NAME", "/usr/bin/tarantool"]
+    command: ["/opt/cairn/storage.lua"]
+    environment:
+      CAIRN_SHARD_ID: "0"
+      CAIRN_SHARD_COUNT: "2"
+      CAIRN_GATEWAY_PASSWORD: "local-gateway"
+      CAIRN_READER_PASSWORD: "local-reader"
+    ports: ["127.0.0.1:3301:3301"]
+    volumes:
+      - ./lua:/opt/cairn:ro
+      - shard0:/var/lib/tarantool
+    working_dir: /var/lib/tarantool
+    healthcheck:
+      test: ["CMD-SHELL", "env -u TT_INSTANCE_NAME -u TT_APP_NAME tarantool -e \"local c=require('net.box').connect('gateway:local-gateway@127.0.0.1:3301'); assert(c:call('cairn.ping') == 0); c:close()\""]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+  shard1:
+    image: cairn-storage:3.3.5
+    pull_policy: never
+    entrypoint: ["/usr/bin/env", "-u", "TT_INSTANCE_NAME", "-u", "TT_APP_NAME", "/usr/bin/tarantool"]
+    command: ["/opt/cairn/storage.lua"]
+    environment:
+      CAIRN_SHARD_ID: "1"
+      CAIRN_SHARD_COUNT: "2"
+      CAIRN_GATEWAY_PASSWORD: "local-gateway"
+      CAIRN_READER_PASSWORD: "local-reader"
+    ports: ["127.0.0.1:3302:3301"]
+    volumes:
+      - ./lua:/opt/cairn:ro
+      - shard1:/var/lib/tarantool
+    working_dir: /var/lib/tarantool
+    healthcheck:
+      test: ["CMD-SHELL", "env -u TT_INSTANCE_NAME -u TT_APP_NAME tarantool -e \"local c=require('net.box').connect('gateway:local-gateway@127.0.0.1:3301'); assert(c:call('cairn.ping') == 1); c:close()\""]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+  gateway:
+    build: .
+    init: true
+    healthcheck:
+      test: ["CMD", "cairn-server", "--healthcheck", "127.0.0.1:5432"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+    environment:
+      CAIRN_LISTEN: "0.0.0.0:5432"
+      CAIRN_SHARDS: "shard0:3301,shard1:3301"
+      CAIRN_STORAGE_USER: "gateway"
+      CAIRN_STORAGE_PASSWORD: "local-gateway"
+      CAIRN_PASSWORD: "local-postgres"
+      CAIRN_VOTE_COMMIT: ${CAIRN_VOTE_COMMIT:-0}
+      CAIRN_RECOVERY: ${CAIRN_RECOVERY:-1}
+      CAIRN_STORAGE_CONNECTIONS: ${CAIRN_STORAGE_CONNECTIONS:-8}
+      CAIRN_LOG_ERRORS: ${CAIRN_LOG_ERRORS:-0}
+      CAIRN_PROFILE_RPC: ${CAIRN_PROFILE_RPC:-0}
+    ports: ["127.0.0.1:${CAIRN_PG_PORT:-55432}:5432"]
+    depends_on:
+      shard0: { condition: service_healthy }
+      shard1: { condition: service_healthy }
+  tests:
+    profiles: ["test"]
+    build:
+      context: .
+      dockerfile: tests/Dockerfile
+    environment:
+      CAIRN_DSN: "host=gateway port=5432 user=cairn dbname=cairn password=local-postgres sslmode=disable"
+    volumes:
+      - ./tests:/tests:ro
+      - ./bench:/bench:ro
+      - ./artifacts:/artifacts
+    depends_on: [gateway]
+    command: ["python", "/tests/integration.py"]
+volumes:
+  shard0:
+  shard1:

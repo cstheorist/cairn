@@ -1,0 +1,24 @@
+[package]
+name = "cairn-benchmark"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.85"
+publish = false
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/cstheorist/cairn"
+
+[dependencies]
+anyhow = "1"
+tokio = {version="1", features=["full"]}
+tokio-postgres = "=0.7.13"
+mysql_async = {version="=0.34.2", default-features=false, features=["minimal-rust"]}
+serde_json = "1"
+
+[build-dependencies]
+# mysql_common's broad constraint selects a newer release with an undeclared
+# Rust >1.85 requirement. Keep the benchmark build compatible with the server.
+subprocess = "=0.2.9"
+
+[profile.release]
+lto = "thin"
+codegen-units = 1

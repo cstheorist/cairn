@@ -1,0 +1,45 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/cairn-common",
+    "crates/cairn-iproto",
+    "crates/cairn-pgwire",
+    "crates/cairn-sql",
+    "crates/cairn-verified",
+    "crates/cairn-server",
+]
+default-members = ["crates/cairn-server"]
+exclude = ["bench/driver", "crates/cairn-verified/native"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.85"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/cstheorist/cairn"
+homepage = "https://github.com/cstheorist/cairn"
+authors = ["Jeremiah Brazeau"]
+publish = false
+
+[workspace.dependencies]
+cairn-common = { path = "crates/cairn-common" }
+cairn-iproto = { path = "crates/cairn-iproto" }
+cairn-pgwire = { path = "crates/cairn-pgwire" }
+cairn-sql = { path = "crates/cairn-sql" }
+cairn-verified = { path = "crates/cairn-verified" }
+cairn-server = { path = "crates/cairn-server" }
+anyhow = "1.0"
+base64 = "0.22"
+futures-util = { version = "0.3", default-features = false, features = ["alloc"] }
+rmpv = "1.3"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+sha1 = "0.10"
+sqlparser = "=0.53.0"
+tokio = { version = "1.43", features = ["full"] }
+uuid = { version = "=1.11.1", features = ["v4"] }
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+panic = "abort"

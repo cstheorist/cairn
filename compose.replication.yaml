@@ -1,0 +1,108 @@
+name: cairn-ha
+x-storage: &storage
+  image: cairn-storage:3.3.5
+  pull_policy: never
+  entrypoint: ["/usr/bin/env", "-u", "TT_INSTANCE_NAME", "-u", "TT_APP_NAME", "/usr/bin/tarantool"]
+  working_dir: /var/lib/tarantool
+  environment: &environment
+    CAIRN_SHARD_COUNT: "2"
+    CAIRN_MANAGED_CONFIG: "1"
+    CAIRN_GATEWAY_PASSWORD: local-gateway
+    CAIRN_READER_PASSWORD: local-reader
+  healthcheck:
+    test: ["CMD-SHELL", "env -u TT_INSTANCE_NAME -u TT_APP_NAME tarantool -e \"local c=require('net.box').connect('gateway:local-gateway@127.0.0.1:3301'); c:call('cairn.ping'); c:close()\""]
+    interval: 2s
+    timeout: 3s
+    retries: 60
+services:
+  s0a:
+    <<: *storage
+    build: {context: ., dockerfile: lua/Dockerfile}
+    command: ["--name", "s0a", "--config", "/opt/cairn/replicated.yaml"]
+    environment: {<<: *environment, CAIRN_SHARD_ID: "0"}
+    volumes: ["./lua:/opt/cairn:ro", "s0a:/var/lib/tarantool"]
+    ports: ["127.0.0.1:3401:3301"]
+  s0b:
+    <<: *storage
+    command: ["--name", "s0b", "--config", "/opt/cairn/replicated.yaml"]
+    environment: {<<: *environment, CAIRN_SHARD_ID: "0"}
+    volumes: ["./lua:/opt/cairn:ro", "s0b:/var/lib/tarantool"]
+    ports: ["127.0.0.1:3402:3301"]
+  s0c:
+    <<: *storage
+    command: ["--name", "s0c", "--config", "/opt/cairn/replicated.yaml"]
+    environment: {<<: *environment, CAIRN_SHARD_ID: "0"}
+    volumes: ["./lua:/opt/cairn:ro", "s0c:/var/lib/tarantool"]
+    ports: ["127.0.0.1:3403:3301"]
+  s1a:
+    <<: *storage
+    command: ["--name", "s1a", "--config", "/opt/cairn/replicated.yaml"]
+    environment: {<<: *environment, CAIRN_SHARD_ID: "1"}
+    volumes: ["./lua:/opt/cairn:ro", "s1a:/var/lib/tarantool"]
+    ports: ["127.0.0.1:3411:3301"]
+  s1b:
+    <<: *storage
+    command: ["--name", "s1b", "--config", "/opt/cairn/replicated.yaml"]
+    environment: {<<: *environment, CAIRN_SHARD_ID: "1"}
+    volumes: ["./lua:/opt/cairn:ro", "s1b:/var/lib/tarantool"]
+    ports: ["127.0.0.1:3412:3301"]
+  s1c:
+    <<: *storage
+    command: ["--name", "s1c", "--config", "/opt/cairn/replicated.yaml"]
+    environment: {<<: *environment, CAIRN_SHARD_ID: "1"}
+    volumes: ["./lua:/opt/cairn:ro", "s1c:/var/lib/tarantool"]
+    ports: ["127.0.0.1:3413:3301"]
+  gateway:
+    build: .
+    init: true
+    healthcheck:
+      test: ["CMD", "cairn-server", "--healthcheck", "127.0.0.1:5432"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+    environment:
+      CAIRN_LISTEN: "0.0.0.0:5432"
+      CAIRN_SHARDS: "s0a:3301|s0b:3301|s0c:3301,s1a:3301|s1b:3301|s1c:3301"
+      CAIRN_STORAGE_USER: gateway
+      CAIRN_STORAGE_PASSWORD: local-gateway
+      CAIRN_PASSWORD: local-postgres
+      CAIRN_VOTE_COMMIT: ${CAIRN_VOTE_COMMIT:-0}
+      CAIRN_RECOVERY: ${CAIRN_RECOVERY:-1}
+      CAIRN_STORAGE_CONNECTIONS: ${CAIRN_STORAGE_CONNECTIONS:-8}
+      CAIRN_LOG_ERRORS: ${CAIRN_LOG_ERRORS:-0}
+      CAIRN_PROFILE_RPC: ${CAIRN_PROFILE_RPC:-0}
+    ports: ["127.0.0.1:${CAIRN_PG_PORT:-55433}:5432"]
+    depends_on:
+      s0a: {condition: service_healthy}
+      s0b: {condition: service_healthy}
+      s0c: {condition: service_healthy}
+      s1a: {condition: service_healthy}
+      s1b: {condition: service_healthy}
+      s1c: {condition: service_healthy}
+  tests:
+    profiles: ["test"]
+    build: {context: ., dockerfile: tests/Dockerfile}
+    environment:
+      CAIRN_DSN: "host=gateway port=5432 user=cairn dbname=cairn password=local-postgres sslmode=disable"
+    volumes: ["./tests:/tests:ro", "./artifacts:/artifacts"]
+    command: ["python", "/tests/replication.py"]
+  reference:
+    profiles: ["reference"]
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: cairn
+      POSTGRES_PASSWORD: local-postgres
+      POSTGRES_DB: cairn
+    tmpfs: ["/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "cairn", "-d", "cairn"]
+      interval: 1s
+      timeout: 2s
+      retries: 30
+volumes:
+  s0a:
+  s0b:
+  s0c:
+  s1a:
+  s1b:
+  s1c:

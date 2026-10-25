@@ -1,0 +1,11 @@
+/target/
+/bench/driver/target/
+/crates/cairn-verified/native/target/
+/.tools/
+/artifacts/
+/tla/states/
+/tla/*_TTrace_*
+__pycache__/
+*.pyc
+.env
+.DS_Store

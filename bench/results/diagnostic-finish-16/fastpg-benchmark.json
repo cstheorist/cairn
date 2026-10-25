@@ -1,0 +1,101 @@
+{
+  "client": "Rust async, four runtime threads, one outstanding operation per connection",
+  "database": "fastpg",
+  "failure": null,
+  "payload_bytes": 128,
+  "protocol": "prepared binary parameters and results",
+  "queueing": "closed loop; latency includes retries; coordinated omission not corrected",
+  "results": [
+    {
+      "clients": 16,
+      "correctness": {
+        "all_key_values_verified": true,
+        "rows": 10000,
+        "sum_after": "10000000000",
+        "sum_before": "10000000000",
+        "verified": true
+      },
+      "elapsed_seconds": 3.000616293,
+      "latency_us": {
+        "p50": 567.875,
+        "p95": 913.792,
+        "p99": 1236.25,
+        "p999": 6832.958
+      },
+      "measured_updates": 0,
+      "operations": 76895,
+      "operations_per_second": 25626.40220923442,
+      "repeat": 1,
+      "retry_reasons": {},
+      "serialization_retries": 0,
+      "warmup_updates": 0,
+      "workload": "read"
+    },
+    {
+      "clients": 16,
+      "correctness": {
+        "all_key_values_verified": true,
+        "rows": 10000,
+        "sum_after": "10000004732",
+        "sum_before": "10000000000",
+        "verified": true
+      },
+      "elapsed_seconds": 3.007897543,
+      "latency_us": {
+        "p50": 872.0,
+        "p95": 1777.5,
+        "p99": 21573.334,
+        "p999": 44490.125
+      },
+      "measured_updates": 3566,
+      "operations": 35420,
+      "operations_per_second": 11775.6670543615,
+      "repeat": 1,
+      "retry_reasons": {},
+      "serialization_retries": 0,
+      "warmup_updates": 1166,
+      "workload": "mixed"
+    },
+    {
+      "clients": 16,
+      "correctness": {
+        "all_key_values_verified": true,
+        "rows": 10000,
+        "sum_after": "10000004732",
+        "sum_before": "10000004732",
+        "verified": true
+      },
+      "elapsed_seconds": 3.004795002,
+      "latency_us": {
+        "p50": 7668.875,
+        "p95": 65923.041,
+        "p99": 71950.208,
+        "p999": 84571.667
+      },
+      "measured_updates": 0,
+      "operations": 2770,
+      "operations_per_second": 921.8598933225995,
+      "repeat": 1,
+      "retry_reasons": {
+        "[FASTPG:CONFLICT] row belongs to an unresolved transaction; retry the whole transaction": 9
+      },
+      "serialization_retries": 9,
+      "warmup_updates": 0,
+      "workload": "transfer"
+    }
+  ],
+  "rows": 10000,
+  "seconds_per_run": 3,
+  "status": "complete",
+  "table": "bench_1792928283626216846",
+  "transaction_isolation": "strict two-phase locking",
+  "transfer_partitions": {
+    "all_transfers_cross_partitions": true,
+    "count": 2,
+    "rows": [
+      5000,
+      5000
+    ]
+  },
+  "warmup_seconds": 1
+}

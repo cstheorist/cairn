@@ -1,0 +1,123 @@
+TLC2 Version 2026.10.24.013619 (rev: 2ef2af8)
+Warning: Please run the Java VM, which executes TLC with a throughput optimized garbage collector, by passing the "-XX:+UseParallelGC" property.
+(Use the -nowarning option to disable this warning.)
+Running breadth-first search Model-Checking with fp 15 and seed 5244191163009855789 with 1 worker on 16 cores with 1960MB heap and 64MB offheap memory [pid: 1] (Linux 6.10.14-linuxkit aarch64, Eclipse Adoptium 21.0.12.1 64bit, MSBDiskFPSet, DiskStateQueue).
+Parsing file /model/ReadBatch.tla
+Parsing file /tmp/tlc-15202403359345149649/Integers.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/Integers.tla)
+Parsing file /tmp/tlc-15202403359345149649/FiniteSets.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/FiniteSets.tla)
+Parsing file /tmp/tlc-15202403359345149649/TLC.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/TLC.tla)
+Parsing file /tmp/tlc-15202403359345149649/_TLCTrace.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/_TLCTrace.tla)
+Parsing file /tmp/tlc-15202403359345149649/Naturals.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/Naturals.tla)
+Parsing file /tmp/tlc-15202403359345149649/Sequences.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/Sequences.tla)
+Parsing file /tmp/tlc-15202403359345149649/TLCExt.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/TLCExt.tla)
+Semantic processing of module Naturals
+Semantic processing of module Integers
+Semantic processing of module Sequences
+Semantic processing of module FiniteSets
+Semantic processing of module TLC
+Semantic processing of module TLCExt
+Semantic processing of module _TLCTrace
+Semantic processing of module ReadBatch
+Linting of module TLCExt
+Linting of module _TLCTrace
+Linting of module ReadBatch
+Starting... (2026-10-25 14:18:50)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-10-25 14:18:50.
+Error: Invariant NoStaleResponse is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ state = <<"new", "new", "new">>
+/\ minimum = <<0, 0, 0>>
+/\ result = <<-1, -1, -1>>
+/\ versions = <<0, 0>>
+/\ cutoff = 0
+/\ key = <<1, 1, 1>>
+/\ ticket = <<0, 0, 0>>
+/\ active = FALSE
+/\ snapshot = <<0, 0>>
+/\ issued = 0
+/\ members = {}
+
+State 2: <Invoke(1,1) line 21, col 5 to line 27, col 67 of module ReadBatch>
+/\ state = <<"pending", "new", "new">>
+/\ minimum = <<0, 0, 0>>
+/\ result = <<-1, -1, -1>>
+/\ versions = <<0, 0>>
+/\ cutoff = 0
+/\ key = <<1, 1, 1>>
+/\ ticket = <<1, 0, 0>>
+/\ active = FALSE
+/\ snapshot = <<0, 0>>
+/\ issued = 1
+/\ members = {}
+
+State 3: <Capture line 29, col 5 to line 31, col 76 of module ReadBatch>
+/\ state = <<"pending", "new", "new">>
+/\ minimum = <<0, 0, 0>>
+/\ result = <<-1, -1, -1>>
+/\ versions = <<0, 0>>
+/\ cutoff = 1
+/\ key = <<1, 1, 1>>
+/\ ticket = <<1, 0, 0>>
+/\ active = TRUE
+/\ snapshot = <<0, 0>>
+/\ issued = 1
+/\ members = {}
+
+State 4: <Write(1) line 51, col 5 to line 53, col 90 of module ReadBatch>
+/\ state = <<"pending", "new", "new">>
+/\ minimum = <<0, 0, 0>>
+/\ result = <<-1, -1, -1>>
+/\ versions = <<1, 0>>
+/\ cutoff = 1
+/\ key = <<1, 1, 1>>
+/\ ticket = <<1, 0, 0>>
+/\ active = TRUE
+/\ snapshot = <<0, 0>>
+/\ issued = 1
+/\ members = {}
+
+State 5: <Invoke(2,1) line 21, col 5 to line 27, col 67 of module ReadBatch>
+/\ state = <<"pending", "pending", "new">>
+/\ minimum = <<0, 1, 0>>
+/\ result = <<-1, -1, -1>>
+/\ versions = <<1, 0>>
+/\ cutoff = 1
+/\ key = <<1, 1, 1>>
+/\ ticket = <<1, 2, 0>>
+/\ active = TRUE
+/\ snapshot = <<0, 0>>
+/\ issued = 2
+/\ members = {}
+
+State 6: <Admit(2) line 33, col 5 to line 38, col 85 of module ReadBatch>
+/\ state = <<"pending", "running", "new">>
+/\ minimum = <<0, 1, 0>>
+/\ result = <<-1, -1, -1>>
+/\ versions = <<1, 0>>
+/\ cutoff = 1
+/\ key = <<1, 1, 1>>
+/\ ticket = <<1, 2, 0>>
+/\ active = TRUE
+/\ snapshot = <<0, 0>>
+/\ issued = 2
+/\ members = {2}
+
+State 7: <Complete line 40, col 5 to line 44, col 71 of module ReadBatch>
+/\ state = <<"pending", "done", "new">>
+/\ minimum = <<0, 1, 0>>
+/\ result = <<-1, 0, -1>>
+/\ versions = <<1, 0>>
+/\ cutoff = 1
+/\ key = <<1, 1, 1>>
+/\ ticket = <<1, 2, 0>>
+/\ active = FALSE
+/\ snapshot = <<0, 0>>
+/\ issued = 2
+/\ members = {}
+
+12277 states generated, 7757 distinct states found, 5758 states left on queue.
+The depth of the complete state graph search is 7.
+Finished in 00s at (2026-10-25 14:18:50)
+Trace exploration spec path: ./ReadBatch_TTrace_1792937930.tla

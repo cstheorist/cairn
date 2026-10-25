@@ -1,0 +1,102 @@
+{
+  "client": "Rust async, four runtime threads, one outstanding operation per connection",
+  "database": "yugabyte",
+  "failure": null,
+  "payload_bytes": 128,
+  "protocol": "prepared binary parameters and results",
+  "queueing": "closed loop; latency includes retries; coordinated omission not corrected",
+  "results": [
+    {
+      "clients": 16,
+      "correctness": {
+        "all_key_values_verified": true,
+        "rows": 10000,
+        "sum_after": "10000000000",
+        "sum_before": "10000000000",
+        "verified": true
+      },
+      "elapsed_seconds": 3.00159546,
+      "latency_us": {
+        "p50": 505.125,
+        "p95": 802.667,
+        "p99": 73806.083,
+        "p999": 74991.417
+      },
+      "measured_updates": 0,
+      "operations": 24643,
+      "operations_per_second": 8209.967108625624,
+      "repeat": 1,
+      "retry_reasons": {},
+      "serialization_retries": 0,
+      "warmup_updates": 0,
+      "workload": "read"
+    },
+    {
+      "clients": 16,
+      "correctness": {
+        "all_key_values_verified": true,
+        "rows": 10000,
+        "sum_after": "10000001888",
+        "sum_before": "10000000000",
+        "verified": true
+      },
+      "elapsed_seconds": 3.007776293,
+      "latency_us": {
+        "p50": 510.667,
+        "p95": 8253.75,
+        "p99": 70835.958,
+        "p999": 74910.666
+      },
+      "measured_updates": 1450,
+      "operations": 14391,
+      "operations_per_second": 4784.59785506395,
+      "repeat": 1,
+      "retry_reasons": {},
+      "serialization_retries": 0,
+      "warmup_updates": 438,
+      "workload": "mixed"
+    },
+    {
+      "clients": 16,
+      "correctness": {
+        "all_key_values_verified": true,
+        "rows": 10000,
+        "sum_after": "10000001888",
+        "sum_before": "10000001888",
+        "verified": true
+      },
+      "elapsed_seconds": 3.011465377,
+      "latency_us": {
+        "p50": 9895.292,
+        "p95": 64193.417,
+        "p99": 67628.042,
+        "p999": 72322.834
+      },
+      "measured_updates": 0,
+      "operations": 2333,
+      "operations_per_second": 774.7059015913767,
+      "repeat": 1,
+      "retry_reasons": {
+        "Restart read required (query layer retry isn't possible because this is not the first command in the transaction. Consider using READ COMMITTED isolation level.)": 5,
+        "could not serialize access due to concurrent update (query layer retry isn't possible because this is not the first command in the transaction. Consider using READ COMMITTED isolation level.)": 6
+      },
+      "serialization_retries": 11,
+      "warmup_updates": 0,
+      "workload": "transfer"
+    }
+  ],
+  "rows": 10000,
+  "seconds_per_run": 3,
+  "status": "complete",
+  "table": "bench_1792928318077467626",
+  "transaction_isolation": "repeatable read",
+  "transfer_partitions": {
+    "all_transfers_cross_partitions": true,
+    "count": 2,
+    "rows": [
+      4927,
+      5073
+    ]
+  },
+  "warmup_seconds": 1
+}

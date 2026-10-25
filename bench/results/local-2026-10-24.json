@@ -1,0 +1,51 @@
+{
+  "timestamp_utc": "2026-10-24T22:17:18.408045+00:00",
+  "server": "fastpg 0.1.0",
+  "tarantool": "3.3.5",
+  "workload": "uniform random point reads, warm cache, closed loop, no think time",
+  "rows": 1000,
+  "payload_bytes": 128,
+  "clients": 4,
+  "target_s": 10.0,
+  "python": "3.12.15",
+  "platform": "Linux-6.10.14-linuxkit-aarch64-with-glibc2.41",
+  "shards": 2,
+  "replicas_per_shard": 1,
+  "wal_mode": "fsync",
+  "client_libraries": {
+    "psycopg": "3.2.6",
+    "tarantool": "1.2.0"
+  },
+  "results": [
+    {
+      "mode": "sql",
+      "operations": 176593,
+      "elapsed_s": 10.000273214000117,
+      "ops_per_s": 17658.817536382354,
+      "latency_us": {
+        "p50": 214.417,
+        "p95": 326.792,
+        "p99": 415.875
+      }
+    },
+    {
+      "mode": "native",
+      "operations": 249499,
+      "elapsed_s": 10.000316254000154,
+      "ops_per_s": 24949.110974385407,
+      "latency_us": {
+        "p50": 141.25,
+        "p95": 282.708,
+        "p99": 386.583
+      }
+    }
+  ],
+  "limitations": [
+    "Python/client overhead included",
+    "single-host Docker deployment",
+    "no replication or failover",
+    "not a YugabyteDB/TiDB comparison",
+    "latencies omit queueing in an open-loop arrival process",
+    "read-only timing; writes not benchmarked"
+  ]
+}

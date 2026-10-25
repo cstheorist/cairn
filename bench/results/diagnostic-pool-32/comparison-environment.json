@@ -1,0 +1,1098 @@
+{
+  "started_utc": "2026-10-25T11:47:04.859452+00:00",
+  "docker": {
+    "ServerVersion": "28.0.4",
+    "Architecture": "aarch64",
+    "NCPU": 16,
+    "MemTotal": 8217190400,
+    "KernelVersion": "6.10.14-linuxkit",
+    "OperatingSystem": "Docker Desktop"
+  },
+  "resource_budget": {
+    "database_cpus": 6,
+    "database_memory_bytes": 6442450944,
+    "client_cpus": 4,
+    "client_memory_bytes": 805306368
+  },
+  "load_image": "sha256:f40f3b5495fc40a4b86dadcbaa9ce2b5bb6539867deaf168322896d30d6034d1",
+  "databases": {
+    "tidb": {
+      "replication": {
+        "max-replicas": 3,
+        "location-labels": "",
+        "strictly-match-label": "false",
+        "enable-placement-rules": "true",
+        "enable-placement-rules-cache": "false",
+        "isolation-level": ""
+      },
+      "stores": {
+        "count": 3,
+        "stores": [
+          {
+            "store": {
+              "id": 1,
+              "address": "tikv0:20160",
+              "version": "8.5.4",
+              "peer_address": "tikv0:20160",
+              "status_address": "0.0.0.0:20180",
+              "git_hash": "4855bdccc64e7a8551d30ebbbd5be75a42929265",
+              "start_timestamp": 1792928334,
+              "deploy_path": "/",
+              "last_heartbeat": 1792928344667932055,
+              "node_state": 1,
+              "state_name": "Up"
+            },
+            "status": {
+              "capacity": "1007GiB",
+              "available": "864GiB",
+              "used_size": "293.7MiB",
+              "leader_count": 34,
+              "leader_weight": 1,
+              "leader_score": 34,
+              "leader_size": 0,
+              "region_count": 84,
+              "region_weight": 1,
+              "region_score": 0,
+              "region_size": 0,
+              "slow_score": 1,
+              "slow_trend": {
+                "cause_value": 250050.22959183675,
+                "cause_rate": 0,
+                "result_value": 0,
+                "result_rate": 0
+              },
+              "is_busy": true,
+              "start_ts": "2026-10-25T11:38:54Z",
+              "last_heartbeat_ts": "2026-10-25T11:39:04.667932055Z",
+              "uptime": "10.667932055s"
+            }
+          },
+          {
+            "store": {
+              "id": 2,
+              "address": "tikv1:20160",
+              "version": "8.5.4",
+              "peer_address": "tikv1:20160",
+              "status_address": "0.0.0.0:20180",
+              "git_hash": "4855bdccc64e7a8551d30ebbbd5be75a42929265",
+              "start_timestamp": 1792928334,
+              "deploy_path": "/",
+              "last_heartbeat": 1792928344737946097,
+              "node_state": 1,
+              "state_name": "Up"
+            },
+            "status": {
+              "capacity": "1007GiB",
+              "available": "864.2GiB",
+              "used_size": "276MiB",
+              "leader_count": 34,
+              "leader_weight": 1,
+              "leader_score": 34,
+              "leader_size": 0,
+              "region_count": 84,
+              "region_weight": 1,
+              "region_score": 0,
+              "region_size": 0,
+              "slow_score": 1,
+              "slow_trend": {
+                "cause_value": 250046.48979591837,
+                "cause_rate": 0,
+                "result_value": 0,
+                "result_rate": 0
+              },
+              "is_busy": true,
+              "start_ts": "2026-10-25T11:38:54Z",
+              "last_heartbeat_ts": "2026-10-25T11:39:04.737946097Z",
+              "uptime": "10.737946097s"
+            }
+          },
+          {
+            "store": {
+              "id": 5,
+              "address": "tikv2:20160",
+              "version": "8.5.4",
+              "peer_address": "tikv2:20160",
+              "status_address": "0.0.0.0:20180",
+              "git_hash": "4855bdccc64e7a8551d30ebbbd5be75a42929265",
+              "start_timestamp": 1792928334,
+              "deploy_path": "/",
+              "last_heartbeat": 1792928344761015847,
+              "node_state": 1,
+              "state_name": "Up"
+            },
+            "status": {
+              "capacity": "1007GiB",
+              "available": "864.2GiB",
+              "used_size": "285.7MiB",
+              "leader_count": 16,
+              "leader_weight": 1,
+              "leader_score": 16,
+              "leader_size": 0,
+              "region_count": 84,
+              "region_weight": 1,
+              "region_score": 0,
+              "region_size": 0,
+              "slow_score": 1,
+              "slow_trend": {
+                "cause_value": 250054.77551020408,
+                "cause_rate": 0,
+                "result_value": 0,
+                "result_rate": 0
+              },
+              "is_busy": true,
+              "start_ts": "2026-10-25T11:38:54Z",
+              "last_heartbeat_ts": "2026-10-25T11:39:04.761015847Z",
+              "uptime": "10.761015847s"
+            }
+          }
+        ]
+      },
+      "missing_peers": {
+        "count": 0,
+        "regions": []
+      },
+      "pending_peers": {
+        "count": 0,
+        "regions": []
+      },
+      "tikv_debug_stripping": "3850f81db83c5abd947d0942926546c4d852ea3fd11568302ead0be6ba7f58d7  /tikv-server\n54691097354e4108effadb57c1fb0d004374e9af3f5fde8ec86e278f0563718d  /tmp/text-before\n8bf5bccb15ef955ccab7221b022ee03e416b7b1a72130f7b971891e24ed6eecc  /tikv-server\n54691097354e4108effadb57c1fb0d004374e9af3f5fde8ec86e278f0563718d  /tmp/text-after\n",
+      "sync_log": true,
+      "reads": "leader/strong, no stale-read setting",
+      "transaction_isolation": "repeatable read with pessimistic writes",
+      "containers": [
+        {
+          "service": "pd0",
+          "image": "pingcap/pd:v8.5.4",
+          "image_id": "sha256:672f499607a9f378f01ed0f78b2aa073d689b67ca1a820d58176660191db769b",
+          "cpu_limit": 0.25,
+          "memory_limit_bytes": 134217728,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T11:38:52.641841924Z"
+        },
+        {
+          "service": "pd1",
+          "image": "pingcap/pd:v8.5.4",
+          "image_id": "sha256:672f499607a9f378f01ed0f78b2aa073d689b67ca1a820d58176660191db769b",
+          "cpu_limit": 0.25,
+          "memory_limit_bytes": 134217728,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T11:38:52.629377841Z"
+        },
+        {
+          "service": "pd2",
+          "image": "pingcap/pd:v8.5.4",
+          "image_id": "sha256:672f499607a9f378f01ed0f78b2aa073d689b67ca1a820d58176660191db769b",
+          "cpu_limit": 0.25,
+          "memory_limit_bytes": 134217728,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T11:38:52.630835716Z"
+        },
+        {
+          "service": "tidb",
+          "image": "pingcap/tidb:v8.5.4",
+          "image_id": "sha256:e986dadd59937fbfcbdfe7fd084421cc65988da8b795f75194b05a0292635ead",
+          "cpu_limit": 1.5,
+          "memory_limit_bytes": 805306368,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T11:38:52.634317341Z"
+        },
+        {
+          "service": "tikv0",
+          "image": "fastpg-comparison-tikv:8.5.4",
+          "image_id": "sha256:e300e8b6cb45f8bfa671ca7df4e1621a598a90f78f0fda1bb599763c63a5117a",
+          "cpu_limit": 1.25,
+          "memory_limit_bytes": 1744830464,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T11:38:52.638371216Z"
+        },
+        {
+          "service": "tikv1",
+          "image": "fastpg-comparison-tikv:8.5.4",
+          "image_id": "sha256:e300e8b6cb45f8bfa671ca7df4e1621a598a90f78f0fda1bb599763c63a5117a",
+          "cpu_limit": 1.25,
+          "memory_limit_bytes": 1744830464,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T11:38:52.637226883Z"
+        },
+        {
+          "service": "tikv2",
+          "image": "fastpg-comparison-tikv:8.5.4",
+          "image_id": "sha256:e300e8b6cb45f8bfa671ca7df4e1621a598a90f78f0fda1bb599763c63a5117a",
+          "cpu_limit": 1.25,
+          "memory_limit_bytes": 1744830464,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T11:38:52.636424841Z"
+        }
+      ],
+      "measured_utc": "2026-10-25T11:39:13.016587+00:00",
+      "status": "accepted",
+      "load_image": "sha256:f40f3b5495fc40a4b86dadcbaa9ce2b5bb6539867deaf168322896d30d6034d1",
+      "load_binary_sha256": "7175fc9b8af0c46cc1d458f3ca5239be8057808da50a07b6aed47d5426131d80",
+      "source_sha256": {
+        ".dockerignore": "bd26e59cad39cb1767248308e3813f88261fe2c552963b00f70f3f5b9c19dd2c",
+        ".gitignore": "d6fd139f9bab8f89b643a9ebf2581805802ac528007f3228e3c0e444b7328764",
+        "Cargo.lock": "4ba827462924d1fedf885eb049386d2c6092d266a086f04369a68d8bbbe5ba85",
+        "Cargo.toml": "d3c59e38bf748707f81e819a3de596eedace0373be577925f89b228d4048af64",
+        "Dockerfile": "028821d39034ebe1a0efb8f2919c6a0c377fc29833a5dd68ac3472bafdf59857",
+        "Makefile": "03b15aaa9e4a7165f67e6e84a1397d70d498dba6745871baa20d6c0766c01786",
+        "bench/driver/.dockerignore": "c97ecfda4d205190b973232dcfdb0c29748521c2534dd866bcc782f30b086738",
+        "bench/driver/Cargo.lock": "6b1d0a333466214ee21ef03ded5a26052cecb2e570e9aaef52914f760e1499ed",
+        "bench/driver/Cargo.toml": "1d9f5dd9b6e918e74aea9dbca43b962345665ab706e3b50bd88655bf519b0ad5",
+        "bench/driver/Dockerfile": "7dd9d4e07652b0be3eea5ac75c2436b373f75fa69e07a88f07527ab7d7abb885",
+        "bench/driver/src/main.rs": "8e296ea9a89c7c09aaa18d050b5c5f175c296c210f4f4df7b7d5e20c2c87363b",
+        "bench/resources.yaml": "4b39b0d2a5b5b55e6950d238f7734220dcb4c4a2e97f43afd428236e1dd96dc1",
+        "bench/tikv.Dockerfile": "38243bb30aa34aba8a93aad4d0556fe08fcadd53877520ef3e3d431a0f35e7f0",
+        "bench/tikv.toml": "9b98546f28229f7aa924e3844573560c621c7cfe0906090e76d9cacd95fc5dde",
+        "bench/yugabyte-start.sh": "f4e0dcfc4414cabf53e2cb19d3c0a55c331d7d810c2940e7cd4fff23f0dd377e",
+        "bench/yugabyte.Dockerfile": "146af1165234fbcafdce84ae617848250a457eb027fb12a2ea1a0f0baaa88d74",
+        "compose.comparison.yaml": "ff39a836dc92da31b2751df7bb960a30a122f3ae9202cacc983f89d3d95d1a05",
+        "compose.replication.yaml": "ef548793176156faca37cee75d1f69fe1727cdb63f6a432e1ffd854c11eeb463",
+        "compose.votes.yaml": "ad33c370b03e030e9e38f322e746439c83eef1278a5b12d70a94382fc6147f3f",
+        "compose.yaml": "00e2286d79f8a581837f3909692945efe4daaa8c6e6b9fde4138572f4e709bef",
+        "formal/LocalFinish.cfg": "c05eb3bffb89f111dd070f63d8482396d03749534875eeed08ba40b54b0fe93e",
+        "formal/LocalFinish.tla": "87f25a4892c16ac2e88bfc0f29a9c4a11f0eb8fea9db9239c23e9466a00a5776",
+        "formal/PredicateLocks.cfg": "a11de344659f5227e324725d0b260161d5e92265fc79ecdb308b0058eb0f9a4d",
+        "formal/PredicateLocks.tla": "d1d4f23b9be41fdf49da04fdbe58af354820cb81b3d9b0f5d386a9dfe4c48461",
+        "formal/ReadBatch.cfg": "eefe620350d684db0171af8dd05745b8489d66489e842e209750595fbb4787cc",
+        "formal/ReadBatch.tla": "d26362a844f3467e0cc88ba5f89d918545ac41943ac1182a9ca7b1756012f9e2",
+        "formal/ReplicaEpoch.cfg": "734cf2be896e1b0f30b599492575f84f8adcb51a9199660a973de6765dc9a7de",
+        "formal/ReplicaEpoch.tla": "cc91e01f360b39ca4a85be9fe649093e631ec1ef1ce1466d8eaac6a37fa1c6d4",
+        "formal/ShardStore.cfg": "d03a16222e3121ce960679c43beac407e5abfd6f5c5512166772bb4705700c29",
+        "formal/ShardStore.tla": "59a7c51b8fb66417bf8b83fcd5a8eb6581a7b66734d3ba1d7c76c0c2b86ffb5a",
+        "formal/TwoPhaseCommit.cfg": "567363edf6fdf7300d755d477bcd66fa616d8055297ee8b67c71d04018002132",
+        "formal/TwoPhaseCommit.tla": "2456330230e3b074f1cb6aba24ce65b241c6ae0a3089b53a21f85bba27b80c05",
+        "formal/VolatileOpen.cfg": "b1b83c500749d25155f30f1072070c00301f691a5f28259e997060840984df56",
+        "formal/VolatileOpen.tla": "8fc789550e874c8734bf02c9e77e3a55909d59daeeaafef3134488332a83ff33",
+        "formal/VoteCommit.cfg": "2e1c0b0a6496d71fe02f1b06ea2d8b7fa991837c1d0cd1be47be46dc942b42ff",
+        "formal/VoteCommit.tla": "1b447b5656c8516f5fec0bf443d3d8c119be529df1dc2835981c44be41dab52a",
+        "src/core.rs": "22c61bdbc99d1eed5a6e35175a5e51ea5fc6bb949bbaed173ca6bea7fdb17df4",
+        "src/expression.rs": "313a3bfce44b5736046ea3d833f3663fb6c174f5e38d5b2acc20d68a7c8ae52f",
+        "src/lib.rs": "a1edb57614c798948e247fdbd2dfd6d1ab666ac6b5ccf11f11f94860328ebaef",
+        "src/main.rs": "707eb6b82795dc3fc8ec2059cd181be0e759d8ca06ca7d8df6834c3369d184e2",
+        "src/mutation.rs": "e4741a185b6d160dfab2015af3d9418906f101636e9180673712e09148586111",
+        "src/pgwire.rs": "fde6867368964cda1bce6344d02844b1d590d0e9a5e3117d6eec2c69937f5049",
+        "src/relational.rs": "891ad2172c7efb7bbc9bbeb5b5446bb8c87b85de95ceef3a2eccc469135c0e69",
+        "src/sql.rs": "19261c864d167188160dfb259c345045624a7ffc10b0d80b33da65632a241ca4",
+        "src/storage.rs": "48e034714ee0922bd3be83a8097d68213e54b571c3e541ff79fec3b4d84d4dac",
+        "src/transaction.rs": "dfb3bdcba94ddb00c0fd4b1783eeff14115d0bc66f864ddaaf42442df106adba",
+        "tarantool/Dockerfile": "b60fa0ca15ef4f0480a669921061a21a0923bf13c451f09a0933aac236a5c397",
+        "tarantool/replicated.yaml": "ae43f3a9bc2eb1c78fa1d8f5d05489402f8990ef3b41c2e9eb5b2f4bbb775e50",
+        "tarantool/storage.lua": "ffae99daeee6ad7c80e820db1870e47aea8390e99bcfa30cf3614ba359e112a3",
+        "tarantool/transactions.lua": "28f51a509b58a089277303229bdca0ea5b6923bc0572c4cad3db21bee5df7d1a",
+        "tarantool/volatile.lua": "dab35676802eeaa05d661357e6126f8ecfc270474a2f30888041c0b9496bb8ee",
+        "tests/Dockerfile": "2714850886160c8406853b27b66fd3a049a094cef28e1768417b47d703a0769b",
+        "tests/integration.py": "e04b8ec6fff5d551a71e68d0ead53a18b25fb0c413cadfb2e84461669dc69494",
+        "tests/local_commit.py": "03a91b294729309fba39e91a1c7aee998a5ea2250264ca6f4dbcb010482c2dcd",
+        "tests/local_finish.py": "1454d026bd822209484bbf68b752b6735e221702985a2feb3d5fc4448ade7f4f",
+        "tests/mutations.py": "ee8bc85a4c0d43bbc7980b1f366b44ba87be5f791902609660db2b74499e5a0e",
+        "tests/native_core.py": "a1f67291eab25cabe275abdc938aeff5efe808d5b7c4ad7334a1cebaa9dc6e15",
+        "tests/read_batches.py": "b0e8aa34e8d82447956e6e9bcd1fa87b9f76d045a26f1bdc4e00c57df6ed5f4c",
+        "tests/recovery.py": "b2da08ea0f48be84cf00f15704d8f1f8f58035834836682bedcb46cacc173724",
+        "tests/relational.py": "fea1b163810167b00584c8b1f7b882d60374ea74a0f71fba8815ab5129c394a4",
+        "tests/replication.py": "3a475e0ffe4360c7a872fdc0be0f01153641c3a8673b23a09de2a2cb1b8107a7",
+        "tests/scans.py": "c0c656925ef2005e75a564697994b614e7d59c5d6630a6228a1e509b41555104",
+        "tests/transaction_contention.py": "3885b48fce94cf64a6500692b9457bd81a74d38c03ccbd890deec832cfdac710",
+        "tests/transaction_protocol.py": "0610dbf50761c69ad34654ff597017c67786df4bf298db1f1aacbc40b383bf7e",
+        "tests/transaction_recovery.py": "2c4101e6626381c474499311332bfea58e8105ff3afa28960917f5891199618e",
+        "tests/transaction_start.py": "5e6d1ee4bd9a82f3875b2a80b64baae6d1e6ac2c3e28f2f85943418cfaa2fe56",
+        "tests/transactions.py": "443db616713a2d881c6f95d64b6b6e6ca88773c1fc5da94a489c13e5ec09194d",
+        "tests/volatile_open.py": "e329cf2a05a194607b555205792f8cb7bb5fec4b999a0953a6f336aefd31f023",
+        "tests/volatile_recovery.py": "160954316ae10fb47c43f977be1b6035aeb0c822cfdc1c17c008e2ddb5e83710",
+        "tests/vote_protocol.py": "769a9203438530841d1d92ff6af795977a271d2d322e2a5e15cfa5385db0ec8a",
+        "tests/vote_recovery.py": "3bd36ce8b21c62f9e1f06b0666f30f04124d15ea01ac2772c6aaf92f1be568e1",
+        "tools/bootstrap_formal.py": "16b4db2264dcfebdd770efa3547182d3276819c2337acf1d127f5e9d0fc3c001",
+        "tools/check_formal.sh": "6ef73eb3a7ecd24c2cea392441ce53bce135661239c7bbb78f25c0d0538aa893",
+        "tools/check_model_sensitivity.py": "9171f49dc75e1f4298229bc1dcb89da0d500784a744b49d0f71eff67f0213512",
+        "tools/check_recovery.sh": "0afeb0e4aa28219c8d054df416374c26ffa7b291224b69c611b6205764c5881e",
+        "tools/check_replication.py": "614bd2d8f845548aa0d4cd0d5137c7a2721fa2eafa0f03d45c72aed4d106035f",
+        "tools/check_transaction_recovery.py": "c4eaa0d2c4e7041522808411c858ccaa0c88785e012b4309de43eb7c0a784ab6",
+        "tools/check_volatile.py": "b44bd2c7b46dddf9cd99e72574552dc1bd88d832daa5042a78238c2a30d02cab",
+        "tools/check_volatile_recovery.py": "12bacce16d3d1c6de77ad25d902c708fb73791583f74a16f43376be172b7d74d",
+        "tools/check_vote_recovery.py": "64ac0dba1f40bf49c69738810bda7f3da9aabb2edc358159103484877a253819",
+        "tools/check_votes.py": "02c4ed09213faccc38eb3c540d81fdfec8eb6e827a1c12218a18c9e8d7cde9bc",
+        "tools/extract_core.py": "ccd52fb6cc7a047efb032004f6b7159bb27b48a6d127a07c2b0edff2d89db7d9",
+        "tools/report_comparison.py": "ea793fed98e297ac520319d797bc2f40ff11e470dd028b7ac8a083dde0996423",
+        "tools/run_comparison.py": "ddf99ad22ec3e97473b55458ec18abad3eba26292e3e73c5369473c731b42e69",
+        "verification/core.rs": "b2b4b41defc3e692de52e4f5bca5e040f88b5e04aa9a786c4d76f775325e41ba",
+        "verification/native/Cargo.lock": "d4e20d0c1c00290be2289b780fb44a48ae2cb0afb16aeafa260ad2fa3133ea66",
+        "verification/native/Cargo.toml": "462f12054a28ae4f2f92dda18a8374e708212a9d1b6e4a2de0c7f41725c84bd7",
+        "verification/native/lib.rs": "e5a5be667db1d7e9bec1e6ce4fc933e6895a529efc08528609102cd189bd77a9"
+      },
+      "source_archive": "source-f6de49ffcb88e3e5.tar.gz",
+      "source_archive_sha256": "a912811785517dc16a9d4cb6cad739b15ee7b87ff6c46bac69895ef52003823f",
+      "containers_after": [
+        {
+          "service": "pd0",
+          "image": "pingcap/pd:v8.5.4",
+          "image_id": "sha256:672f499607a9f378f01ed0f78b2aa073d689b67ca1a820d58176660191db769b",
+          "cpu_limit": 0.25,
+          "memory_limit_bytes": 134217728,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T11:38:52.641841924Z"
+        },
+        {
+          "service": "pd1",
+          "image": "pingcap/pd:v8.5.4",
+          "image_id": "sha256:672f499607a9f378f01ed0f78b2aa073d689b67ca1a820d58176660191db769b",
+          "cpu_limit": 0.25,
+          "memory_limit_bytes": 134217728,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T11:38:52.629377841Z"
+        },
+        {
+          "service": "pd2",
+          "image": "pingcap/pd:v8.5.4",
+          "image_id": "sha256:672f499607a9f378f01ed0f78b2aa073d689b67ca1a820d58176660191db769b",
+          "cpu_limit": 0.25,
+          "memory_limit_bytes": 134217728,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T11:38:52.630835716Z"
+        },
+        {
+          "service": "tidb",
+          "image": "pingcap/tidb:v8.5.4",
+          "image_id": "sha256:e986dadd59937fbfcbdfe7fd084421cc65988da8b795f75194b05a0292635ead",
+          "cpu_limit": 1.5,
+          "memory_limit_bytes": 805306368,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T11:38:52.634317341Z"
+        },
+        {
+          "service": "tikv0",
+          "image": "fastpg-comparison-tikv:8.5.4",
+          "image_id": "sha256:e300e8b6cb45f8bfa671ca7df4e1621a598a90f78f0fda1bb599763c63a5117a",
+          "cpu_limit": 1.25,
+          "memory_limit_bytes": 1744830464,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T11:38:52.638371216Z"
+        },
+        {
+          "service": "tikv1",
+          "image": "fastpg-comparison-tikv:8.5.4",
+          "image_id": "sha256:e300e8b6cb45f8bfa671ca7df4e1621a598a90f78f0fda1bb599763c63a5117a",
+          "cpu_limit": 1.25,
+          "memory_limit_bytes": 1744830464,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T11:38:52.637226883Z"
+        },
+        {
+          "service": "tikv2",
+          "image": "fastpg-comparison-tikv:8.5.4",
+          "image_id": "sha256:e300e8b6cb45f8bfa671ca7df4e1621a598a90f78f0fda1bb599763c63a5117a",
+          "cpu_limit": 1.25,
+          "memory_limit_bytes": 1744830464,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T11:38:52.636424841Z"
+        }
+      ],
+      "result_sha256": "47264f7863c9f6c48594036ba8c251681917019f7999d339b15b9d952bb8cd65"
+    },
+    "fastpg": {
+      "nodes": [
+        {
+          "node": "s0a",
+          "ping": [
+            0,
+            2,
+            129,
+            false,
+            true,
+            2,
+            "711e3ade-f5d2-4707-966c-e992f02c0a43",
+            0
+          ]
+        },
+        {
+          "node": "s0b",
+          "ping": [
+            0,
+            2,
+            129,
+            false,
+            true,
+            2,
+            "21ee8304-a11e-4bf8-8538-0c454e759329",
+            0
+          ]
+        },
+        {
+          "node": "s0c",
+          "ping": [
+            0,
+            2,
+            129,
+            true,
+            true,
+            2,
+            "8db3137f-f542-492b-b798-c3a49d056a54",
+            31
+          ]
+        },
+        {
+          "node": "s1a",
+          "ping": [
+            1,
+            2,
+            86,
+            true,
+            true,
+            2,
+            "c73eda7e-1b19-4a61-971a-892707bc82f9",
+            21
+          ]
+        },
+        {
+          "node": "s1b",
+          "ping": [
+            1,
+            2,
+            86,
+            false,
+            true,
+            2,
+            "b5404db4-92dd-493e-bd94-a4a31f2378f2",
+            0
+          ]
+        },
+        {
+          "node": "s1c",
+          "ping": [
+            1,
+            2,
+            86,
+            false,
+            true,
+            2,
+            "ce62af62-ad9e-45ad-b426-408958c39527",
+            0
+          ]
+        }
+      ],
+      "gateway_settings": {
+        "TOKIO_WORKER_THREADS": "2",
+        "FASTPG_PROFILE_RPC": "0",
+        "FASTPG_VOTE_COMMIT": "3",
+        "FASTPG_STORAGE_CONNECTIONS": "32",
+        "FASTPG_RECOVERY": "1",
+        "FASTPG_LOG_ERRORS": "0"
+      },
+      "wal_mode": "fsync",
+      "replica_count": 3,
+      "quorum": 2,
+      "reads": "linearizable",
+      "transaction_isolation": "strict two-phase locking",
+      "containers": [
+        {
+          "service": "gateway",
+          "image": "fastpg-ha-gateway",
+          "image_id": "sha256:a28efef73634ab37fc958957483d30c0af81750720d8f8b47f5992e3dc3276ef",
+          "cpu_limit": 1.5,
+          "memory_limit_bytes": 1610612736,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T11:47:20.094247173Z"
+        },
+        {
+          "service": "s0a",
+          "image": "fastpg-storage:3.3.5",
+          "image_id": "sha256:80400826aac080a015a23c07decd768184c74b7a5c99b57c994724a611326f0f",
+          "cpu_limit": 0.75,
+          "memory_limit_bytes": 805306368,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T11:47:17.474905464Z"
+        },
+        {
+          "service": "s0b",
+          "image": "fastpg-storage:3.3.5",
+          "image_id": "sha256:80400826aac080a015a23c07decd768184c74b7a5c99b57c994724a611326f0f",
+          "cpu_limit": 0.75,
+          "memory_limit_bytes": 805306368,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T11:47:17.467014755Z"
+        },
+        {
+          "service": "s0c",
+          "image": "fastpg-storage:3.3.5",
+          "image_id": "sha256:80400826aac080a015a23c07decd768184c74b7a5c99b57c994724a611326f0f",
+          "cpu_limit": 0.75,
+          "memory_limit_bytes": 805306368,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T11:47:17.475653172Z"
+        },
+        {
+          "service": "s1a",
+          "image": "fastpg-storage:3.3.5",
+          "image_id": "sha256:80400826aac080a015a23c07decd768184c74b7a5c99b57c994724a611326f0f",
+          "cpu_limit": 0.75,
+          "memory_limit_bytes": 805306368,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T11:47:17.477444172Z"
+        },
+        {
+          "service": "s1b",
+          "image": "fastpg-storage:3.3.5",
+          "image_id": "sha256:80400826aac080a015a23c07decd768184c74b7a5c99b57c994724a611326f0f",
+          "cpu_limit": 0.75,
+          "memory_limit_bytes": 805306368,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T11:47:17.47614638Z"
+        },
+        {
+          "service": "s1c",
+          "image": "fastpg-storage:3.3.5",
+          "image_id": "sha256:80400826aac080a015a23c07decd768184c74b7a5c99b57c994724a611326f0f",
+          "cpu_limit": 0.75,
+          "memory_limit_bytes": 805306368,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T11:47:17.473637255Z"
+        }
+      ],
+      "measured_utc": "2026-10-25T11:47:23.640578+00:00",
+      "status": "accepted",
+      "load_image": "sha256:f40f3b5495fc40a4b86dadcbaa9ce2b5bb6539867deaf168322896d30d6034d1",
+      "load_binary_sha256": "7175fc9b8af0c46cc1d458f3ca5239be8057808da50a07b6aed47d5426131d80",
+      "source_sha256": {
+        ".dockerignore": "bd26e59cad39cb1767248308e3813f88261fe2c552963b00f70f3f5b9c19dd2c",
+        ".gitignore": "d6fd139f9bab8f89b643a9ebf2581805802ac528007f3228e3c0e444b7328764",
+        "Cargo.lock": "4ba827462924d1fedf885eb049386d2c6092d266a086f04369a68d8bbbe5ba85",
+        "Cargo.toml": "d3c59e38bf748707f81e819a3de596eedace0373be577925f89b228d4048af64",
+        "Dockerfile": "028821d39034ebe1a0efb8f2919c6a0c377fc29833a5dd68ac3472bafdf59857",
+        "Makefile": "03b15aaa9e4a7165f67e6e84a1397d70d498dba6745871baa20d6c0766c01786",
+        "bench/driver/.dockerignore": "c97ecfda4d205190b973232dcfdb0c29748521c2534dd866bcc782f30b086738",
+        "bench/driver/Cargo.lock": "6b1d0a333466214ee21ef03ded5a26052cecb2e570e9aaef52914f760e1499ed",
+        "bench/driver/Cargo.toml": "1d9f5dd9b6e918e74aea9dbca43b962345665ab706e3b50bd88655bf519b0ad5",
+        "bench/driver/Dockerfile": "7dd9d4e07652b0be3eea5ac75c2436b373f75fa69e07a88f07527ab7d7abb885",
+        "bench/driver/src/main.rs": "8e296ea9a89c7c09aaa18d050b5c5f175c296c210f4f4df7b7d5e20c2c87363b",
+        "bench/resources.yaml": "4b39b0d2a5b5b55e6950d238f7734220dcb4c4a2e97f43afd428236e1dd96dc1",
+        "bench/tikv.Dockerfile": "38243bb30aa34aba8a93aad4d0556fe08fcadd53877520ef3e3d431a0f35e7f0",
+        "bench/tikv.toml": "9b98546f28229f7aa924e3844573560c621c7cfe0906090e76d9cacd95fc5dde",
+        "bench/yugabyte-start.sh": "f4e0dcfc4414cabf53e2cb19d3c0a55c331d7d810c2940e7cd4fff23f0dd377e",
+        "bench/yugabyte.Dockerfile": "146af1165234fbcafdce84ae617848250a457eb027fb12a2ea1a0f0baaa88d74",
+        "compose.comparison.yaml": "ff39a836dc92da31b2751df7bb960a30a122f3ae9202cacc983f89d3d95d1a05",
+        "compose.replication.yaml": "ef548793176156faca37cee75d1f69fe1727cdb63f6a432e1ffd854c11eeb463",
+        "compose.votes.yaml": "225bd1981b43f89e55b853fd5ffd9d998cbe8c204a640eeb544187f13c51631b",
+        "compose.yaml": "00e2286d79f8a581837f3909692945efe4daaa8c6e6b9fde4138572f4e709bef",
+        "formal/LocalFinish.cfg": "c05eb3bffb89f111dd070f63d8482396d03749534875eeed08ba40b54b0fe93e",
+        "formal/LocalFinish.tla": "87f25a4892c16ac2e88bfc0f29a9c4a11f0eb8fea9db9239c23e9466a00a5776",
+        "formal/PredicateLocks.cfg": "a11de344659f5227e324725d0b260161d5e92265fc79ecdb308b0058eb0f9a4d",
+        "formal/PredicateLocks.tla": "d1d4f23b9be41fdf49da04fdbe58af354820cb81b3d9b0f5d386a9dfe4c48461",
+        "formal/ReadBatch.cfg": "eefe620350d684db0171af8dd05745b8489d66489e842e209750595fbb4787cc",
+        "formal/ReadBatch.tla": "d26362a844f3467e0cc88ba5f89d918545ac41943ac1182a9ca7b1756012f9e2",
+        "formal/ReplicaEpoch.cfg": "734cf2be896e1b0f30b599492575f84f8adcb51a9199660a973de6765dc9a7de",
+        "formal/ReplicaEpoch.tla": "cc91e01f360b39ca4a85be9fe649093e631ec1ef1ce1466d8eaac6a37fa1c6d4",
+        "formal/ShardStore.cfg": "d03a16222e3121ce960679c43beac407e5abfd6f5c5512166772bb4705700c29",
+        "formal/ShardStore.tla": "59a7c51b8fb66417bf8b83fcd5a8eb6581a7b66734d3ba1d7c76c0c2b86ffb5a",
+        "formal/TwoPhaseCommit.cfg": "567363edf6fdf7300d755d477bcd66fa616d8055297ee8b67c71d04018002132",
+        "formal/TwoPhaseCommit.tla": "2456330230e3b074f1cb6aba24ce65b241c6ae0a3089b53a21f85bba27b80c05",
+        "formal/VolatileOpen.cfg": "b1b83c500749d25155f30f1072070c00301f691a5f28259e997060840984df56",
+        "formal/VolatileOpen.tla": "8fc789550e874c8734bf02c9e77e3a55909d59daeeaafef3134488332a83ff33",
+        "formal/VoteCommit.cfg": "2e1c0b0a6496d71fe02f1b06ea2d8b7fa991837c1d0cd1be47be46dc942b42ff",
+        "formal/VoteCommit.tla": "1b447b5656c8516f5fec0bf443d3d8c119be529df1dc2835981c44be41dab52a",
+        "src/core.rs": "22c61bdbc99d1eed5a6e35175a5e51ea5fc6bb949bbaed173ca6bea7fdb17df4",
+        "src/expression.rs": "313a3bfce44b5736046ea3d833f3663fb6c174f5e38d5b2acc20d68a7c8ae52f",
+        "src/lib.rs": "a1edb57614c798948e247fdbd2dfd6d1ab666ac6b5ccf11f11f94860328ebaef",
+        "src/main.rs": "707eb6b82795dc3fc8ec2059cd181be0e759d8ca06ca7d8df6834c3369d184e2",
+        "src/mutation.rs": "e4741a185b6d160dfab2015af3d9418906f101636e9180673712e09148586111",
+        "src/pgwire.rs": "cda8b6ba758168cf0231176729b4760df9cf80b3ed112784b8912b7efe329a73",
+        "src/relational.rs": "891ad2172c7efb7bbc9bbeb5b5446bb8c87b85de95ceef3a2eccc469135c0e69",
+        "src/sql.rs": "19261c864d167188160dfb259c345045624a7ffc10b0d80b33da65632a241ca4",
+        "src/storage.rs": "e2fa5710e6b698a8798aad6e5eff64a2ceeb8b443e4fcc6e8d10920aac0e2086",
+        "src/transaction.rs": "dfb3bdcba94ddb00c0fd4b1783eeff14115d0bc66f864ddaaf42442df106adba",
+        "tarantool/Dockerfile": "b60fa0ca15ef4f0480a669921061a21a0923bf13c451f09a0933aac236a5c397",
+        "tarantool/replicated.yaml": "ae43f3a9bc2eb1c78fa1d8f5d05489402f8990ef3b41c2e9eb5b2f4bbb775e50",
+        "tarantool/storage.lua": "ffae99daeee6ad7c80e820db1870e47aea8390e99bcfa30cf3614ba359e112a3",
+        "tarantool/transactions.lua": "ff0527810967947c4953a0dcd102ebf8df5ad2f51f5c47fb188dbe836fe8653f",
+        "tarantool/volatile.lua": "dab35676802eeaa05d661357e6126f8ecfc270474a2f30888041c0b9496bb8ee",
+        "tests/Dockerfile": "2714850886160c8406853b27b66fd3a049a094cef28e1768417b47d703a0769b",
+        "tests/integration.py": "e04b8ec6fff5d551a71e68d0ead53a18b25fb0c413cadfb2e84461669dc69494",
+        "tests/local_commit.py": "03a91b294729309fba39e91a1c7aee998a5ea2250264ca6f4dbcb010482c2dcd",
+        "tests/local_finish.py": "1454d026bd822209484bbf68b752b6735e221702985a2feb3d5fc4448ade7f4f",
+        "tests/mutations.py": "ee8bc85a4c0d43bbc7980b1f366b44ba87be5f791902609660db2b74499e5a0e",
+        "tests/native_core.py": "a1f67291eab25cabe275abdc938aeff5efe808d5b7c4ad7334a1cebaa9dc6e15",
+        "tests/read_batches.py": "b0e8aa34e8d82447956e6e9bcd1fa87b9f76d045a26f1bdc4e00c57df6ed5f4c",
+        "tests/recovery.py": "b2da08ea0f48be84cf00f15704d8f1f8f58035834836682bedcb46cacc173724",
+        "tests/relational.py": "fea1b163810167b00584c8b1f7b882d60374ea74a0f71fba8815ab5129c394a4",
+        "tests/replication.py": "3a475e0ffe4360c7a872fdc0be0f01153641c3a8673b23a09de2a2cb1b8107a7",
+        "tests/scans.py": "c0c656925ef2005e75a564697994b614e7d59c5d6630a6228a1e509b41555104",
+        "tests/transaction_contention.py": "3885b48fce94cf64a6500692b9457bd81a74d38c03ccbd890deec832cfdac710",
+        "tests/transaction_protocol.py": "0610dbf50761c69ad34654ff597017c67786df4bf298db1f1aacbc40b383bf7e",
+        "tests/transaction_recovery.py": "2c4101e6626381c474499311332bfea58e8105ff3afa28960917f5891199618e",
+        "tests/transaction_start.py": "5e6d1ee4bd9a82f3875b2a80b64baae6d1e6ac2c3e28f2f85943418cfaa2fe56",
+        "tests/transactions.py": "443db616713a2d881c6f95d64b6b6e6ca88773c1fc5da94a489c13e5ec09194d",
+        "tests/volatile_open.py": "e329cf2a05a194607b555205792f8cb7bb5fec4b999a0953a6f336aefd31f023",
+        "tests/volatile_recovery.py": "160954316ae10fb47c43f977be1b6035aeb0c822cfdc1c17c008e2ddb5e83710",
+        "tests/vote_protocol.py": "769a9203438530841d1d92ff6af795977a271d2d322e2a5e15cfa5385db0ec8a",
+        "tests/vote_recovery.py": "3bd36ce8b21c62f9e1f06b0666f30f04124d15ea01ac2772c6aaf92f1be568e1",
+        "tools/bootstrap_formal.py": "16b4db2264dcfebdd770efa3547182d3276819c2337acf1d127f5e9d0fc3c001",
+        "tools/check_formal.sh": "6ef73eb3a7ecd24c2cea392441ce53bce135661239c7bbb78f25c0d0538aa893",
+        "tools/check_model_sensitivity.py": "9171f49dc75e1f4298229bc1dcb89da0d500784a744b49d0f71eff67f0213512",
+        "tools/check_recovery.sh": "0afeb0e4aa28219c8d054df416374c26ffa7b291224b69c611b6205764c5881e",
+        "tools/check_replication.py": "614bd2d8f845548aa0d4cd0d5137c7a2721fa2eafa0f03d45c72aed4d106035f",
+        "tools/check_transaction_recovery.py": "c4eaa0d2c4e7041522808411c858ccaa0c88785e012b4309de43eb7c0a784ab6",
+        "tools/check_volatile.py": "b44bd2c7b46dddf9cd99e72574552dc1bd88d832daa5042a78238c2a30d02cab",
+        "tools/check_volatile_recovery.py": "12bacce16d3d1c6de77ad25d902c708fb73791583f74a16f43376be172b7d74d",
+        "tools/check_vote_recovery.py": "64ac0dba1f40bf49c69738810bda7f3da9aabb2edc358159103484877a253819",
+        "tools/check_votes.py": "02c4ed09213faccc38eb3c540d81fdfec8eb6e827a1c12218a18c9e8d7cde9bc",
+        "tools/extract_core.py": "ccd52fb6cc7a047efb032004f6b7159bb27b48a6d127a07c2b0edff2d89db7d9",
+        "tools/report_comparison.py": "ea793fed98e297ac520319d797bc2f40ff11e470dd028b7ac8a083dde0996423",
+        "tools/run_comparison.py": "21a413061da8917445272b1d1404210ba37aec70650d9d6ab69c97205c556ff6",
+        "verification/core.rs": "b2b4b41defc3e692de52e4f5bca5e040f88b5e04aa9a786c4d76f775325e41ba",
+        "verification/native/Cargo.lock": "d4e20d0c1c00290be2289b780fb44a48ae2cb0afb16aeafa260ad2fa3133ea66",
+        "verification/native/Cargo.toml": "462f12054a28ae4f2f92dda18a8374e708212a9d1b6e4a2de0c7f41725c84bd7",
+        "verification/native/lib.rs": "e5a5be667db1d7e9bec1e6ce4fc933e6895a529efc08528609102cd189bd77a9"
+      },
+      "source_archive": "source-1bc02e5a9905e089.tar.gz",
+      "source_archive_sha256": "690e6ceb7387ee6f3d0ebe9072640df5de4bf45c24f5563439bb13ea4b9b5c8b",
+      "containers_after": [
+        {
+          "service": "gateway",
+          "image": "fastpg-ha-gateway",
+          "image_id": "sha256:a28efef73634ab37fc958957483d30c0af81750720d8f8b47f5992e3dc3276ef",
+          "cpu_limit": 1.5,
+          "memory_limit_bytes": 1610612736,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T11:47:20.094247173Z"
+        },
+        {
+          "service": "s0a",
+          "image": "fastpg-storage:3.3.5",
+          "image_id": "sha256:80400826aac080a015a23c07decd768184c74b7a5c99b57c994724a611326f0f",
+          "cpu_limit": 0.75,
+          "memory_limit_bytes": 805306368,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T11:47:17.474905464Z"
+        },
+        {
+          "service": "s0b",
+          "image": "fastpg-storage:3.3.5",
+          "image_id": "sha256:80400826aac080a015a23c07decd768184c74b7a5c99b57c994724a611326f0f",
+          "cpu_limit": 0.75,
+          "memory_limit_bytes": 805306368,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T11:47:17.467014755Z"
+        },
+        {
+          "service": "s0c",
+          "image": "fastpg-storage:3.3.5",
+          "image_id": "sha256:80400826aac080a015a23c07decd768184c74b7a5c99b57c994724a611326f0f",
+          "cpu_limit": 0.75,
+          "memory_limit_bytes": 805306368,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T11:47:17.475653172Z"
+        },
+        {
+          "service": "s1a",
+          "image": "fastpg-storage:3.3.5",
+          "image_id": "sha256:80400826aac080a015a23c07decd768184c74b7a5c99b57c994724a611326f0f",
+          "cpu_limit": 0.75,
+          "memory_limit_bytes": 805306368,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T11:47:17.477444172Z"
+        },
+        {
+          "service": "s1b",
+          "image": "fastpg-storage:3.3.5",
+          "image_id": "sha256:80400826aac080a015a23c07decd768184c74b7a5c99b57c994724a611326f0f",
+          "cpu_limit": 0.75,
+          "memory_limit_bytes": 805306368,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T11:47:17.47614638Z"
+        },
+        {
+          "service": "s1c",
+          "image": "fastpg-storage:3.3.5",
+          "image_id": "sha256:80400826aac080a015a23c07decd768184c74b7a5c99b57c994724a611326f0f",
+          "cpu_limit": 0.75,
+          "memory_limit_bytes": 805306368,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T11:47:17.473637255Z"
+        }
+      ],
+      "topology_after": {
+        "nodes": [
+          {
+            "node": "s0a",
+            "ping": [
+              0,
+              2,
+              129,
+              false,
+              true,
+              2,
+              "711e3ade-f5d2-4707-966c-e992f02c0a43",
+              0
+            ]
+          },
+          {
+            "node": "s0b",
+            "ping": [
+              0,
+              2,
+              129,
+              false,
+              true,
+              2,
+              "21ee8304-a11e-4bf8-8538-0c454e759329",
+              0
+            ]
+          },
+          {
+            "node": "s0c",
+            "ping": [
+              0,
+              2,
+              129,
+              true,
+              true,
+              2,
+              "8db3137f-f542-492b-b798-c3a49d056a54",
+              31
+            ]
+          },
+          {
+            "node": "s1a",
+            "ping": [
+              1,
+              2,
+              86,
+              true,
+              true,
+              2,
+              "c73eda7e-1b19-4a61-971a-892707bc82f9",
+              21
+            ]
+          },
+          {
+            "node": "s1b",
+            "ping": [
+              1,
+              2,
+              86,
+              false,
+              true,
+              2,
+              "b5404db4-92dd-493e-bd94-a4a31f2378f2",
+              0
+            ]
+          },
+          {
+            "node": "s1c",
+            "ping": [
+              1,
+              2,
+              86,
+              false,
+              true,
+              2,
+              "ce62af62-ad9e-45ad-b426-408958c39527",
+              0
+            ]
+          }
+        ],
+        "gateway_settings": {
+          "TOKIO_WORKER_THREADS": "2",
+          "FASTPG_PROFILE_RPC": "0",
+          "FASTPG_VOTE_COMMIT": "3",
+          "FASTPG_STORAGE_CONNECTIONS": "32",
+          "FASTPG_RECOVERY": "1",
+          "FASTPG_LOG_ERRORS": "0"
+        },
+        "wal_mode": "fsync",
+        "replica_count": 3,
+        "quorum": 2,
+        "reads": "linearizable",
+        "transaction_isolation": "strict two-phase locking"
+      },
+      "result_sha256": "7c93a73ff584a13e21a0362ea84d53223cb966d45dfbdf53aac0d534bb3e0a74"
+    },
+    "yugabyte": {
+      "universe_config": {
+        "version": 7,
+        "replicationInfo": {
+          "liveReplicas": {
+            "numReplicas": 3,
+            "placementBlocks": [
+              {
+                "cloudInfo": {
+                  "placementCloud": "bench",
+                  "placementRegion": "local",
+                  "placementZone": "yb2"
+                },
+                "minNumReplicas": 1
+              },
+              {
+                "cloudInfo": {
+                  "placementCloud": "bench",
+                  "placementRegion": "local",
+                  "placementZone": "yb3"
+                },
+                "minNumReplicas": 1
+              },
+              {
+                "cloudInfo": {
+                  "placementCloud": "bench",
+                  "placementRegion": "local",
+                  "placementZone": "yb1"
+                },
+                "minNumReplicas": 1
+              }
+            ],
+            "placementUuid": "MjM3NDVlOTUtYzVmZS00ZWUzLWJmZjctYjRhOTNkNmVhNDBk"
+          }
+        },
+        "clusterUuid": "94b60338-de61-48d3-a259-88d656898012",
+        "universeUuid": "c10c46a9-d825-425c-8ea9-52c4683e8889"
+      },
+      "durability_flags": {
+        "yb1": [
+          "--durable_wal_write=true",
+          "--enable_wait_queues=false",
+          "--yb_enable_read_committed_isolation=true",
+          "--never_fsync=false",
+          "--require_durable_wal_write=false"
+        ],
+        "yb2": [
+          "--durable_wal_write=true",
+          "--enable_wait_queues=false",
+          "--yb_enable_read_committed_isolation=true",
+          "--never_fsync=false",
+          "--require_durable_wal_write=false"
+        ],
+        "yb3": [
+          "--durable_wal_write=true",
+          "--enable_wait_queues=false",
+          "--yb_enable_read_committed_isolation=true",
+          "--never_fsync=false",
+          "--require_durable_wal_write=false"
+        ]
+      },
+      "replica_count": 3,
+      "quorum": 2,
+      "transaction_isolation": "repeatable read",
+      "conflict_policy": "fail on conflict",
+      "containers": [
+        {
+          "service": "yb1",
+          "image": "fastpg-comparison-yugabyte:2026.1.2.0-b137",
+          "image_id": "sha256:998fcd537ebc3079d7641fc2accceabd09961a773e36027c77b7b16d01e351bf",
+          "cpu_limit": 2.0,
+          "memory_limit_bytes": 2147483648,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T11:38:30.414692095Z"
+        },
+        {
+          "service": "yb2",
+          "image": "fastpg-comparison-yugabyte:2026.1.2.0-b137",
+          "image_id": "sha256:998fcd537ebc3079d7641fc2accceabd09961a773e36027c77b7b16d01e351bf",
+          "cpu_limit": 2.0,
+          "memory_limit_bytes": 2147483648,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T11:38:30.412883511Z"
+        },
+        {
+          "service": "yb3",
+          "image": "fastpg-comparison-yugabyte:2026.1.2.0-b137",
+          "image_id": "sha256:998fcd537ebc3079d7641fc2accceabd09961a773e36027c77b7b16d01e351bf",
+          "cpu_limit": 2.0,
+          "memory_limit_bytes": 2147483648,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T11:38:30.414175428Z"
+        }
+      ],
+      "measured_utc": "2026-10-25T11:38:37.844179+00:00",
+      "status": "accepted",
+      "load_image": "sha256:f40f3b5495fc40a4b86dadcbaa9ce2b5bb6539867deaf168322896d30d6034d1",
+      "load_binary_sha256": "7175fc9b8af0c46cc1d458f3ca5239be8057808da50a07b6aed47d5426131d80",
+      "source_sha256": {
+        ".dockerignore": "bd26e59cad39cb1767248308e3813f88261fe2c552963b00f70f3f5b9c19dd2c",
+        ".gitignore": "d6fd139f9bab8f89b643a9ebf2581805802ac528007f3228e3c0e444b7328764",
+        "Cargo.lock": "4ba827462924d1fedf885eb049386d2c6092d266a086f04369a68d8bbbe5ba85",
+        "Cargo.toml": "d3c59e38bf748707f81e819a3de596eedace0373be577925f89b228d4048af64",
+        "Dockerfile": "028821d39034ebe1a0efb8f2919c6a0c377fc29833a5dd68ac3472bafdf59857",
+        "Makefile": "03b15aaa9e4a7165f67e6e84a1397d70d498dba6745871baa20d6c0766c01786",
+        "bench/driver/.dockerignore": "c97ecfda4d205190b973232dcfdb0c29748521c2534dd866bcc782f30b086738",
+        "bench/driver/Cargo.lock": "6b1d0a333466214ee21ef03ded5a26052cecb2e570e9aaef52914f760e1499ed",
+        "bench/driver/Cargo.toml": "1d9f5dd9b6e918e74aea9dbca43b962345665ab706e3b50bd88655bf519b0ad5",
+        "bench/driver/Dockerfile": "7dd9d4e07652b0be3eea5ac75c2436b373f75fa69e07a88f07527ab7d7abb885",
+        "bench/driver/src/main.rs": "8e296ea9a89c7c09aaa18d050b5c5f175c296c210f4f4df7b7d5e20c2c87363b",
+        "bench/resources.yaml": "4b39b0d2a5b5b55e6950d238f7734220dcb4c4a2e97f43afd428236e1dd96dc1",
+        "bench/tikv.Dockerfile": "38243bb30aa34aba8a93aad4d0556fe08fcadd53877520ef3e3d431a0f35e7f0",
+        "bench/tikv.toml": "9b98546f28229f7aa924e3844573560c621c7cfe0906090e76d9cacd95fc5dde",
+        "bench/yugabyte-start.sh": "f4e0dcfc4414cabf53e2cb19d3c0a55c331d7d810c2940e7cd4fff23f0dd377e",
+        "bench/yugabyte.Dockerfile": "146af1165234fbcafdce84ae617848250a457eb027fb12a2ea1a0f0baaa88d74",
+        "compose.comparison.yaml": "ff39a836dc92da31b2751df7bb960a30a122f3ae9202cacc983f89d3d95d1a05",
+        "compose.replication.yaml": "ef548793176156faca37cee75d1f69fe1727cdb63f6a432e1ffd854c11eeb463",
+        "compose.votes.yaml": "ad33c370b03e030e9e38f322e746439c83eef1278a5b12d70a94382fc6147f3f",
+        "compose.yaml": "00e2286d79f8a581837f3909692945efe4daaa8c6e6b9fde4138572f4e709bef",
+        "formal/LocalFinish.cfg": "c05eb3bffb89f111dd070f63d8482396d03749534875eeed08ba40b54b0fe93e",
+        "formal/LocalFinish.tla": "87f25a4892c16ac2e88bfc0f29a9c4a11f0eb8fea9db9239c23e9466a00a5776",
+        "formal/PredicateLocks.cfg": "a11de344659f5227e324725d0b260161d5e92265fc79ecdb308b0058eb0f9a4d",
+        "formal/PredicateLocks.tla": "d1d4f23b9be41fdf49da04fdbe58af354820cb81b3d9b0f5d386a9dfe4c48461",
+        "formal/ReadBatch.cfg": "eefe620350d684db0171af8dd05745b8489d66489e842e209750595fbb4787cc",
+        "formal/ReadBatch.tla": "d26362a844f3467e0cc88ba5f89d918545ac41943ac1182a9ca7b1756012f9e2",
+        "formal/ReplicaEpoch.cfg": "734cf2be896e1b0f30b599492575f84f8adcb51a9199660a973de6765dc9a7de",
+        "formal/ReplicaEpoch.tla": "cc91e01f360b39ca4a85be9fe649093e631ec1ef1ce1466d8eaac6a37fa1c6d4",
+        "formal/ShardStore.cfg": "d03a16222e3121ce960679c43beac407e5abfd6f5c5512166772bb4705700c29",
+        "formal/ShardStore.tla": "59a7c51b8fb66417bf8b83fcd5a8eb6581a7b66734d3ba1d7c76c0c2b86ffb5a",
+        "formal/TwoPhaseCommit.cfg": "567363edf6fdf7300d755d477bcd66fa616d8055297ee8b67c71d04018002132",
+        "formal/TwoPhaseCommit.tla": "2456330230e3b074f1cb6aba24ce65b241c6ae0a3089b53a21f85bba27b80c05",
+        "formal/VolatileOpen.cfg": "b1b83c500749d25155f30f1072070c00301f691a5f28259e997060840984df56",
+        "formal/VolatileOpen.tla": "8fc789550e874c8734bf02c9e77e3a55909d59daeeaafef3134488332a83ff33",
+        "formal/VoteCommit.cfg": "2e1c0b0a6496d71fe02f1b06ea2d8b7fa991837c1d0cd1be47be46dc942b42ff",
+        "formal/VoteCommit.tla": "1b447b5656c8516f5fec0bf443d3d8c119be529df1dc2835981c44be41dab52a",
+        "src/core.rs": "22c61bdbc99d1eed5a6e35175a5e51ea5fc6bb949bbaed173ca6bea7fdb17df4",
+        "src/expression.rs": "313a3bfce44b5736046ea3d833f3663fb6c174f5e38d5b2acc20d68a7c8ae52f",
+        "src/lib.rs": "a1edb57614c798948e247fdbd2dfd6d1ab666ac6b5ccf11f11f94860328ebaef",
+        "src/main.rs": "707eb6b82795dc3fc8ec2059cd181be0e759d8ca06ca7d8df6834c3369d184e2",
+        "src/mutation.rs": "e4741a185b6d160dfab2015af3d9418906f101636e9180673712e09148586111",
+        "src/pgwire.rs": "fde6867368964cda1bce6344d02844b1d590d0e9a5e3117d6eec2c69937f5049",
+        "src/relational.rs": "891ad2172c7efb7bbc9bbeb5b5446bb8c87b85de95ceef3a2eccc469135c0e69",
+        "src/sql.rs": "19261c864d167188160dfb259c345045624a7ffc10b0d80b33da65632a241ca4",
+        "src/storage.rs": "48e034714ee0922bd3be83a8097d68213e54b571c3e541ff79fec3b4d84d4dac",
+        "src/transaction.rs": "dfb3bdcba94ddb00c0fd4b1783eeff14115d0bc66f864ddaaf42442df106adba",
+        "tarantool/Dockerfile": "b60fa0ca15ef4f0480a669921061a21a0923bf13c451f09a0933aac236a5c397",
+        "tarantool/replicated.yaml": "ae43f3a9bc2eb1c78fa1d8f5d05489402f8990ef3b41c2e9eb5b2f4bbb775e50",
+        "tarantool/storage.lua": "ffae99daeee6ad7c80e820db1870e47aea8390e99bcfa30cf3614ba359e112a3",
+        "tarantool/transactions.lua": "28f51a509b58a089277303229bdca0ea5b6923bc0572c4cad3db21bee5df7d1a",
+        "tarantool/volatile.lua": "dab35676802eeaa05d661357e6126f8ecfc270474a2f30888041c0b9496bb8ee",
+        "tests/Dockerfile": "2714850886160c8406853b27b66fd3a049a094cef28e1768417b47d703a0769b",
+        "tests/integration.py": "e04b8ec6fff5d551a71e68d0ead53a18b25fb0c413cadfb2e84461669dc69494",
+        "tests/local_commit.py": "03a91b294729309fba39e91a1c7aee998a5ea2250264ca6f4dbcb010482c2dcd",
+        "tests/local_finish.py": "1454d026bd822209484bbf68b752b6735e221702985a2feb3d5fc4448ade7f4f",
+        "tests/mutations.py": "ee8bc85a4c0d43bbc7980b1f366b44ba87be5f791902609660db2b74499e5a0e",
+        "tests/native_core.py": "a1f67291eab25cabe275abdc938aeff5efe808d5b7c4ad7334a1cebaa9dc6e15",
+        "tests/read_batches.py": "b0e8aa34e8d82447956e6e9bcd1fa87b9f76d045a26f1bdc4e00c57df6ed5f4c",
+        "tests/recovery.py": "b2da08ea0f48be84cf00f15704d8f1f8f58035834836682bedcb46cacc173724",
+        "tests/relational.py": "fea1b163810167b00584c8b1f7b882d60374ea74a0f71fba8815ab5129c394a4",
+        "tests/replication.py": "3a475e0ffe4360c7a872fdc0be0f01153641c3a8673b23a09de2a2cb1b8107a7",
+        "tests/scans.py": "c0c656925ef2005e75a564697994b614e7d59c5d6630a6228a1e509b41555104",
+        "tests/transaction_contention.py": "3885b48fce94cf64a6500692b9457bd81a74d38c03ccbd890deec832cfdac710",
+        "tests/transaction_protocol.py": "0610dbf50761c69ad34654ff597017c67786df4bf298db1f1aacbc40b383bf7e",
+        "tests/transaction_recovery.py": "2c4101e6626381c474499311332bfea58e8105ff3afa28960917f5891199618e",
+        "tests/transaction_start.py": "5e6d1ee4bd9a82f3875b2a80b64baae6d1e6ac2c3e28f2f85943418cfaa2fe56",
+        "tests/transactions.py": "443db616713a2d881c6f95d64b6b6e6ca88773c1fc5da94a489c13e5ec09194d",
+        "tests/volatile_open.py": "e329cf2a05a194607b555205792f8cb7bb5fec4b999a0953a6f336aefd31f023",
+        "tests/volatile_recovery.py": "160954316ae10fb47c43f977be1b6035aeb0c822cfdc1c17c008e2ddb5e83710",
+        "tests/vote_protocol.py": "769a9203438530841d1d92ff6af795977a271d2d322e2a5e15cfa5385db0ec8a",
+        "tests/vote_recovery.py": "3bd36ce8b21c62f9e1f06b0666f30f04124d15ea01ac2772c6aaf92f1be568e1",
+        "tools/bootstrap_formal.py": "16b4db2264dcfebdd770efa3547182d3276819c2337acf1d127f5e9d0fc3c001",
+        "tools/check_formal.sh": "6ef73eb3a7ecd24c2cea392441ce53bce135661239c7bbb78f25c0d0538aa893",
+        "tools/check_model_sensitivity.py": "9171f49dc75e1f4298229bc1dcb89da0d500784a744b49d0f71eff67f0213512",
+        "tools/check_recovery.sh": "0afeb0e4aa28219c8d054df416374c26ffa7b291224b69c611b6205764c5881e",
+        "tools/check_replication.py": "614bd2d8f845548aa0d4cd0d5137c7a2721fa2eafa0f03d45c72aed4d106035f",
+        "tools/check_transaction_recovery.py": "c4eaa0d2c4e7041522808411c858ccaa0c88785e012b4309de43eb7c0a784ab6",
+        "tools/check_volatile.py": "b44bd2c7b46dddf9cd99e72574552dc1bd88d832daa5042a78238c2a30d02cab",
+        "tools/check_volatile_recovery.py": "12bacce16d3d1c6de77ad25d902c708fb73791583f74a16f43376be172b7d74d",
+        "tools/check_vote_recovery.py": "64ac0dba1f40bf49c69738810bda7f3da9aabb2edc358159103484877a253819",
+        "tools/check_votes.py": "02c4ed09213faccc38eb3c540d81fdfec8eb6e827a1c12218a18c9e8d7cde9bc",
+        "tools/extract_core.py": "ccd52fb6cc7a047efb032004f6b7159bb27b48a6d127a07c2b0edff2d89db7d9",
+        "tools/report_comparison.py": "ea793fed98e297ac520319d797bc2f40ff11e470dd028b7ac8a083dde0996423",
+        "tools/run_comparison.py": "ddf99ad22ec3e97473b55458ec18abad3eba26292e3e73c5369473c731b42e69",
+        "verification/core.rs": "b2b4b41defc3e692de52e4f5bca5e040f88b5e04aa9a786c4d76f775325e41ba",
+        "verification/native/Cargo.lock": "d4e20d0c1c00290be2289b780fb44a48ae2cb0afb16aeafa260ad2fa3133ea66",
+        "verification/native/Cargo.toml": "462f12054a28ae4f2f92dda18a8374e708212a9d1b6e4a2de0c7f41725c84bd7",
+        "verification/native/lib.rs": "e5a5be667db1d7e9bec1e6ce4fc933e6895a529efc08528609102cd189bd77a9"
+      },
+      "source_archive": "source-f6de49ffcb88e3e5.tar.gz",
+      "source_archive_sha256": "a912811785517dc16a9d4cb6cad739b15ee7b87ff6c46bac69895ef52003823f",
+      "containers_after": [
+        {
+          "service": "yb1",
+          "image": "fastpg-comparison-yugabyte:2026.1.2.0-b137",
+          "image_id": "sha256:998fcd537ebc3079d7641fc2accceabd09961a773e36027c77b7b16d01e351bf",
+          "cpu_limit": 2.0,
+          "memory_limit_bytes": 2147483648,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T11:38:30.414692095Z"
+        },
+        {
+          "service": "yb2",
+          "image": "fastpg-comparison-yugabyte:2026.1.2.0-b137",
+          "image_id": "sha256:998fcd537ebc3079d7641fc2accceabd09961a773e36027c77b7b16d01e351bf",
+          "cpu_limit": 2.0,
+          "memory_limit_bytes": 2147483648,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T11:38:30.412883511Z"
+        },
+        {
+          "service": "yb3",
+          "image": "fastpg-comparison-yugabyte:2026.1.2.0-b137",
+          "image_id": "sha256:998fcd537ebc3079d7641fc2accceabd09961a773e36027c77b7b16d01e351bf",
+          "cpu_limit": 2.0,
+          "memory_limit_bytes": 2147483648,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T11:38:30.414175428Z"
+        }
+      ],
+      "result_sha256": "965f9bace08c194a761a897a6a462d5faac4aac6808860395c5f7b644a80db07"
+    }
+  },
+  "load_binary_sha256": "7175fc9b8af0c46cc1d458f3ca5239be8057808da50a07b6aed47d5426131d80"
+}

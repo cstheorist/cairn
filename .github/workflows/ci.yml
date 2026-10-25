@@ -1,0 +1,33 @@
+name: CI
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  integration:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@1.99.1
+        with:
+          components: rustfmt, clippy
+      - run: sh ci/check.sh static
+      - run: sh ci/check.sh integration
+      - if: always()
+        run: docker compose logs --tail 100
+      - if: always()
+        run: docker compose down
+  formal:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@1.99.1
+      - run: sh ci/check.sh formal
+  replication:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: sh ci/check.sh replication
+      - if: always()
+        run: docker compose -f compose.replication.yaml logs --tail 100
+      - if: always()
+        run: docker compose -f compose.replication.yaml down

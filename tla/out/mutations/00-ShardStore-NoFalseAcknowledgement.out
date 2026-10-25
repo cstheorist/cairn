@@ -1,0 +1,56 @@
+TLC2 Version 2026.10.24.013619 (rev: 2ef2af8)
+Warning: Please run the Java VM, which executes TLC with a throughput optimized garbage collector, by passing the "-XX:+UseParallelGC" property.
+(Use the -nowarning option to disable this warning.)
+Running breadth-first search Model-Checking with fp 117 and seed -4614028483593768920 with 1 worker on 16 cores with 1960MB heap and 64MB offheap memory [pid: 1] (Linux 6.10.14-linuxkit aarch64, Eclipse Adoptium 21.0.12.1 64bit, MSBDiskFPSet, DiskStateQueue).
+Parsing file /model/ShardStore.tla
+Parsing file /tmp/tlc-15414919070944969372/Integers.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/Integers.tla)
+Parsing file /tmp/tlc-15414919070944969372/Sequences.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/Sequences.tla)
+Parsing file /tmp/tlc-15414919070944969372/FiniteSets.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/FiniteSets.tla)
+Parsing file /tmp/tlc-15414919070944969372/TLC.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/TLC.tla)
+Parsing file /tmp/tlc-15414919070944969372/_TLCTrace.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/_TLCTrace.tla)
+Parsing file /tmp/tlc-15414919070944969372/Naturals.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/Naturals.tla)
+Parsing file /tmp/tlc-15414919070944969372/TLCExt.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/TLCExt.tla)
+Semantic processing of module Naturals
+Semantic processing of module Integers
+Semantic processing of module Sequences
+Semantic processing of module FiniteSets
+Semantic processing of module TLC
+Semantic processing of module TLCExt
+Semantic processing of module _TLCTrace
+Semantic processing of module ShardStore
+Linting of module TLCExt
+Linting of module _TLCTrace
+Linting of module ShardStore
+Starting... (2026-10-25 14:18:41)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-10-25 14:18:41.
+Error: Invariant NoFalseAcknowledgement is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ wal = (0 :> <<>> @@ 1 :> <<>>)
+/\ online = (0 :> TRUE @@ 1 :> TRUE)
+/\ phase = <<"new", "new", "new">>
+/\ acknowledgements = {}
+/\ memory = (0 :> (0 :> NoRow @@ 1 :> NoRow) @@ 1 :> (0 :> NoRow @@ 1 :> NoRow))
+/\ disk = (0 :> (0 :> NoRow @@ 1 :> NoRow) @@ 1 :> (0 :> NoRow @@ 1 :> NoRow))
+
+State 2: <Send(1) line 31, col 5 to line 33, col 64 of module ShardStore>
+/\ wal = (0 :> <<>> @@ 1 :> <<>>)
+/\ online = (0 :> TRUE @@ 1 :> TRUE)
+/\ phase = <<"sent", "new", "new">>
+/\ acknowledgements = {}
+/\ memory = (0 :> (0 :> NoRow @@ 1 :> NoRow) @@ 1 :> (0 :> NoRow @@ 1 :> NoRow))
+/\ disk = (0 :> (0 :> NoRow @@ 1 :> NoRow) @@ 1 :> (0 :> NoRow @@ 1 :> NoRow))
+
+State 3: <Acknowledge(1) line 46, col 5 to line 50, col 46 of module ShardStore>
+/\ wal = (0 :> <<>> @@ 1 :> <<>>)
+/\ online = (0 :> TRUE @@ 1 :> TRUE)
+/\ phase = <<"acknowledged", "new", "new">>
+/\ acknowledgements = {1}
+/\ memory = (0 :> (0 :> NoRow @@ 1 :> NoRow) @@ 1 :> (0 :> NoRow @@ 1 :> NoRow))
+/\ disk = (0 :> (0 :> NoRow @@ 1 :> NoRow) @@ 1 :> (0 :> NoRow @@ 1 :> NoRow))
+
+8 states generated, 8 distinct states found, 5 states left on queue.
+The depth of the complete state graph search is 3.
+Finished in 00s at (2026-10-25 14:18:41)
+Trace exploration spec path: ./ShardStore_TTrace_1792937921.tla

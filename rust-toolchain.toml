@@ -1,0 +1,4 @@
+[toolchain]
+# Matches the Verus release pinned by scripts/bootstrap_formal.py.
+channel = "1.99.1"
+components = ["rustfmt", "clippy"]

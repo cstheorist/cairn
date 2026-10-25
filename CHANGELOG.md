@@ -1,0 +1,28 @@
+# Changelog
+
+## Unreleased
+
+### Added
+
+- Initial Cairn workspace: PostgreSQL wire protocol and SQL execution over native
+  Tarantool tables, with independent common, IPROTO, SQL, wire, verified and server crates.
+- Replicated shards, automatic leader discovery, fencing, recoverable cross-shard
+  transactions, predicate locks and an atomic single-shard commit path.
+- Optional durable-vote, local-finish and incarnation-bound volatile-open protocols.
+- Direct proof-based remote finish and a final home step combining application,
+  lock release, outcome and global cleanup.
+- Bounded point-read batches, checked typed increment pushdown and a configurable
+  storage connection pool.
+- Eight bounded TLA+ models, eighteen negative checks, fourteen executable Verus
+  functions and the matching storage-side native core.
+- PostgreSQL differential, concurrency, native protocol and failure-recovery suites.
+- Matched-resource YugabyteDB/TiDB harness with explicit isolation, source/image
+  hashes, restart/replication checks and per-key expected values.
+
+### Known gaps
+
+- Full PostgreSQL/ORM compatibility, secondary indexes, additional types,
+  transactional DDL and savepoints remain open.
+- Online resharding, safe metadata collection, long transaction heartbeats,
+  TLS and coordinated backup/restore remain open.
+- The requested OLTP performance advantage over TiDB is not established.

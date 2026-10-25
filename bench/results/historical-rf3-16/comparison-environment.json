@@ -1,0 +1,886 @@
+{
+  "started_utc": "2026-10-25T07:27:45.547429+00:00",
+  "docker": {
+    "ServerVersion": "28.0.4",
+    "Architecture": "aarch64",
+    "NCPU": 16,
+    "MemTotal": 8217190400,
+    "KernelVersion": "6.10.14-linuxkit",
+    "OperatingSystem": "Docker Desktop"
+  },
+  "resource_budget": {
+    "database_cpus": 6,
+    "database_memory_bytes": 6442450944,
+    "client_cpus": 4,
+    "client_memory_bytes": 805306368
+  },
+  "load_image": "sha256:a8b597bdd9c6499cfa200222a5fbcfbe478bc00bc16354d8bd25f156745942b9",
+  "databases": {
+    "tidb": {
+      "replication": {
+        "max-replicas": 3,
+        "location-labels": "",
+        "strictly-match-label": "false",
+        "enable-placement-rules": "true",
+        "enable-placement-rules-cache": "false",
+        "isolation-level": ""
+      },
+      "stores": {
+        "count": 3,
+        "stores": [
+          {
+            "store": {
+              "id": 2,
+              "address": "tikv1:20160",
+              "version": "8.5.4",
+              "peer_address": "tikv1:20160",
+              "status_address": "0.0.0.0:20180",
+              "git_hash": "4855bdccc64e7a8551d30ebbbd5be75a42929265",
+              "start_timestamp": 1792913539,
+              "deploy_path": "/",
+              "last_heartbeat": 1792913549625384795,
+              "node_state": 1,
+              "state_name": "Up"
+            },
+            "status": {
+              "capacity": "1007GiB",
+              "available": "865GiB",
+              "used_size": "277.1MiB",
+              "leader_count": 26,
+              "leader_weight": 1,
+              "leader_score": 26,
+              "leader_size": 0,
+              "region_count": 70,
+              "region_weight": 1,
+              "region_score": 0,
+              "region_size": 0,
+              "slow_score": 1,
+              "slow_trend": {
+                "cause_value": 250059.24489795917,
+                "cause_rate": 0,
+                "result_value": 0,
+                "result_rate": 0
+              },
+              "is_busy": true,
+              "start_ts": "2026-10-25T07:32:19Z",
+              "last_heartbeat_ts": "2026-10-25T07:32:29.625384795Z",
+              "uptime": "10.625384795s"
+            }
+          },
+          {
+            "store": {
+              "id": 5,
+              "address": "tikv2:20160",
+              "version": "8.5.4",
+              "peer_address": "tikv2:20160",
+              "status_address": "0.0.0.0:20180",
+              "git_hash": "4855bdccc64e7a8551d30ebbbd5be75a42929265",
+              "start_timestamp": 1792913539,
+              "deploy_path": "/",
+              "last_heartbeat": 1792913549602496337,
+              "node_state": 1,
+              "state_name": "Up"
+            },
+            "status": {
+              "capacity": "1007GiB",
+              "available": "865GiB",
+              "used_size": "277.1MiB",
+              "leader_count": 23,
+              "leader_weight": 1,
+              "leader_score": 23,
+              "leader_size": 0,
+              "region_count": 70,
+              "region_weight": 1,
+              "region_score": 0,
+              "region_size": 0,
+              "slow_score": 1,
+              "slow_trend": {
+                "cause_value": 250054.7142857143,
+                "cause_rate": 0,
+                "result_value": 0,
+                "result_rate": 0
+              },
+              "is_busy": true,
+              "start_ts": "2026-10-25T07:32:19Z",
+              "last_heartbeat_ts": "2026-10-25T07:32:29.602496337Z",
+              "uptime": "10.602496337s"
+            }
+          },
+          {
+            "store": {
+              "id": 1,
+              "address": "tikv0:20160",
+              "version": "8.5.4",
+              "peer_address": "tikv0:20160",
+              "status_address": "0.0.0.0:20180",
+              "git_hash": "4855bdccc64e7a8551d30ebbbd5be75a42929265",
+              "start_timestamp": 1792913539,
+              "deploy_path": "/",
+              "last_heartbeat": 1792913549622502879,
+              "node_state": 1,
+              "state_name": "Up"
+            },
+            "status": {
+              "capacity": "1007GiB",
+              "available": "865GiB",
+              "used_size": "272MiB",
+              "leader_count": 21,
+              "leader_weight": 1,
+              "leader_score": 21,
+              "leader_size": 0,
+              "region_count": 70,
+              "region_weight": 1,
+              "region_score": 0,
+              "region_size": 0,
+              "slow_score": 1,
+              "slow_trend": {
+                "cause_value": 250053.3418367347,
+                "cause_rate": 0,
+                "result_value": 0,
+                "result_rate": 0
+              },
+              "is_busy": true,
+              "start_ts": "2026-10-25T07:32:19Z",
+              "last_heartbeat_ts": "2026-10-25T07:32:29.622502879Z",
+              "uptime": "10.622502879s"
+            }
+          }
+        ]
+      },
+      "missing_peers": {
+        "count": 0,
+        "regions": []
+      },
+      "pending_peers": {
+        "count": 0,
+        "regions": []
+      },
+      "tikv_debug_stripping": "3850f81db83c5abd947d0942926546c4d852ea3fd11568302ead0be6ba7f58d7  /tikv-server\n54691097354e4108effadb57c1fb0d004374e9af3f5fde8ec86e278f0563718d  /tmp/text-before\n8bf5bccb15ef955ccab7221b022ee03e416b7b1a72130f7b971891e24ed6eecc  /tikv-server\n54691097354e4108effadb57c1fb0d004374e9af3f5fde8ec86e278f0563718d  /tmp/text-after\n",
+      "sync_log": true,
+      "reads": "leader/strong, no stale-read setting",
+      "transaction_isolation": "repeatable read with pessimistic writes",
+      "containers": [
+        {
+          "service": "pd0",
+          "image": "pingcap/pd:v8.5.4",
+          "image_id": "sha256:672f499607a9f378f01ed0f78b2aa073d689b67ca1a820d58176660191db769b",
+          "cpu_limit": 0.25,
+          "memory_limit_bytes": 134217728,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T07:32:16.34988722Z"
+        },
+        {
+          "service": "pd1",
+          "image": "pingcap/pd:v8.5.4",
+          "image_id": "sha256:672f499607a9f378f01ed0f78b2aa073d689b67ca1a820d58176660191db769b",
+          "cpu_limit": 0.25,
+          "memory_limit_bytes": 134217728,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T07:32:16.348144345Z"
+        },
+        {
+          "service": "pd2",
+          "image": "pingcap/pd:v8.5.4",
+          "image_id": "sha256:672f499607a9f378f01ed0f78b2aa073d689b67ca1a820d58176660191db769b",
+          "cpu_limit": 0.25,
+          "memory_limit_bytes": 134217728,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T07:32:16.350573887Z"
+        },
+        {
+          "service": "tidb",
+          "image": "pingcap/tidb:v8.5.4",
+          "image_id": "sha256:e986dadd59937fbfcbdfe7fd084421cc65988da8b795f75194b05a0292635ead",
+          "cpu_limit": 1.5,
+          "memory_limit_bytes": 805306368,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T07:32:16.347482387Z"
+        },
+        {
+          "service": "tikv0",
+          "image": "fastpg-comparison-tikv:8.5.4",
+          "image_id": "sha256:ca20fed9ecc2210a9c68b505781ed0ed5b639a9440982ee9d585d04f439805b0",
+          "cpu_limit": 1.25,
+          "memory_limit_bytes": 1744830464,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T07:32:16.350853012Z"
+        },
+        {
+          "service": "tikv1",
+          "image": "fastpg-comparison-tikv:8.5.4",
+          "image_id": "sha256:ca20fed9ecc2210a9c68b505781ed0ed5b639a9440982ee9d585d04f439805b0",
+          "cpu_limit": 1.25,
+          "memory_limit_bytes": 1744830464,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T07:32:16.35088197Z"
+        },
+        {
+          "service": "tikv2",
+          "image": "fastpg-comparison-tikv:8.5.4",
+          "image_id": "sha256:ca20fed9ecc2210a9c68b505781ed0ed5b639a9440982ee9d585d04f439805b0",
+          "cpu_limit": 1.25,
+          "memory_limit_bytes": 1744830464,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T07:32:16.349840262Z"
+        }
+      ],
+      "measured_utc": "2026-10-25T07:32:39.496309+00:00",
+      "status": "accepted",
+      "load_image": "sha256:a8b597bdd9c6499cfa200222a5fbcfbe478bc00bc16354d8bd25f156745942b9",
+      "source_sha256": {
+        "bench/driver/src/main.rs": "606f30905d9cf67e6dd882ff31cf6054f29c5dcedb5a8e3649679ad3d8b84c5d",
+        "src/core.rs": "cbb8f82cc61a3fe25d5f061e8361026641b69f611eec93e6c8a4edda82b93278",
+        "src/expression.rs": "313a3bfce44b5736046ea3d833f3663fb6c174f5e38d5b2acc20d68a7c8ae52f",
+        "src/lib.rs": "a1edb57614c798948e247fdbd2dfd6d1ab666ac6b5ccf11f11f94860328ebaef",
+        "src/main.rs": "71e18a28379683a3b015c7cf9d6170511375afb59056146e51780fb7a62f96c9",
+        "src/mutation.rs": "e4741a185b6d160dfab2015af3d9418906f101636e9180673712e09148586111",
+        "src/pgwire.rs": "4cc8ad771123ca72df50433b5d9a3540883121e3b59dd950ce7f5cabcd789e64",
+        "src/relational.rs": "891ad2172c7efb7bbc9bbeb5b5446bb8c87b85de95ceef3a2eccc469135c0e69",
+        "src/sql.rs": "19261c864d167188160dfb259c345045624a7ffc10b0d80b33da65632a241ca4",
+        "src/storage.rs": "3f92ec9da1a9311da3c3840e7241fb103ad0f1bc00a17bb33c1023366bd39f18",
+        "src/transaction.rs": "a114a4bf7385e6889bfbcc0f4571933f3c08c220fc9f04639d64f20605b6e3b9",
+        "tarantool/Dockerfile": "611638e0f37506fdfb12332ae35be5f3902e2ad6b7df80e8bbe0c7babb01b056",
+        "tarantool/replicated.yaml": "ae43f3a9bc2eb1c78fa1d8f5d05489402f8990ef3b41c2e9eb5b2f4bbb775e50",
+        "tarantool/storage.lua": "acef36b1bf716a5170c616038e34cce266f121604432f68107e8ceb5f8c680e4",
+        "tarantool/transactions.lua": "82a6ecf5ee62616f99aec3f5f406dd865e93c559b9ba9e01b1da82fa815c887f",
+        "verification/core.rs": "5647dbf6773982b770e4f8b4750b004a6f02dd8f855012fba84f0d34fbef292d",
+        "verification/native/Cargo.lock": "d4e20d0c1c00290be2289b780fb44a48ae2cb0afb16aeafa260ad2fa3133ea66",
+        "verification/native/Cargo.toml": "462f12054a28ae4f2f92dda18a8374e708212a9d1b6e4a2de0c7f41725c84bd7",
+        "verification/native/lib.rs": "e5c784b7676268a811193d575219d017fc477aa8698c4dc8b52daa2103b3308f",
+        "Cargo.toml": "d3c59e38bf748707f81e819a3de596eedace0373be577925f89b228d4048af64",
+        "Cargo.lock": "4ba827462924d1fedf885eb049386d2c6092d266a086f04369a68d8bbbe5ba85",
+        "Dockerfile": "028821d39034ebe1a0efb8f2919c6a0c377fc29833a5dd68ac3472bafdf59857",
+        "compose.replication.yaml": "ef548793176156faca37cee75d1f69fe1727cdb63f6a432e1ffd854c11eeb463",
+        "compose.comparison.yaml": "e8eaa48d92edf508257ef1da60bc62c45e2c25ad8c75faaa453124ff78018146",
+        "bench/resources.yaml": "4b39b0d2a5b5b55e6950d238f7734220dcb4c4a2e97f43afd428236e1dd96dc1",
+        "bench/tikv.toml": "9b98546f28229f7aa924e3844573560c621c7cfe0906090e76d9cacd95fc5dde",
+        "bench/tikv.Dockerfile": "38243bb30aa34aba8a93aad4d0556fe08fcadd53877520ef3e3d431a0f35e7f0",
+        "bench/yugabyte-start.sh": "f4e0dcfc4414cabf53e2cb19d3c0a55c331d7d810c2940e7cd4fff23f0dd377e",
+        "bench/driver/Cargo.toml": "1d9f5dd9b6e918e74aea9dbca43b962345665ab706e3b50bd88655bf519b0ad5",
+        "bench/driver/Cargo.lock": "6b1d0a333466214ee21ef03ded5a26052cecb2e570e9aaef52914f760e1499ed",
+        "tools/run_comparison.py": "e59f4e2ef1d3c414bb66eed09efda864fea78f76640ab0848a728adc3a71f225"
+      },
+      "containers_after": [
+        {
+          "service": "pd0",
+          "image": "pingcap/pd:v8.5.4",
+          "image_id": "sha256:672f499607a9f378f01ed0f78b2aa073d689b67ca1a820d58176660191db769b",
+          "cpu_limit": 0.25,
+          "memory_limit_bytes": 134217728,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T07:32:16.34988722Z"
+        },
+        {
+          "service": "pd1",
+          "image": "pingcap/pd:v8.5.4",
+          "image_id": "sha256:672f499607a9f378f01ed0f78b2aa073d689b67ca1a820d58176660191db769b",
+          "cpu_limit": 0.25,
+          "memory_limit_bytes": 134217728,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T07:32:16.348144345Z"
+        },
+        {
+          "service": "pd2",
+          "image": "pingcap/pd:v8.5.4",
+          "image_id": "sha256:672f499607a9f378f01ed0f78b2aa073d689b67ca1a820d58176660191db769b",
+          "cpu_limit": 0.25,
+          "memory_limit_bytes": 134217728,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T07:32:16.350573887Z"
+        },
+        {
+          "service": "tidb",
+          "image": "pingcap/tidb:v8.5.4",
+          "image_id": "sha256:e986dadd59937fbfcbdfe7fd084421cc65988da8b795f75194b05a0292635ead",
+          "cpu_limit": 1.5,
+          "memory_limit_bytes": 805306368,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T07:32:16.347482387Z"
+        },
+        {
+          "service": "tikv0",
+          "image": "fastpg-comparison-tikv:8.5.4",
+          "image_id": "sha256:ca20fed9ecc2210a9c68b505781ed0ed5b639a9440982ee9d585d04f439805b0",
+          "cpu_limit": 1.25,
+          "memory_limit_bytes": 1744830464,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T07:32:16.350853012Z"
+        },
+        {
+          "service": "tikv1",
+          "image": "fastpg-comparison-tikv:8.5.4",
+          "image_id": "sha256:ca20fed9ecc2210a9c68b505781ed0ed5b639a9440982ee9d585d04f439805b0",
+          "cpu_limit": 1.25,
+          "memory_limit_bytes": 1744830464,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T07:32:16.35088197Z"
+        },
+        {
+          "service": "tikv2",
+          "image": "fastpg-comparison-tikv:8.5.4",
+          "image_id": "sha256:ca20fed9ecc2210a9c68b505781ed0ed5b639a9440982ee9d585d04f439805b0",
+          "cpu_limit": 1.25,
+          "memory_limit_bytes": 1744830464,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T07:32:16.349840262Z"
+        }
+      ],
+      "result_sha256": "652b84f69d07bb19d3c2abf13ce224613a0b0b8a2be474e2c2ee2fc53a4e66a6"
+    },
+    "fastpg": {
+      "nodes": [
+        {
+          "node": "s0a",
+          "ping": [
+            0,
+            2,
+            65,
+            true,
+            true,
+            2,
+            "711e3ade-f5d2-4707-966c-e992f02c0a43"
+          ]
+        },
+        {
+          "node": "s0b",
+          "ping": [
+            0,
+            2,
+            65,
+            false,
+            true,
+            2,
+            "21ee8304-a11e-4bf8-8538-0c454e759329"
+          ]
+        },
+        {
+          "node": "s0c",
+          "ping": [
+            0,
+            2,
+            65,
+            false,
+            true,
+            2,
+            "8db3137f-f542-492b-b798-c3a49d056a54"
+          ]
+        },
+        {
+          "node": "s1a",
+          "ping": [
+            1,
+            2,
+            49,
+            false,
+            true,
+            2,
+            "c73eda7e-1b19-4a61-971a-892707bc82f9"
+          ]
+        },
+        {
+          "node": "s1b",
+          "ping": [
+            1,
+            2,
+            49,
+            true,
+            true,
+            2,
+            "b5404db4-92dd-493e-bd94-a4a31f2378f2"
+          ]
+        },
+        {
+          "node": "s1c",
+          "ping": [
+            1,
+            2,
+            49,
+            false,
+            true,
+            2,
+            "ce62af62-ad9e-45ad-b426-408958c39527"
+          ]
+        }
+      ],
+      "wal_mode": "fsync",
+      "replica_count": 3,
+      "quorum": 2,
+      "reads": "linearizable",
+      "transaction_isolation": "strict two-phase locking",
+      "containers": [
+        {
+          "service": "gateway",
+          "image": "fastpg-ha-gateway",
+          "image_id": "sha256:dbda99ffef71c0b65a3496493c9d74efeb331d496e182a4529f6421f79b69c0b",
+          "cpu_limit": 1.5,
+          "memory_limit_bytes": 1610612736,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T07:28:01.107317838Z"
+        },
+        {
+          "service": "s0a",
+          "image": "fastpg-storage:3.3.5",
+          "image_id": "sha256:60b5240bfcc4b2b7e607045eb9872e25529c8269032fc68f84cb24fc2a6d30e0",
+          "cpu_limit": 0.75,
+          "memory_limit_bytes": 805306368,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T07:27:58.50515892Z"
+        },
+        {
+          "service": "s0b",
+          "image": "fastpg-storage:3.3.5",
+          "image_id": "sha256:60b5240bfcc4b2b7e607045eb9872e25529c8269032fc68f84cb24fc2a6d30e0",
+          "cpu_limit": 0.75,
+          "memory_limit_bytes": 805306368,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T07:27:58.502175211Z"
+        },
+        {
+          "service": "s0c",
+          "image": "fastpg-storage:3.3.5",
+          "image_id": "sha256:60b5240bfcc4b2b7e607045eb9872e25529c8269032fc68f84cb24fc2a6d30e0",
+          "cpu_limit": 0.75,
+          "memory_limit_bytes": 805306368,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T07:27:58.501508545Z"
+        },
+        {
+          "service": "s1a",
+          "image": "fastpg-storage:3.3.5",
+          "image_id": "sha256:60b5240bfcc4b2b7e607045eb9872e25529c8269032fc68f84cb24fc2a6d30e0",
+          "cpu_limit": 0.75,
+          "memory_limit_bytes": 805306368,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T07:27:58.499615461Z"
+        },
+        {
+          "service": "s1b",
+          "image": "fastpg-storage:3.3.5",
+          "image_id": "sha256:60b5240bfcc4b2b7e607045eb9872e25529c8269032fc68f84cb24fc2a6d30e0",
+          "cpu_limit": 0.75,
+          "memory_limit_bytes": 805306368,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T07:27:58.501353628Z"
+        },
+        {
+          "service": "s1c",
+          "image": "fastpg-storage:3.3.5",
+          "image_id": "sha256:60b5240bfcc4b2b7e607045eb9872e25529c8269032fc68f84cb24fc2a6d30e0",
+          "cpu_limit": 0.75,
+          "memory_limit_bytes": 805306368,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T07:27:58.503979086Z"
+        }
+      ],
+      "measured_utc": "2026-10-25T07:28:04.577507+00:00",
+      "status": "accepted",
+      "load_image": "sha256:a8b597bdd9c6499cfa200222a5fbcfbe478bc00bc16354d8bd25f156745942b9",
+      "source_sha256": {
+        "bench/driver/src/main.rs": "606f30905d9cf67e6dd882ff31cf6054f29c5dcedb5a8e3649679ad3d8b84c5d",
+        "src/core.rs": "cbb8f82cc61a3fe25d5f061e8361026641b69f611eec93e6c8a4edda82b93278",
+        "src/expression.rs": "313a3bfce44b5736046ea3d833f3663fb6c174f5e38d5b2acc20d68a7c8ae52f",
+        "src/lib.rs": "a1edb57614c798948e247fdbd2dfd6d1ab666ac6b5ccf11f11f94860328ebaef",
+        "src/main.rs": "71e18a28379683a3b015c7cf9d6170511375afb59056146e51780fb7a62f96c9",
+        "src/mutation.rs": "e4741a185b6d160dfab2015af3d9418906f101636e9180673712e09148586111",
+        "src/pgwire.rs": "4cc8ad771123ca72df50433b5d9a3540883121e3b59dd950ce7f5cabcd789e64",
+        "src/relational.rs": "891ad2172c7efb7bbc9bbeb5b5446bb8c87b85de95ceef3a2eccc469135c0e69",
+        "src/sql.rs": "19261c864d167188160dfb259c345045624a7ffc10b0d80b33da65632a241ca4",
+        "src/storage.rs": "3f92ec9da1a9311da3c3840e7241fb103ad0f1bc00a17bb33c1023366bd39f18",
+        "src/transaction.rs": "a114a4bf7385e6889bfbcc0f4571933f3c08c220fc9f04639d64f20605b6e3b9",
+        "tarantool/Dockerfile": "611638e0f37506fdfb12332ae35be5f3902e2ad6b7df80e8bbe0c7babb01b056",
+        "tarantool/replicated.yaml": "ae43f3a9bc2eb1c78fa1d8f5d05489402f8990ef3b41c2e9eb5b2f4bbb775e50",
+        "tarantool/storage.lua": "acef36b1bf716a5170c616038e34cce266f121604432f68107e8ceb5f8c680e4",
+        "tarantool/transactions.lua": "82a6ecf5ee62616f99aec3f5f406dd865e93c559b9ba9e01b1da82fa815c887f",
+        "verification/core.rs": "5647dbf6773982b770e4f8b4750b004a6f02dd8f855012fba84f0d34fbef292d",
+        "verification/native/Cargo.lock": "d4e20d0c1c00290be2289b780fb44a48ae2cb0afb16aeafa260ad2fa3133ea66",
+        "verification/native/Cargo.toml": "462f12054a28ae4f2f92dda18a8374e708212a9d1b6e4a2de0c7f41725c84bd7",
+        "verification/native/lib.rs": "e5c784b7676268a811193d575219d017fc477aa8698c4dc8b52daa2103b3308f",
+        "Cargo.toml": "d3c59e38bf748707f81e819a3de596eedace0373be577925f89b228d4048af64",
+        "Cargo.lock": "4ba827462924d1fedf885eb049386d2c6092d266a086f04369a68d8bbbe5ba85",
+        "Dockerfile": "028821d39034ebe1a0efb8f2919c6a0c377fc29833a5dd68ac3472bafdf59857",
+        "compose.replication.yaml": "ef548793176156faca37cee75d1f69fe1727cdb63f6a432e1ffd854c11eeb463",
+        "compose.comparison.yaml": "e8eaa48d92edf508257ef1da60bc62c45e2c25ad8c75faaa453124ff78018146",
+        "bench/resources.yaml": "4b39b0d2a5b5b55e6950d238f7734220dcb4c4a2e97f43afd428236e1dd96dc1",
+        "bench/tikv.toml": "9b98546f28229f7aa924e3844573560c621c7cfe0906090e76d9cacd95fc5dde",
+        "bench/tikv.Dockerfile": "38243bb30aa34aba8a93aad4d0556fe08fcadd53877520ef3e3d431a0f35e7f0",
+        "bench/yugabyte-start.sh": "f4e0dcfc4414cabf53e2cb19d3c0a55c331d7d810c2940e7cd4fff23f0dd377e",
+        "bench/driver/Cargo.toml": "1d9f5dd9b6e918e74aea9dbca43b962345665ab706e3b50bd88655bf519b0ad5",
+        "bench/driver/Cargo.lock": "6b1d0a333466214ee21ef03ded5a26052cecb2e570e9aaef52914f760e1499ed",
+        "tools/run_comparison.py": "e59f4e2ef1d3c414bb66eed09efda864fea78f76640ab0848a728adc3a71f225"
+      },
+      "containers_after": [
+        {
+          "service": "gateway",
+          "image": "fastpg-ha-gateway",
+          "image_id": "sha256:dbda99ffef71c0b65a3496493c9d74efeb331d496e182a4529f6421f79b69c0b",
+          "cpu_limit": 1.5,
+          "memory_limit_bytes": 1610612736,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T07:28:01.107317838Z"
+        },
+        {
+          "service": "s0a",
+          "image": "fastpg-storage:3.3.5",
+          "image_id": "sha256:60b5240bfcc4b2b7e607045eb9872e25529c8269032fc68f84cb24fc2a6d30e0",
+          "cpu_limit": 0.75,
+          "memory_limit_bytes": 805306368,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T07:27:58.50515892Z"
+        },
+        {
+          "service": "s0b",
+          "image": "fastpg-storage:3.3.5",
+          "image_id": "sha256:60b5240bfcc4b2b7e607045eb9872e25529c8269032fc68f84cb24fc2a6d30e0",
+          "cpu_limit": 0.75,
+          "memory_limit_bytes": 805306368,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T07:27:58.502175211Z"
+        },
+        {
+          "service": "s0c",
+          "image": "fastpg-storage:3.3.5",
+          "image_id": "sha256:60b5240bfcc4b2b7e607045eb9872e25529c8269032fc68f84cb24fc2a6d30e0",
+          "cpu_limit": 0.75,
+          "memory_limit_bytes": 805306368,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T07:27:58.501508545Z"
+        },
+        {
+          "service": "s1a",
+          "image": "fastpg-storage:3.3.5",
+          "image_id": "sha256:60b5240bfcc4b2b7e607045eb9872e25529c8269032fc68f84cb24fc2a6d30e0",
+          "cpu_limit": 0.75,
+          "memory_limit_bytes": 805306368,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T07:27:58.499615461Z"
+        },
+        {
+          "service": "s1b",
+          "image": "fastpg-storage:3.3.5",
+          "image_id": "sha256:60b5240bfcc4b2b7e607045eb9872e25529c8269032fc68f84cb24fc2a6d30e0",
+          "cpu_limit": 0.75,
+          "memory_limit_bytes": 805306368,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T07:27:58.501353628Z"
+        },
+        {
+          "service": "s1c",
+          "image": "fastpg-storage:3.3.5",
+          "image_id": "sha256:60b5240bfcc4b2b7e607045eb9872e25529c8269032fc68f84cb24fc2a6d30e0",
+          "cpu_limit": 0.75,
+          "memory_limit_bytes": 805306368,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T07:27:58.503979086Z"
+        }
+      ],
+      "topology_after": {
+        "nodes": [
+          {
+            "node": "s0a",
+            "ping": [
+              0,
+              2,
+              65,
+              true,
+              true,
+              2,
+              "711e3ade-f5d2-4707-966c-e992f02c0a43"
+            ]
+          },
+          {
+            "node": "s0b",
+            "ping": [
+              0,
+              2,
+              65,
+              false,
+              true,
+              2,
+              "21ee8304-a11e-4bf8-8538-0c454e759329"
+            ]
+          },
+          {
+            "node": "s0c",
+            "ping": [
+              0,
+              2,
+              65,
+              false,
+              true,
+              2,
+              "8db3137f-f542-492b-b798-c3a49d056a54"
+            ]
+          },
+          {
+            "node": "s1a",
+            "ping": [
+              1,
+              2,
+              49,
+              false,
+              true,
+              2,
+              "c73eda7e-1b19-4a61-971a-892707bc82f9"
+            ]
+          },
+          {
+            "node": "s1b",
+            "ping": [
+              1,
+              2,
+              49,
+              true,
+              true,
+              2,
+              "b5404db4-92dd-493e-bd94-a4a31f2378f2"
+            ]
+          },
+          {
+            "node": "s1c",
+            "ping": [
+              1,
+              2,
+              49,
+              false,
+              true,
+              2,
+              "ce62af62-ad9e-45ad-b426-408958c39527"
+            ]
+          }
+        ],
+        "wal_mode": "fsync",
+        "replica_count": 3,
+        "quorum": 2,
+        "reads": "linearizable",
+        "transaction_isolation": "strict two-phase locking"
+      },
+      "result_sha256": "56fdfff7935e6f4a44e05d6a62289775918981c13e68b81f181d10d928862b52"
+    },
+    "yugabyte": {
+      "universe_config": {
+        "version": 6,
+        "replicationInfo": {
+          "liveReplicas": {
+            "numReplicas": 3,
+            "placementBlocks": [
+              {
+                "cloudInfo": {
+                  "placementCloud": "bench",
+                  "placementRegion": "local",
+                  "placementZone": "yb2"
+                },
+                "minNumReplicas": 1
+              },
+              {
+                "cloudInfo": {
+                  "placementCloud": "bench",
+                  "placementRegion": "local",
+                  "placementZone": "yb3"
+                },
+                "minNumReplicas": 1
+              },
+              {
+                "cloudInfo": {
+                  "placementCloud": "bench",
+                  "placementRegion": "local",
+                  "placementZone": "yb1"
+                },
+                "minNumReplicas": 1
+              }
+            ],
+            "placementUuid": "MjM3NDVlOTUtYzVmZS00ZWUzLWJmZjctYjRhOTNkNmVhNDBk"
+          }
+        },
+        "clusterUuid": "94b60338-de61-48d3-a259-88d656898012",
+        "universeUuid": "c10c46a9-d825-425c-8ea9-52c4683e8889"
+      },
+      "durability_flags": {
+        "yb1": [
+          "--durable_wal_write=true",
+          "--enable_wait_queues=false",
+          "--never_fsync=false",
+          "--require_durable_wal_write=false"
+        ],
+        "yb2": [
+          "--durable_wal_write=true",
+          "--enable_wait_queues=false",
+          "--never_fsync=false",
+          "--require_durable_wal_write=false"
+        ],
+        "yb3": [
+          "--durable_wal_write=true",
+          "--enable_wait_queues=false",
+          "--never_fsync=false",
+          "--require_durable_wal_write=false"
+        ]
+      },
+      "replica_count": 3,
+      "quorum": 2,
+      "transaction_isolation": "serializable",
+      "conflict_policy": "fail on conflict",
+      "containers": [
+        {
+          "service": "yb1",
+          "image": "fastpg-comparison-yugabyte:2026.1.2.0-b137",
+          "image_id": "sha256:56fa6e4944d010cb4439fa890ca10a369ce643f253187a888191d298ab9ae1de",
+          "cpu_limit": 2.0,
+          "memory_limit_bytes": 2147483648,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T07:30:11.589031968Z"
+        },
+        {
+          "service": "yb2",
+          "image": "fastpg-comparison-yugabyte:2026.1.2.0-b137",
+          "image_id": "sha256:56fa6e4944d010cb4439fa890ca10a369ce643f253187a888191d298ab9ae1de",
+          "cpu_limit": 2.0,
+          "memory_limit_bytes": 2147483648,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T07:30:11.590250093Z"
+        },
+        {
+          "service": "yb3",
+          "image": "fastpg-comparison-yugabyte:2026.1.2.0-b137",
+          "image_id": "sha256:56fa6e4944d010cb4439fa890ca10a369ce643f253187a888191d298ab9ae1de",
+          "cpu_limit": 2.0,
+          "memory_limit_bytes": 2147483648,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T07:30:11.588219051Z"
+        }
+      ],
+      "measured_utc": "2026-10-25T07:30:17.033356+00:00",
+      "status": "accepted",
+      "load_image": "sha256:a8b597bdd9c6499cfa200222a5fbcfbe478bc00bc16354d8bd25f156745942b9",
+      "source_sha256": {
+        "bench/driver/src/main.rs": "606f30905d9cf67e6dd882ff31cf6054f29c5dcedb5a8e3649679ad3d8b84c5d",
+        "src/core.rs": "cbb8f82cc61a3fe25d5f061e8361026641b69f611eec93e6c8a4edda82b93278",
+        "src/expression.rs": "313a3bfce44b5736046ea3d833f3663fb6c174f5e38d5b2acc20d68a7c8ae52f",
+        "src/lib.rs": "a1edb57614c798948e247fdbd2dfd6d1ab666ac6b5ccf11f11f94860328ebaef",
+        "src/main.rs": "71e18a28379683a3b015c7cf9d6170511375afb59056146e51780fb7a62f96c9",
+        "src/mutation.rs": "e4741a185b6d160dfab2015af3d9418906f101636e9180673712e09148586111",
+        "src/pgwire.rs": "4cc8ad771123ca72df50433b5d9a3540883121e3b59dd950ce7f5cabcd789e64",
+        "src/relational.rs": "891ad2172c7efb7bbc9bbeb5b5446bb8c87b85de95ceef3a2eccc469135c0e69",
+        "src/sql.rs": "19261c864d167188160dfb259c345045624a7ffc10b0d80b33da65632a241ca4",
+        "src/storage.rs": "3f92ec9da1a9311da3c3840e7241fb103ad0f1bc00a17bb33c1023366bd39f18",
+        "src/transaction.rs": "a114a4bf7385e6889bfbcc0f4571933f3c08c220fc9f04639d64f20605b6e3b9",
+        "tarantool/Dockerfile": "611638e0f37506fdfb12332ae35be5f3902e2ad6b7df80e8bbe0c7babb01b056",
+        "tarantool/replicated.yaml": "ae43f3a9bc2eb1c78fa1d8f5d05489402f8990ef3b41c2e9eb5b2f4bbb775e50",
+        "tarantool/storage.lua": "acef36b1bf716a5170c616038e34cce266f121604432f68107e8ceb5f8c680e4",
+        "tarantool/transactions.lua": "82a6ecf5ee62616f99aec3f5f406dd865e93c559b9ba9e01b1da82fa815c887f",
+        "verification/core.rs": "5647dbf6773982b770e4f8b4750b004a6f02dd8f855012fba84f0d34fbef292d",
+        "verification/native/Cargo.lock": "d4e20d0c1c00290be2289b780fb44a48ae2cb0afb16aeafa260ad2fa3133ea66",
+        "verification/native/Cargo.toml": "462f12054a28ae4f2f92dda18a8374e708212a9d1b6e4a2de0c7f41725c84bd7",
+        "verification/native/lib.rs": "e5c784b7676268a811193d575219d017fc477aa8698c4dc8b52daa2103b3308f",
+        "Cargo.toml": "d3c59e38bf748707f81e819a3de596eedace0373be577925f89b228d4048af64",
+        "Cargo.lock": "4ba827462924d1fedf885eb049386d2c6092d266a086f04369a68d8bbbe5ba85",
+        "Dockerfile": "028821d39034ebe1a0efb8f2919c6a0c377fc29833a5dd68ac3472bafdf59857",
+        "compose.replication.yaml": "ef548793176156faca37cee75d1f69fe1727cdb63f6a432e1ffd854c11eeb463",
+        "compose.comparison.yaml": "e8eaa48d92edf508257ef1da60bc62c45e2c25ad8c75faaa453124ff78018146",
+        "bench/resources.yaml": "4b39b0d2a5b5b55e6950d238f7734220dcb4c4a2e97f43afd428236e1dd96dc1",
+        "bench/tikv.toml": "9b98546f28229f7aa924e3844573560c621c7cfe0906090e76d9cacd95fc5dde",
+        "bench/tikv.Dockerfile": "38243bb30aa34aba8a93aad4d0556fe08fcadd53877520ef3e3d431a0f35e7f0",
+        "bench/yugabyte-start.sh": "f4e0dcfc4414cabf53e2cb19d3c0a55c331d7d810c2940e7cd4fff23f0dd377e",
+        "bench/driver/Cargo.toml": "1d9f5dd9b6e918e74aea9dbca43b962345665ab706e3b50bd88655bf519b0ad5",
+        "bench/driver/Cargo.lock": "6b1d0a333466214ee21ef03ded5a26052cecb2e570e9aaef52914f760e1499ed",
+        "tools/run_comparison.py": "e59f4e2ef1d3c414bb66eed09efda864fea78f76640ab0848a728adc3a71f225"
+      },
+      "containers_after": [
+        {
+          "service": "yb1",
+          "image": "fastpg-comparison-yugabyte:2026.1.2.0-b137",
+          "image_id": "sha256:56fa6e4944d010cb4439fa890ca10a369ce643f253187a888191d298ab9ae1de",
+          "cpu_limit": 2.0,
+          "memory_limit_bytes": 2147483648,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T07:30:11.589031968Z"
+        },
+        {
+          "service": "yb2",
+          "image": "fastpg-comparison-yugabyte:2026.1.2.0-b137",
+          "image_id": "sha256:56fa6e4944d010cb4439fa890ca10a369ce643f253187a888191d298ab9ae1de",
+          "cpu_limit": 2.0,
+          "memory_limit_bytes": 2147483648,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T07:30:11.590250093Z"
+        },
+        {
+          "service": "yb3",
+          "image": "fastpg-comparison-yugabyte:2026.1.2.0-b137",
+          "image_id": "sha256:56fa6e4944d010cb4439fa890ca10a369ce643f253187a888191d298ab9ae1de",
+          "cpu_limit": 2.0,
+          "memory_limit_bytes": 2147483648,
+          "oom_killed": false,
+          "state": "running",
+          "restarts": 0,
+          "started_at": "2026-10-25T07:30:11.588219051Z"
+        }
+      ],
+      "result_sha256": "e3b4224c52c8663218caaea17a6f3fe82c09a0dc5250759c7cbd075df926deaa"
+    }
+  }
+}

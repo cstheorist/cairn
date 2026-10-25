@@ -1,0 +1,12 @@
+services:
+  s0a: {cpus: 0.75, mem_limit: 768m}
+  s0b: {cpus: 0.75, mem_limit: 768m}
+  s0c: {cpus: 0.75, mem_limit: 768m}
+  s1a: {cpus: 0.75, mem_limit: 768m}
+  s1b: {cpus: 0.75, mem_limit: 768m}
+  s1c: {cpus: 0.75, mem_limit: 768m}
+  gateway:
+    cpus: 1.5
+    mem_limit: 1536m
+    environment:
+      TOKIO_WORKER_THREADS: "2"
