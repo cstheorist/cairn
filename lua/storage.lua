@@ -167,7 +167,7 @@ function cairn.get(name, key, expected_term)
     return read_confirmed(expected_term, function()
         get_schema(name)
         check_owner(key)
-        transactions.check_unlocked(name, key, nil, false)
+        transactions.check_committed_point(name, key)
         local row = box.space[name]:get{key}
         if row then return row:totable() end
         return {}
@@ -182,7 +182,7 @@ function cairn.get_many(requests, expected_term)
             assert(type(request) == 'table' and #request == 2, 'invalid point read')
             local name, key = request[1], request[2]
             get_schema(name); check_owner(key)
-            transactions.check_unlocked(name, key, nil, false)
+            transactions.check_committed_point(name, key)
             local row = box.space[name]:get{key}
             bytes = bytes + (row and row:bsize() + #row * 8 or 1) + #name + 32
             if bytes > 8 * 1024 * 1024 - 4096 then error('[CAIRN:LIMIT] read batch exceeds response budget', 0) end

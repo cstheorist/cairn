@@ -24,9 +24,10 @@ else
     cat tla/out/verus.out
     exit 1
 fi
-for model in ShardStore ReplicaEpoch TwoPhaseCommit PredicateLocks ReadBatch VoteCommit LocalFinish VolatileOpen IprotoPipeline ExtendedCycle; do
+for model in ShardStore ReplicaEpoch TwoPhaseCommit PredicateLocks ReadBatch VoteCommit LocalFinish VolatileOpen IprotoPipeline OpenPointRead ExtendedCycle; do
   configurations="$model"
   if [ "$model" = IprotoPipeline ]; then configurations="$model IprotoPipelineCount"; fi
+  if [ "$model" = OpenPointRead ]; then configurations="$model OpenPointReadBatch"; fi
   for configuration in $configurations; do
     output="tla/out/$configuration.out"
     if [ "${TLC_USE_JAVA:-0}" = 1 ]; then

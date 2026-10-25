@@ -26,6 +26,7 @@ return function(ctx)
     -- Retain one validator per table instead of allocating a format per write.
     local tuple_formats = {}
     local durable_spaces, open_spaces
+    local exact_point_claim = {iterator = 'EQ'}
     function exports.next_incarnation(current)
         local checked = verified.cairn_next_incarnation(current)
         assert(checked.valid == 1, 'storage incarnation exhausted')
@@ -131,6 +132,22 @@ return function(ctx)
 
     local function spaces(id)
         return #id == 53 and open_spaces or durable_spaces
+    end
+
+    function exports.check_committed_point(name, key)
+        -- Public autocommit points may read the committed image while volatile
+        -- OPEN intents remain private. Prepare copies their claims into durable
+        -- spaces atomically with YES; those claims must still block this path.
+        -- Predicate/scan-write exclusions remain strict in both space sets.
+        for _ in durable_spaces.tables.index.by_mode:pairs({name, 'X'}, exact_point_claim) do
+            fail('CONFLICT', 'table has a conflicting scan or schema lock')
+        end
+        for _ in open_spaces.tables.index.by_mode:pairs({name, 'X'}, exact_point_claim) do
+            fail('CONFLICT', 'table has a conflicting scan or schema lock')
+        end
+        for _ in durable_spaces.locks.index.by_mode:pairs({name, key, 'W'}, exact_point_claim) do
+            fail('CONFLICT', 'row belongs to an unresolved transaction; retry the whole transaction')
+        end
     end
 
     function exports.check_unlocked(name, key, id, write)
