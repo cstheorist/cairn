@@ -308,25 +308,36 @@ fn formats(reader: &mut Reader<'_>, count: usize) -> Result<Vec<i16>> {
     })
 }
 
+fn binary_scalar<const LENGTH: usize>(bytes: &[u8]) -> Result<[u8; LENGTH]> {
+    bytes.try_into().map_err(|_| {
+        // PostgreSQL's receiver first consumes the scalar's fixed width, then
+        // Bind checks for leftover bytes. Truncation and excess differ in SQLSTATE.
+        if bytes.len() < LENGTH {
+            protocol("insufficient binary parameter data")
+        } else {
+            DbError::new("22P03", "incorrect binary parameter length")
+        }
+    })
+}
+
 fn bound_value(bytes: Option<&[u8]>, format: i16, column: &Column) -> Result<Value> {
     let Some(bytes) = bytes else {
         return sql::text_value(None, column);
     };
-    if format == 0 {
-        return sql::text_value(
-            Some(std::str::from_utf8(bytes).map_err(|_| DbError::new("22021", "invalid UTF-8 parameter"))?),
-            column,
-        );
+    if format == 0 || column.kind == "text" {
+        let text = std::str::from_utf8(bytes).map_err(|_| DbError::new("22021", "invalid UTF-8 parameter"))?;
+        // Bind values are length-delimited. Validate the entire value instead of
+        // treating NUL as a terminator; PostgreSQL text cannot contain U+0000.
+        if text.contains('\0') {
+            return Err(DbError::new("22021", "NUL byte in text parameter"));
+        }
+        return sql::text_value(Some(text), column);
     }
     match column.kind.as_str() {
-        "bigint" if bytes.len() == 8 => Ok(i64::from_be_bytes(bytes.try_into().unwrap()).into()),
-        "integer" if bytes.len() == 4 => Ok((i32::from_be_bytes(bytes.try_into().unwrap()) as i64).into()),
-        "smallint" if bytes.len() == 2 => Ok((i16::from_be_bytes(bytes.try_into().unwrap()) as i64).into()),
-        "boolean" if bytes.len() == 1 && bytes[0] <= 1 => Ok((bytes[0] == 1).into()),
-        "text" => sql::text_value(
-            Some(std::str::from_utf8(bytes).map_err(|_| DbError::new("22021", "invalid UTF-8 parameter"))?),
-            column,
-        ),
+        "bigint" => Ok(i64::from_be_bytes(binary_scalar(bytes)?).into()),
+        "integer" => Ok((i32::from_be_bytes(binary_scalar(bytes)?) as i64).into()),
+        "smallint" => Ok((i16::from_be_bytes(binary_scalar(bytes)?) as i64).into()),
+        "boolean" => Ok((binary_scalar::<1>(bytes)?[0] != 0).into()),
         _ => Err(protocol("invalid binary parameter length or value")),
     }
 }
@@ -687,5 +698,93 @@ async fn serve_messages(socket: &mut BufReader<TcpStream>, engine: &Engine, sess
             }
         }
         socket.write_all(&buffer).await.map_err(io)?;
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn column(kind: &str) -> Column {
+        Column {
+            name: "value".into(),
+            kind: kind.into(),
+            nullable: true,
+        }
+    }
+
+    #[test]
+    fn text_bind_validates_the_full_parameter_in_both_formats() {
+        let column = column("text");
+        for format in [0, 1] {
+            for bytes in [
+                &b"\0"[..],
+                &b"prefix\0suffix"[..],
+                &b"trailing\0"[..],
+                &b"\xff"[..],
+                &b"valid\xe9\x9b"[..],
+                &b"\xed\xa0\x80"[..],
+                &b"\xc0\x80"[..],
+            ] {
+                assert_eq!(bound_value(Some(bytes), format, &column).unwrap_err().code, "22021");
+            }
+            for text in ["", "plain", "雪🦀", "\u{1}\u{7f}\u{10ffff}"] {
+                assert_eq!(
+                    bound_value(Some(text.as_bytes()), format, &column).unwrap(),
+                    text.into()
+                );
+            }
+            assert_eq!(bound_value(None, format, &column).unwrap(), Value::Nil);
+        }
+    }
+
+    #[test]
+    fn nul_validation_does_not_reject_binary_integer_zero_bytes() {
+        let column = column("bigint");
+        assert_eq!(bound_value(Some(&0i64.to_be_bytes()), 1, &column).unwrap(), 0i64.into());
+        assert_eq!(bound_value(Some(b"1\0"), 0, &column).unwrap_err().code, "22021");
+    }
+
+    #[test]
+    fn binary_boolean_treats_every_nonzero_byte_as_true() {
+        let column = column("boolean");
+        for byte in 0..=u8::MAX {
+            assert_eq!(bound_value(Some(&[byte]), 1, &column).unwrap(), Value::from(byte != 0));
+        }
+    }
+
+    #[test]
+    fn binary_scalar_lengths_distinguish_truncated_and_excess_data() {
+        for (kind, width) in [("boolean", 1), ("smallint", 2), ("integer", 4), ("bigint", 8)] {
+            let column = column(kind);
+            for length in 0..=width + 1 {
+                let bytes = vec![0; length];
+                let result = bound_value(Some(&bytes), 1, &column);
+                if length == width {
+                    assert!(result.is_ok(), "{kind}: {result:?}");
+                } else {
+                    assert_eq!(result.unwrap_err().code, if length < width { "08P01" } else { "22P03" });
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn binary_integers_keep_their_signed_width() {
+        for (kind, width, minimum, maximum) in [
+            ("smallint", 2, i64::from(i16::MIN), i64::from(i16::MAX)),
+            ("integer", 4, i64::from(i32::MIN), i64::from(i32::MAX)),
+            ("bigint", 8, i64::MIN, i64::MAX),
+        ] {
+            let column = column(kind);
+            for value in [minimum, -1, 0, 1, maximum] {
+                let bytes = value.to_be_bytes();
+                assert_eq!(
+                    bound_value(Some(&bytes[8 - width..]), 1, &column).unwrap(),
+                    Value::from(value)
+                );
+            }
+            assert_eq!(bound_value(None, 1, &column).unwrap(), Value::Nil);
+        }
     }
 }
