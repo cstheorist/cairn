@@ -806,6 +806,18 @@ impl Session {
         }
     }
     pub fn begin(&mut self, read_only: bool) -> Result<()> {
+        if self.implicit {
+            if self.failed {
+                return Err(DbError::new("25P02", "current transaction is aborted; issue ROLLBACK"));
+            }
+            // BEGIN adopts the implicit cycle, including its existing read claims
+            // and staged writes. Sync must no longer close this transaction.
+            if let Some(transaction) = &mut self.transaction {
+                transaction.read_only = read_only;
+                self.implicit = false;
+                return Ok(());
+            }
+        }
         if self.transaction.is_some() {
             return Err(DbError::new("25001", "a transaction is already active"));
         }
@@ -857,5 +869,43 @@ impl Session {
     }
     pub async fn close(&mut self, cluster: &Cluster) {
         self.fail(cluster).await;
+    }
+}
+
+#[cfg(test)]
+mod session_tests {
+    use super::*;
+
+    #[test]
+    fn begin_adopts_implicit_identity_participants_and_claims() {
+        for read_only in [false, true] {
+            let mut session = Session::default();
+            session.begin_implicit().unwrap();
+            let transaction = session.transaction.as_mut().unwrap();
+            transaction.started = true;
+            transaction.participants.insert(1, "existing-claim-token".into());
+            let identity = transaction.id.clone();
+            session.begin(read_only).unwrap();
+            let transaction = session.transaction.as_ref().unwrap();
+            assert_eq!(transaction.id, identity);
+            assert!(transaction.started);
+            assert_eq!(transaction.participants[&1], "existing-claim-token");
+            assert_eq!(transaction.read_only, read_only);
+            assert!(!session.implicit);
+            assert_eq!(session.status(), b'T');
+            assert_eq!(session.begin(false).unwrap_err().code, "25001");
+        }
+    }
+
+    #[test]
+    fn begin_cannot_revive_a_failed_implicit_transaction() {
+        let mut session = Session::default();
+        session.begin_implicit().unwrap();
+        let identity = session.transaction.as_ref().unwrap().id.clone();
+        session.failed = true;
+        assert_eq!(session.begin(false).unwrap_err().code, "25P02");
+        assert_eq!(session.transaction.as_ref().unwrap().id, identity);
+        assert!(session.implicit);
+        assert_eq!(session.status(), b'E');
     }
 }

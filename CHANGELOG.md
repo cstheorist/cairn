@@ -15,7 +15,7 @@
   storage connection pool.
 - Optional bounded IPROTO pipelining with coalesced writes, exact SYNC ownership,
   cancellation/deadline retirement and conditional generation fencing.
-- Ten bounded TLA+ models, thirty-five negative checks, two reachability controls,
+- Eleven bounded TLA+ models, forty negative checks, six reachability controls,
   fourteen executable Verus functions and the matching storage-side native core.
 - PostgreSQL differential, concurrency, native protocol and failure-recovery suites.
 - Matched-resource YugabyteDB/TiDB harness with explicit isolation, source/image
@@ -32,6 +32,10 @@
 
 ### Fixed
 
+- Extended-query point reads retain their dependencies through Flush and later
+  statements before Sync, preventing a serializability cycle. BEGIN adopts the
+  existing implicit transaction, and explicit scope survives Sync. Thirteen
+  PostgreSQL 16 differential cases exercise all four commit modes.
 - INTEGER and BOOLEAN text input follows PostgreSQL 16 whitespace, spelling,
   radix/separator, width and syntax-versus-overflow rules.
 - Native transport rejects nonfinal push responses, ambiguous response identity,

@@ -33,7 +33,7 @@ committed tuples directly through Tarantool's **key/value interface**.
 * **Formal checks with executable reuse.** Fourteen Verus-verified functions
   supply the routing, framing, arithmetic and incarnation guards used by Rust.
   Tarantool loads the same arithmetic and incarnation bodies through a native
-  library. Ten bounded TLA+ models, thirty-five negative checks and two
+  library. Eleven bounded TLA+ models, forty negative checks and six
   reachability controls cover specific storage, locking, batching, transport and
   commit contracts.
 * **Evidence from running systems.** PostgreSQL differential tests, concurrent
@@ -131,11 +131,11 @@ does not establish an OLTP-wide advantage.
 
 ## Correctness
 
-* **TLA+:** ten bounded safety models cover durable storage, replica epochs,
+* **TLA+:** eleven bounded safety models cover durable storage, replica epochs,
   two-phase commit, predicate locks, read batches, durable votes, local finish,
-  volatile state, pipelined transport and committed point visibility. Thirty-five
-  weakened variants must fail their invariants; two controls require reachable
-  reads through OPEN claims and during partial distributed application.
+  volatile state, pipelined transport, committed point visibility and frontend
+  cycles. Forty weakened variants must fail their invariants; six controls require reachable
+  reads through OPEN claims, partial application and extended-cycle scope changes.
 * **Verus:** fourteen checked executable functions, extracted verbatim into
   `crates/cairn-verified`. The storage-side native library shares those bodies.
 * **Live tests:** SQL/protocol regressions, PostgreSQL differential cases, native

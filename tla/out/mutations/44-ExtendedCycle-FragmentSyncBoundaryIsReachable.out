@@ -1,0 +1,230 @@
+TLC2 Version 2026.10.24.013619 (rev: 2ef2af8)
+Warning: Please run the Java VM, which executes TLC with a throughput optimized garbage collector, by passing the "-XX:+UseParallelGC" property.
+(Use the -nowarning option to disable this warning.)
+Running breadth-first search Model-Checking with fp 130 and seed 4675887463208244832 with 1 worker on 16 cores with 1960MB heap and 64MB offheap memory [pid: 1] (Linux 6.10.14-linuxkit aarch64, Eclipse Adoptium 21.0.12.1 64bit, MSBDiskFPSet, DiskStateQueue).
+Parsing file /model/ExtendedCycle.tla
+Parsing file /tmp/tlc-5478218822397258302/Integers.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/Integers.tla)
+Parsing file /tmp/tlc-5478218822397258302/FiniteSets.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/FiniteSets.tla)
+Parsing file /tmp/tlc-5478218822397258302/TLC.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/TLC.tla)
+Parsing file /tmp/tlc-5478218822397258302/_TLCTrace.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/_TLCTrace.tla)
+Parsing file /tmp/tlc-5478218822397258302/Naturals.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/Naturals.tla)
+Parsing file /tmp/tlc-5478218822397258302/Sequences.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/Sequences.tla)
+Parsing file /tmp/tlc-5478218822397258302/TLCExt.tla (jar:file:/tla2tools.jar!/tla2sany/StandardModules/TLCExt.tla)
+Semantic processing of module Naturals
+Semantic processing of module Integers
+Semantic processing of module Sequences
+Semantic processing of module FiniteSets
+Semantic processing of module TLC
+Semantic processing of module TLCExt
+Semantic processing of module _TLCTrace
+Semantic processing of module ExtendedCycle
+Linting of module TLCExt
+Linting of module _TLCTrace
+Linting of module ExtendedCycle
+Starting... (2026-10-25 20:23:40)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-10-25 20:23:40.
+Error: Invariant FragmentSyncBoundaryIsReachable is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ phase = <<"active", "active", "unused">>
+/\ bpc = "read"
+/\ writes = <<{}, {}, {}>>
+/\ a = [ next |-> "unset",
+  mode |-> "none",
+  prefix |-> "unset",
+  pc |-> "choose",
+  owner |-> 1,
+  fast |-> FALSE,
+  readMode |-> "none",
+  claimed |-> FALSE,
+  flushed |-> FALSE,
+  promoted |-> FALSE,
+  synced |-> FALSE,
+  ended |-> FALSE,
+  wroteAfterSync |-> FALSE ]
+/\ rows = <<0, 0>>
+/\ locks = <<<<"none", "none">>, <<"none", "none">>, <<"none", "none">>>>
+/\ seen = <<<<-1, -1>>, <<-1, -1>>, <<-1, -1>>>>
+/\ abortedHistory = {}
+
+State 2: <Choose("partial_sync","Sync") line 48, col 5 to line 50, col 68 of module ExtendedCycle>
+/\ phase = <<"active", "active", "unused">>
+/\ bpc = "read"
+/\ writes = <<{}, {}, {}>>
+/\ a = [ next |-> "Sync",
+  mode |-> "none",
+  prefix |-> "partial_sync",
+  pc |-> "read",
+  owner |-> 1,
+  fast |-> FALSE,
+  readMode |-> "none",
+  claimed |-> FALSE,
+  flushed |-> FALSE,
+  promoted |-> FALSE,
+  synced |-> FALSE,
+  ended |-> FALSE,
+  wroteAfterSync |-> FALSE ]
+/\ rows = <<0, 0>>
+/\ locks = <<<<"none", "none">>, <<"none", "none">>, <<"none", "none">>>>
+/\ seen = <<<<-1, -1>>, <<-1, -1>>, <<-1, -1>>>>
+/\ abortedHistory = {}
+
+State 3: <ReadA line 61, col 5 to line 68, col 61 of module ExtendedCycle>
+/\ phase = <<"active", "active", "unused">>
+/\ bpc = "read"
+/\ writes = <<{}, {}, {}>>
+/\ a = [ next |-> "Sync",
+  mode |-> "implicit",
+  prefix |-> "partial_sync",
+  pc |-> "next",
+  owner |-> 1,
+  fast |-> FALSE,
+  readMode |-> "none",
+  claimed |-> TRUE,
+  flushed |-> FALSE,
+  promoted |-> FALSE,
+  synced |-> FALSE,
+  ended |-> FALSE,
+  wroteAfterSync |-> FALSE ]
+/\ rows = <<0, 0>>
+/\ locks = <<<<"read", "none">>, <<"none", "none">>, <<"none", "none">>>>
+/\ seen = <<<<0, -1>>, <<-1, -1>>, <<-1, -1>>>>
+/\ abortedHistory = {}
+
+State 4: <ReadSyncImplicit line 85, col 5 to line 89, col 56 of module ExtendedCycle>
+/\ phase = <<"committed", "active", "unused">>
+/\ bpc = "read"
+/\ writes = <<{}, {}, {}>>
+/\ a = [ next |-> "Sync",
+  mode |-> "none",
+  prefix |-> "partial_sync",
+  pc |-> "after_sync",
+  owner |-> 3,
+  fast |-> FALSE,
+  readMode |-> "none",
+  claimed |-> TRUE,
+  flushed |-> FALSE,
+  promoted |-> FALSE,
+  synced |-> FALSE,
+  ended |-> TRUE,
+  wroteAfterSync |-> FALSE ]
+/\ rows = <<0, 0>>
+/\ locks = <<<<"none", "none">>, <<"none", "none">>, <<"none", "none">>>>
+/\ seen = <<<<0, -1>>, <<-1, -1>>, <<-1, -1>>>>
+/\ abortedHistory = {}
+
+State 5: <ReadB line 122, col 5 to line 126, col 59 of module ExtendedCycle>
+/\ phase = <<"committed", "active", "unused">>
+/\ bpc = "write"
+/\ writes = <<{}, {}, {}>>
+/\ a = [ next |-> "Sync",
+  mode |-> "none",
+  prefix |-> "partial_sync",
+  pc |-> "after_sync",
+  owner |-> 3,
+  fast |-> FALSE,
+  readMode |-> "none",
+  claimed |-> TRUE,
+  flushed |-> FALSE,
+  promoted |-> FALSE,
+  synced |-> FALSE,
+  ended |-> TRUE,
+  wroteAfterSync |-> FALSE ]
+/\ rows = <<0, 0>>
+/\ locks = <<<<"none", "none">>, <<"none", "read">>, <<"none", "none">>>>
+/\ seen = <<<<0, -1>>, <<-1, 0>>, <<-1, -1>>>>
+/\ abortedHistory = {}
+
+State 6: <WriteB line 128, col 5 to line 132, col 57 of module ExtendedCycle>
+/\ phase = <<"committed", "active", "unused">>
+/\ bpc = "commit"
+/\ writes = <<{}, {1}, {}>>
+/\ a = [ next |-> "Sync",
+  mode |-> "none",
+  prefix |-> "partial_sync",
+  pc |-> "after_sync",
+  owner |-> 3,
+  fast |-> FALSE,
+  readMode |-> "none",
+  claimed |-> TRUE,
+  flushed |-> FALSE,
+  promoted |-> FALSE,
+  synced |-> FALSE,
+  ended |-> TRUE,
+  wroteAfterSync |-> FALSE ]
+/\ rows = <<0, 0>>
+/\ locks = <<<<"none", "none">>, <<"write", "read">>, <<"none", "none">>>>
+/\ seen = <<<<0, -1>>, <<-1, 0>>, <<-1, -1>>>>
+/\ abortedHistory = {}
+
+State 7: <CommitB line 134, col 5 to line 137, col 49 of module ExtendedCycle>
+/\ phase = <<"committed", "committed", "unused">>
+/\ bpc = "done"
+/\ writes = <<{}, {1}, {}>>
+/\ a = [ next |-> "Sync",
+  mode |-> "none",
+  prefix |-> "partial_sync",
+  pc |-> "after_sync",
+  owner |-> 3,
+  fast |-> FALSE,
+  readMode |-> "none",
+  claimed |-> TRUE,
+  flushed |-> FALSE,
+  promoted |-> FALSE,
+  synced |-> FALSE,
+  ended |-> TRUE,
+  wroteAfterSync |-> FALSE ]
+/\ rows = <<2, 0>>
+/\ locks = <<<<"none", "none">>, <<"none", "none">>, <<"none", "none">>>>
+/\ seen = <<<<0, -1>>, <<-1, 0>>, <<-1, -1>>>>
+/\ abortedHistory = {}
+
+State 8: <WriteA line 99, col 5 to line 107, col 53 of module ExtendedCycle>
+/\ phase = <<"committed", "committed", "active">>
+/\ bpc = "done"
+/\ writes = <<{}, {1}, {2}>>
+/\ a = [ next |-> "Sync",
+  mode |-> "implicit",
+  prefix |-> "partial_sync",
+  pc |-> "written",
+  owner |-> 3,
+  fast |-> FALSE,
+  readMode |-> "none",
+  claimed |-> TRUE,
+  flushed |-> FALSE,
+  promoted |-> FALSE,
+  synced |-> FALSE,
+  ended |-> TRUE,
+  wroteAfterSync |-> FALSE ]
+/\ rows = <<2, 0>>
+/\ locks = <<<<"none", "none">>, <<"none", "none">>, <<"none", "write">>>>
+/\ seen = <<<<0, -1>>, <<-1, 0>>, <<-1, -1>>>>
+/\ abortedHistory = {}
+
+State 9: <EndA line 109, col 5 to line 114, col 51 of module ExtendedCycle>
+/\ phase = <<"committed", "committed", "committed">>
+/\ bpc = "done"
+/\ writes = <<{}, {1}, {2}>>
+/\ a = [ next |-> "Sync",
+  mode |-> "none",
+  prefix |-> "partial_sync",
+  pc |-> "done",
+  owner |-> 3,
+  fast |-> FALSE,
+  readMode |-> "none",
+  claimed |-> TRUE,
+  flushed |-> FALSE,
+  promoted |-> FALSE,
+  synced |-> FALSE,
+  ended |-> TRUE,
+  wroteAfterSync |-> FALSE ]
+/\ rows = <<2, 3>>
+/\ locks = <<<<"none", "none">>, <<"none", "none">>, <<"none", "none">>>>
+/\ seen = <<<<0, -1>>, <<-1, 0>>, <<-1, -1>>>>
+/\ abortedHistory = {}
+
+1132 states generated, 860 distinct states found, 208 states left on queue.
+The depth of the complete state graph search is 9.
+Finished in 00s at (2026-10-25 20:23:41)
+Trace exploration spec path: ./ExtendedCycle_TTrace_1792959820.tla

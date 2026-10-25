@@ -12,7 +12,7 @@ def main():
     finally:
         run('up','-d','--no-deps','--wait','gateway')
     run('--profile','reference','up','-d','--wait','reference')
-    for suite in ['transactions','mutations','relational','transaction_protocol','local_commit',
+    for suite in ['extended_cycles','transactions','mutations','relational','transaction_protocol','local_commit',
                   'transaction_start','scans','read_batches','transaction_contention']:
         run('--profile','test','run','--no-deps','--rm','tests','python',f'/tests/{suite}.py')
 

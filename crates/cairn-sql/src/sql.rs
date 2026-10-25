@@ -85,6 +85,9 @@ impl Plan {
     pub fn is_row_mutation(&self) -> bool {
         self.needs_simple_transaction() || matches!(self.action, Action::Insert(..) | Action::Delete(..))
     }
+    pub fn needs_extended_transaction(&self, followed_by_sync: bool) -> bool {
+        self.is_row_mutation() || (!followed_by_sync && matches!(self.action, Action::Get(..) | Action::Select(_)))
+    }
 }
 
 pub struct Output {
@@ -953,6 +956,52 @@ impl Engine {
             }
         };
         Ok(Output { rows, tag })
+    }
+}
+
+#[cfg(test)]
+mod extended_plan_tests {
+    use super::*;
+
+    #[tokio::test]
+    async fn only_standalone_points_skip_extended_transaction_claims() {
+        let cluster = cairn_iproto::Cluster::new(vec!["127.0.0.1:1".into()], "gateway".into(), String::new()).unwrap();
+        let engine = Engine::new(cluster);
+        engine.catalog.write().await.insert(
+            "cycle".into(),
+            Schema {
+                name: "cycle".into(),
+                columns: vec![
+                    Column {
+                        name: "id".into(),
+                        kind: "bigint".into(),
+                        nullable: false,
+                    },
+                    Column {
+                        name: "value".into(),
+                        kind: "bigint".into(),
+                        nullable: true,
+                    },
+                ],
+                primary_key: 0,
+            },
+        );
+        for (query, without_sync, with_sync) in [
+            ("SELECT value FROM cycle WHERE id = 0", true, false),
+            ("SELECT value + 1 FROM cycle WHERE id = 0", true, false),
+            ("SELECT * FROM cycle", true, true),
+            ("UPDATE cycle SET value = 1 WHERE id = 0", true, true),
+            ("INSERT INTO cycle VALUES (2, 1)", true, true),
+            ("DELETE FROM cycle WHERE id = 0", true, true),
+            ("SELECT 1", false, false),
+            ("BEGIN", false, false),
+            ("COMMIT", false, false),
+            ("ROLLBACK", false, false),
+        ] {
+            let plan = engine.prepare(query).await.unwrap();
+            assert_eq!(plan.needs_extended_transaction(false), without_sync, "{query}");
+            assert_eq!(plan.needs_extended_transaction(true), with_sync, "{query}");
+        }
     }
 }
 

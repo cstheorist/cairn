@@ -342,17 +342,28 @@ fn bound_value(bytes: Option<&[u8]>, format: i16, column: &Column) -> Result<Val
     }
 }
 
-async fn process(
+struct Frontend<'a> {
     tag: u8,
-    payload: &[u8],
+    payload: &'a [u8],
+    followed_by_sync: bool,
+}
+
+fn buffered_sync_next(buffer: &[u8]) -> bool {
+    // Inspect only bytes already read. Incomplete/unavailable input conservatively
+    // takes the transactional path, without delaying Execute or relying on packets.
+    buffer.starts_with(&[b'S', 0, 0, 0, 4])
+}
+
+async fn process(
+    frontend: Frontend<'_>,
     engine: &Engine,
     statements: &mut HashMap<String, Arc<Plan>>,
     portals: &mut HashMap<String, Portal>,
     buffer: &mut Vec<u8>,
     session: &mut Session,
 ) -> Result<()> {
-    let mut reader = Reader::new(payload);
-    match tag {
+    let mut reader = Reader::new(frontend.payload);
+    match frontend.tag {
         b'Q' => {
             let sql = reader.string()?;
             reader.end()?;
@@ -461,7 +472,7 @@ async fn process(
             }
             let output_formats = formats(&mut reader, plan.columns.len())?;
             reader.end()?;
-            let memory_cost = payload.len().saturating_mul(2);
+            let memory_cost = frontend.payload.len().saturating_mul(2);
             let used: usize = portals
                 .iter()
                 .filter(|(key, _)| **key != name)
@@ -523,7 +534,7 @@ async fn process(
                 .get_mut(name)
                 .ok_or_else(|| DbError::new("34000", "portal does not exist"))?;
             if portal.result.is_none() {
-                if session.transaction.is_none() && portal.plan.is_row_mutation() {
+                if session.transaction.is_none() && portal.plan.needs_extended_transaction(frontend.followed_by_sync) {
                     session.begin_implicit()?;
                 }
                 let result = engine.execute(&portal.plan, &portal.parameters, session).await?;
@@ -657,8 +668,11 @@ async fn serve_messages(socket: &mut BufReader<TcpStream>, engine: &Engine, sess
         }
         let mut buffer = Vec::new();
         match process(
-            tag,
-            &payload,
+            Frontend {
+                tag,
+                payload: &payload,
+                followed_by_sync: buffered_sync_next(socket.buffer()),
+            },
             engine,
             &mut statements,
             &mut portals,
@@ -704,6 +718,51 @@ async fn serve_messages(socket: &mut BufReader<TcpStream>, engine: &Engine, sess
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[tokio::test]
+    async fn buffered_execute_successor_keeps_the_point_fast_path_without_reading_ahead() {
+        for suffix_length in 0..=5 {
+            let (mut peer, stream) = tokio::io::duplex(64);
+            let sync = [b'S', 0, 0, 0, 4];
+            // An unnamed Execute frame, followed by an available prefix of Sync.
+            let mut input = vec![b'E', 0, 0, 0, 9, 0, 0, 0, 0, 0];
+            input.extend_from_slice(&sync[..suffix_length]);
+            peer.write_all(&input).await.unwrap();
+            let mut socket = BufReader::with_capacity(64, stream);
+            assert_eq!(socket.read_u8().await.unwrap(), b'E');
+            assert_eq!(socket.read_u32().await.unwrap(), 9);
+            let mut execute_payload = [0; 5];
+            socket.read_exact(&mut execute_payload).await.unwrap();
+            assert_eq!(socket.buffer(), &sync[..suffix_length]);
+            assert_eq!(buffered_sync_next(socket.buffer()), suffix_length == sync.len());
+            // Classification neither consumes bytes nor waits for a missing suffix.
+            assert_eq!(socket.buffer(), &sync[..suffix_length]);
+            peer.write_all(&sync[suffix_length..]).await.unwrap();
+            assert_eq!(socket.read_u8().await.unwrap(), b'S');
+            assert_eq!(socket.read_u32().await.unwrap(), 4);
+        }
+    }
+
+    #[test]
+    fn point_fast_path_requires_a_complete_immediate_empty_sync() {
+        let sync = [b'S', 0, 0, 0, 4];
+        for length in 0..sync.len() {
+            assert!(!buffered_sync_next(&sync[..length]));
+        }
+        assert!(buffered_sync_next(&sync));
+        // Later frames belong to the next cycle, even when already buffered.
+        assert!(buffered_sync_next(&[b'S', 0, 0, 0, 4, b'E', 0, 0, 0, 9]));
+        for position in 0..sync.len() {
+            for byte in 0..=u8::MAX {
+                if byte != sync[position] {
+                    let mut invalid = sync;
+                    invalid[position] = byte;
+                    assert!(!buffered_sync_next(&invalid), "{invalid:?}");
+                }
+            }
+        }
+        assert!(!buffered_sync_next(&[b'H', 0, 0, 0, 4, b'S', 0, 0, 0, 4]));
+    }
 
     fn column(kind: &str) -> Column {
         Column {

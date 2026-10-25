@@ -63,5 +63,5 @@ Used markers are retained until a durable tombstone takes over or the storage in
 - Transaction metadata and tombstones are retained. Safe garbage collection needs a certificate lifetime/generation protocol before deleting replay protection.
 - Transactional DDL, savepoints, and multi-statement simple-query requests are pending. CREATE is not currently rolled back with later statements in an extended-query pipeline.
 - One mutation statement can change up to 4,096 rows. Scans are bounded to 100,000 rows and 64 MiB per query, and RETURNING results to 16 MiB. Primary-key moves currently require one matching row.
-- Row mutations in the extended protocol are staged until Sync. Read-only autocommit queries retain the single-request fast path.
+- Extended-query reads and mutations retain their transaction dependencies until Sync. Flush is not a boundary, and BEGIN promotes the existing implicit transaction without releasing its claims. A standalone point read uses the public fast path only when the immediate complete empty Sync is already buffered; fragmented delivery takes the strict transaction path. Explicit transactions survive Sync.
 - Certificate operations, Lua state transitions, cryptography and asynchronous orchestration are not proved end to end by Verus. The executable commit guard and bounded TLA+ protocol models cover explicit parts of the design.
