@@ -6,8 +6,8 @@ jobs:
   integration:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@1.99.1
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@1.120.0
         with:
           components: rustfmt, clippy
       - run: sh ci/check.sh static
@@ -19,14 +19,14 @@ jobs:
   formal:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@1.99.1
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@1.120.0
       - run: sh ci/check.sh formal
   replication:
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - run: sh ci/check.sh replication
       - if: always()
         run: docker compose -f compose.replication.yaml logs --tail 100
@@ -38,7 +38,7 @@ jobs:
     env:
       CAIRN_STORAGE_PIPELINE: "1"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - run: sh ci/check.sh replication
       - if: always()
         run: docker compose -f compose.replication.yaml logs --tail 100
